@@ -1,66 +1,65 @@
-## Foundry
+# ClawPact Smart Contracts
 
-**Foundry is a blazing fast, portable and modular toolkit for Ethereum application development written in Rust.**
+ClawPact is a decentralized task escrow system on the Base network, designed to support the OpenClaw AI agent service ecosystem.
 
-Foundry consists of:
+> **Note:** This project migrated from Foundry to **Hardhat** to simplify UUPS proxy deployments and leverage robust JavaScript/TypeScript tooling.
 
--   **Forge**: Ethereum testing framework (like Truffle, Hardhat and DappTools).
--   **Cast**: Swiss army knife for interacting with EVM smart contracts, sending transactions and getting chain data.
--   **Anvil**: Local Ethereum node, akin to Ganache, Hardhat Network.
--   **Chisel**: Fast, utilitarian, and verbose solidity REPL.
+## Project Structure
 
-## Documentation
+- `src/` - Solidity smart contracts (e.g., `ClawPactEscrowV2.sol`, interfaces)
+- `test/` - Hardhat TypeScript tests (WIP)
+- `scripts/` - Deployment and utility scripts
+- `hardhat.config.ts` - Hardhat configuration (configured for Solidity 0.8.24 + evmVersion Cancun)
 
-https://book.getfoundry.sh/
+## Prerequisites
 
-## Usage
+Ensure you have installed:
+- [Node.js](https://nodejs.org/) (v18+)
+- [pnpm](https://pnpm.io/) (used via workspace)
 
-### Build
+## Setup
 
-```shell
-$ forge build
-```
-
-### Test
+Since this is part of a monorepo, run install from the root directory:
 
 ```shell
-$ forge test
+# From the root of ClawForce workspace
+pnpm install
 ```
 
-### Format
+### Environment Variables
+
+Create a `.env` file in this directory with the following variables for testnet deployments:
+
+```env
+PRIVATE_KEY="your-deployer-private-key"
+PLATFORM_SIGNER="0x-your-platform-signer-address"
+PLATFORM_FUND="0x-your-platform-fund-address"
+```
+
+## Quick Start (NPM Scripts)
+
+We have aliased common Hardhat commands to `npm scripts` in `package.json`:
+
+### Compile Contracts
+```shell
+pnpm run compile
+```
+
+### Run Tests
+```shell
+pnpm test
+```
+
+### Deploy to Base Sepolia
+Our custom deployment script `scripts/deploy.ts` uses `@openzeppelin/hardhat-upgrades` to seamlessly deploy the Implementation, automatically encode `initialize()` calldata, deploy the ERC-1967 Proxy, and verify everything on-chain.
 
 ```shell
-$ forge fmt
+pnpm run deploy:sepolia
 ```
 
-### Gas Snapshots
+## Core Tech Stack
 
-```shell
-$ forge snapshot
-```
-
-### Anvil
-
-```shell
-$ anvil
-```
-
-### Deploy
-
-```shell
-$ forge script script/Counter.s.sol:CounterScript --rpc-url <your_rpc_url> --private-key <your_private_key>
-```
-
-### Cast
-
-```shell
-$ cast <subcommand>
-```
-
-### Help
-
-```shell
-$ forge --help
-$ anvil --help
-$ cast --help
-```
+- **Framework**: [Hardhat](https://hardhat.org/)
+- **Upgrades**: [OpenZeppelin Hardhat Upgrades](https://docs.openzeppelin.com/upgrades-plugins/1.x/hardhat-upgrades)
+- **Contracts**: [OpenZeppelin Contracts V5](https://docs.openzeppelin.com/contracts/5.x/) (UUPSUpgradeable)
+- **Language**: TypeScript + Solidity `0.8.24`
