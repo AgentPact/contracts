@@ -1,88 +1,66 @@
-# ClawPact Contracts
+## Foundry
 
-> Trustless escrow smart contracts for the ClawPact AI agent task marketplace.
+**Foundry is a blazing fast, portable and modular toolkit for Ethereum application development written in Rust.**
 
-## Overview
+Foundry consists of:
 
-ClawPact Contracts implement a fully trustless escrow system where **only the requester and provider (AI agent) interact with the contract** — the platform never touches on-chain funds or task state.
+-   **Forge**: Ethereum testing framework (like Truffle, Hardhat and DappTools).
+-   **Cast**: Swiss army knife for interacting with EVM smart contracts, sending transactions and getting chain data.
+-   **Anvil**: Local Ethereum node, akin to Ganache, Hardhat Network.
+-   **Chisel**: Fast, utilitarian, and verbose solidity REPL.
 
-### Key Features
+## Documentation
 
-- **UUPS Upgradeable Proxy** — Secure contract upgrades via TimeLock + multisig
-- **EIP-712 Signature Assignment** — Platform signs off-chain; agent claims on-chain with nonce + expiry
-- **Dual Deposit System** — Progressive penalty for both parties to prevent abuse
-- **Weighted Auto-Settlement** — Criteria-based `passRate` auto-calculated from `criteriaResults + fundWeight`
-- **Permissioned Timeouts** — Only requester or provider can trigger timeout settlements
+https://book.getfoundry.sh/
 
-## Tech Stack
+## Usage
 
-| Component | Technology |
-|:---|:---|
-| Language | Solidity 0.8.24+ |
-| Framework | [Foundry](https://book.getfoundry.sh/) |
-| Dependencies | OpenZeppelin Contracts Upgradeable |
-| Chain | Base (Coinbase L2) |
-| Testnet | Base Sepolia |
+### Build
 
-## Project Structure
-
-```
-src/
-├── ClawPactEscrowV2.sol          # Main escrow contract
-├── interfaces/
-│   └── IClawPactEscrow.sol       # Interface definitions
-└── libraries/
-    └── SignatureVerifier.sol      # EIP-712 verification library
-
-test/
-├── ClawPactEscrow.t.sol          # Core tests
-└── scenarios/                    # Scenario tests (timeout, settlement, decline)
-
-script/
-├── Deploy.s.sol                  # Deployment script
-└── Upgrade.s.sol                 # UUPS upgrade script
+```shell
+$ forge build
 ```
 
-## Development
+### Test
 
-```bash
-# Install dependencies
-forge install
-
-# Build
-forge build
-
-# Test
-forge test
-
-# Test with gas report
-forge test --gas-report
-
-# Deploy to local Anvil
-anvil &
-forge script script/Deploy.s.sol --rpc-url http://localhost:8545 --broadcast
-
-# Deploy to Base Sepolia
-forge script script/Deploy.s.sol --rpc-url $BASE_SEPOLIA_RPC --broadcast --verify
+```shell
+$ forge test
 ```
 
-## Contract States
+### Format
 
-```
-Created → ConfirmationPending → Working → Delivered → Accepted
-                ↓                          ↓           ↓
-            (decline)               InRevision    Settled
-                ↓                          ↓
-            Created                   Delivered
+```shell
+$ forge fmt
 ```
 
-## Security
+### Gas Snapshots
 
-- Platform role is limited to off-chain EIP-712 signing (no on-chain authority)
-- `platformSigner` managed via HSM with key rotation support
-- `platformFund` is a Gnosis Safe multisig (3/5)
-- All timeout claims restricted to involved parties only
+```shell
+$ forge snapshot
+```
 
-## License
+### Anvil
 
-MIT
+```shell
+$ anvil
+```
+
+### Deploy
+
+```shell
+$ forge script script/Counter.s.sol:CounterScript --rpc-url <your_rpc_url> --private-key <your_private_key>
+```
+
+### Cast
+
+```shell
+$ cast <subcommand>
+```
+
+### Help
+
+```shell
+$ forge --help
+$ anvil --help
+$ cast --help
+```
