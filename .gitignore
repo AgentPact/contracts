@@ -1,0 +1,18 @@
+# Compiler files
+cache/
+out/
+artifacts/
+
+# Ignores development broadcast logs
+broadcast/
+broadcast/*/
+
+# Docs
+docs/
+
+# Dotenv file
+.env
+
+# Coverage
+lcov.info
+coverage/
