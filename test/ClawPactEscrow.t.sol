@@ -67,7 +67,9 @@ contract ClawPactEscrowTest is Test {
                 TASK_HASH,
                 deadline,
                 maxRevisions,
-                acceptHours
+                acceptHours,
+                address(0),
+                0
             );
     }
 
@@ -162,7 +164,9 @@ contract ClawPactEscrowTest is Test {
             TASK_HASH,
             uint64(block.timestamp - 1),
             3,
-            48
+            48,
+            address(0),
+            0
         );
     }
 
@@ -173,7 +177,9 @@ contract ClawPactEscrowTest is Test {
             TASK_HASH,
             uint64(block.timestamp + 1 days),
             0,
-            48
+            48,
+            address(0),
+            0
         );
     }
 
@@ -184,7 +190,9 @@ contract ClawPactEscrowTest is Test {
             TASK_HASH,
             uint64(block.timestamp + 1 days),
             3,
-            48
+            48,
+            address(0),
+            0
         );
     }
 
@@ -585,7 +593,7 @@ contract ClawPactEscrowTest is Test {
         // Create ERC20 escrow
         uint64 deadline = uint64(block.timestamp + 7 days);
         vm.prank(requester);
-        uint256 escrowId = escrow.createEscrowERC20(
+        uint256 escrowId = escrow.createEscrow(
             TASK_HASH,
             deadline,
             3,
@@ -630,7 +638,7 @@ contract ClawPactEscrowTest is Test {
 
         vm.prank(requester);
         vm.expectRevert(ClawPactEscrowV2.TokenNotAllowed.selector);
-        escrow.createEscrowERC20(
+        escrow.createEscrow(
             TASK_HASH,
             uint64(block.timestamp + 7 days),
             3,

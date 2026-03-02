@@ -154,67 +154,31 @@ contract ClawPactEscrowV2 is
         bytes32 taskHash,
         uint64 deliveryDeadline,
         uint8 maxRevisions,
-        uint8 acceptanceWindowHours
+        uint8 acceptanceWindowHours,
+        address token,
+        uint256 totalAmount
     ) external payable nonReentrant returns (uint256 escrowId) {
         if (deliveryDeadline <= block.timestamp) revert InvalidDeadline();
         if (maxRevisions < 1 || maxRevisions > 10) revert InvalidMaxRevisions();
         if (acceptanceWindowHours < 12 || acceptanceWindowHours > 168)
             revert InvalidAcceptanceWindow();
-        if (msg.value == 0) revert ZeroAmount();
 
-        // Calculate deposit based on maxRevisions
-        uint256 depositRate = _depositRate(maxRevisions);
-        uint256 totalRequired = msg.value;
-        // reward = total / (100 + depositRate) * 100
-        uint256 rewardAmount = (totalRequired * 100) / (100 + depositRate);
-        uint256 requesterDeposit = totalRequired - rewardAmount;
-
-        escrowId = nextEscrowId++;
-
-        EscrowRecord storage r = escrows[escrowId];
-        r.requester = msg.sender;
-        r.rewardAmount = rewardAmount;
-        r.requesterDeposit = requesterDeposit;
-        r.token = address(0); // native ETH for MVP
-        r.state = TaskState.Created;
-        r.taskHash = taskHash;
-        r.deliveryDeadline = deliveryDeadline;
-        r.maxRevisions = maxRevisions;
-        r.acceptanceWindowHours = acceptanceWindowHours;
-
-        emit EscrowCreated(
-            escrowId,
-            msg.sender,
-            taskHash,
-            rewardAmount,
-            requesterDeposit,
-            address(0),
-            deliveryDeadline,
-            maxRevisions,
-            acceptanceWindowHours
-        );
-    }
-
-    /// @notice Create a new escrow using ERC20 token (e.g. USDC)
-    /// @param token The ERC20 token address (must be in allowedTokens whitelist)
-    /// @param totalAmount Total amount to deposit (reward + deposit auto-calculated)
-    function createEscrowERC20(
-        bytes32 taskHash,
-        uint64 deliveryDeadline,
-        uint8 maxRevisions,
-        uint8 acceptanceWindowHours,
-        address token,
-        uint256 totalAmount
-    ) external nonReentrant returns (uint256 escrowId) {
-        if (deliveryDeadline <= block.timestamp) revert InvalidDeadline();
-        if (maxRevisions < 1 || maxRevisions > 10) revert InvalidMaxRevisions();
-        if (acceptanceWindowHours < 12 || acceptanceWindowHours > 168)
-            revert InvalidAcceptanceWindow();
-        if (totalAmount == 0) revert ZeroAmount();
-        if (!allowedTokens[token]) revert TokenNotAllowed();
-
-        // Transfer tokens from requester to contract
-        IERC20(token).safeTransferFrom(msg.sender, address(this), totalAmount);
+        // Determine payment mode by token address
+        if (token == address(0)) {
+            // ETH mode: use msg.value as total
+            if (msg.value == 0) revert ZeroAmount();
+            totalAmount = msg.value;
+        } else {
+            // ERC20 mode: must not attach ETH, token must be whitelisted
+            require(msg.value == 0, "ETH not accepted for ERC20 escrows");
+            if (totalAmount == 0) revert ZeroAmount();
+            if (!allowedTokens[token]) revert TokenNotAllowed();
+            IERC20(token).safeTransferFrom(
+                msg.sender,
+                address(this),
+                totalAmount
+            );
+        }
 
         // Calculate deposit based on maxRevisions
         uint256 depositRate = _depositRate(maxRevisions);
