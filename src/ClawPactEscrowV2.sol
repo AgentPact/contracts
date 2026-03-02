@@ -69,8 +69,11 @@ contract ClawPactEscrowV2 is
     /// @notice Calculated pass rates: escrowId => passRate (submitted by platform off-chain)
     mapping(uint256 => uint8) public calculatedPassRates;
 
+    /// @notice Allowed ERC20 tokens for payment (e.g. USDC)
+    mapping(address => bool) public allowedTokens;
+
     /// @notice Storage gap for future upgrades
-    uint256[44] private __gap;
+    uint256[43] private __gap;
 
     // ========================= Errors =========================
 
@@ -89,6 +92,7 @@ contract ClawPactEscrowV2 is
     error ZeroAddress();
     error ZeroAmount();
     error InvalidPassRate();
+    error TokenNotAllowed();
 
     // ========================= Modifiers =========================
 
@@ -191,6 +195,58 @@ contract ClawPactEscrowV2 is
         );
     }
 
+    /// @notice Create a new escrow using ERC20 token (e.g. USDC)
+    /// @param token The ERC20 token address (must be in allowedTokens whitelist)
+    /// @param totalAmount Total amount to deposit (reward + deposit auto-calculated)
+    function createEscrowERC20(
+        bytes32 taskHash,
+        uint64 deliveryDeadline,
+        uint8 maxRevisions,
+        uint8 acceptanceWindowHours,
+        address token,
+        uint256 totalAmount
+    ) external nonReentrant returns (uint256 escrowId) {
+        if (deliveryDeadline <= block.timestamp) revert InvalidDeadline();
+        if (maxRevisions < 1 || maxRevisions > 10) revert InvalidMaxRevisions();
+        if (acceptanceWindowHours < 12 || acceptanceWindowHours > 168)
+            revert InvalidAcceptanceWindow();
+        if (totalAmount == 0) revert ZeroAmount();
+        if (!allowedTokens[token]) revert TokenNotAllowed();
+
+        // Transfer tokens from requester to contract
+        IERC20(token).safeTransferFrom(msg.sender, address(this), totalAmount);
+
+        // Calculate deposit based on maxRevisions
+        uint256 depositRate = _depositRate(maxRevisions);
+        uint256 rewardAmount = (totalAmount * 100) / (100 + depositRate);
+        uint256 requesterDeposit = totalAmount - rewardAmount;
+
+        escrowId = nextEscrowId++;
+
+        EscrowRecord storage r = escrows[escrowId];
+        r.requester = msg.sender;
+        r.rewardAmount = rewardAmount;
+        r.requesterDeposit = requesterDeposit;
+        r.token = token;
+        r.state = TaskState.Created;
+        r.taskHash = taskHash;
+        r.deliveryDeadline = deliveryDeadline;
+        r.maxRevisions = maxRevisions;
+        r.acceptanceWindowHours = acceptanceWindowHours;
+
+        emit EscrowCreated(
+            escrowId,
+            msg.sender,
+            taskHash,
+            rewardAmount,
+            requesterDeposit,
+            token,
+            deliveryDeadline,
+            maxRevisions,
+            acceptanceWindowHours
+        );
+    }
+
     /// @inheritdoc IClawPactEscrow
     function acceptDelivery(
         uint256 escrowId
@@ -210,10 +266,10 @@ contract ClawPactEscrowV2 is
 
         r.state = TaskState.Accepted;
 
-        _transferETH(r.provider, providerPayout);
-        _transferETH(platformFund, fee);
+        _transfer(r.token, r.provider, providerPayout);
+        _transfer(r.token, platformFund, fee);
         if (remainingDeposit > 0) {
-            _transferETH(r.requester, remainingDeposit);
+            _transfer(r.token, r.requester, remainingDeposit);
         }
 
         emit DeliveryAccepted(escrowId, providerPayout, fee);
@@ -239,8 +295,8 @@ contract ClawPactEscrowV2 is
             if (penalty > 0) {
                 r.depositConsumed += penalty;
                 // 50% to provider, 50% to platform fund
-                _transferETH(r.provider, penalty / 2);
-                _transferETH(platformFund, penalty - penalty / 2); // handles odd wei
+                _transfer(r.token, r.provider, penalty / 2);
+                _transfer(r.token, platformFund, penalty - penalty / 2); // handles odd wei
             }
         }
 
@@ -278,7 +334,7 @@ contract ClawPactEscrowV2 is
         r.state = TaskState.Cancelled;
 
         // Full refund to requester
-        _transferETH(r.requester, r.rewardAmount + r.requesterDeposit);
+        _transfer(r.token, r.requester, r.rewardAmount + r.requesterDeposit);
 
         emit TaskCancelled(escrowId);
     }
@@ -396,13 +452,13 @@ contract ClawPactEscrowV2 is
 
         // Full reward to provider (requester defaulted)
         uint256 fee = (r.rewardAmount * PLATFORM_FEE_BPS) / 10_000;
-        _transferETH(r.provider, r.rewardAmount - fee);
-        _transferETH(platformFund, fee);
+        _transfer(r.token, r.provider, r.rewardAmount - fee);
+        _transfer(r.token, platformFund, fee);
 
         // Return remaining deposit to requester
         uint256 remainingDeposit = r.requesterDeposit - r.depositConsumed;
         if (remainingDeposit > 0) {
-            _transferETH(r.requester, remainingDeposit);
+            _transfer(r.token, r.requester, remainingDeposit);
         }
 
         emit TimeoutClaimed(escrowId, previousState, msg.sender);
@@ -422,7 +478,8 @@ contract ClawPactEscrowV2 is
         r.state = TaskState.TimedOut;
 
         // Full refund to requester
-        _transferETH(
+        _transfer(
+            r.token,
             r.requester,
             r.rewardAmount + r.requesterDeposit - r.depositConsumed
         );
@@ -462,6 +519,12 @@ contract ClawPactEscrowV2 is
         if (passRate > 100) revert InvalidPassRate();
         calculatedPassRates[escrowId] = passRate;
         emit PassRateSubmitted(escrowId, passRate);
+    }
+
+    /// @notice Add or remove an allowed ERC20 token
+    function setAllowedToken(address token, bool allowed) external onlyOwner {
+        if (token == address(0)) revert ZeroAddress();
+        allowedTokens[token] = allowed;
     }
 
     /// @notice Update platform signer address (key rotation)
@@ -507,16 +570,16 @@ contract ClawPactEscrowV2 is
 
         r.state = TaskState.Settled;
 
-        _transferETH(r.provider, providerShare - fee);
-        _transferETH(platformFund, fee);
+        _transfer(r.token, r.provider, providerShare - fee);
+        _transfer(r.token, platformFund, fee);
         if (requesterRefund > 0) {
-            _transferETH(r.requester, requesterRefund);
+            _transfer(r.token, r.requester, requesterRefund);
         }
 
         // Return remaining deposit to requester
         uint256 remainingDeposit = r.requesterDeposit - r.depositConsumed;
         if (remainingDeposit > 0) {
-            _transferETH(r.requester, remainingDeposit);
+            _transfer(r.token, r.requester, remainingDeposit);
         }
 
         emit TaskAutoSettled(
@@ -559,11 +622,15 @@ contract ClawPactEscrowV2 is
         return penalty;
     }
 
-    /// @dev Transfer ETH safely
-    function _transferETH(address to, uint256 amount) internal {
+    /// @dev Transfer ETH or ERC20 token
+    function _transfer(address token, address to, uint256 amount) internal {
         if (amount == 0) return;
-        (bool success, ) = to.call{value: amount}("");
-        require(success, "ETH transfer failed");
+        if (token == address(0)) {
+            (bool success, ) = to.call{value: amount}("");
+            require(success, "ETH transfer failed");
+        } else {
+            IERC20(token).safeTransfer(to, amount);
+        }
     }
 
     /// @dev Required by UUPS — only owner can authorize upgrades

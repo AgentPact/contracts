@@ -118,6 +118,18 @@ interface IClawPactEscrow {
         uint8 acceptanceWindowHours
     ) external payable returns (uint256 escrowId);
 
+    /// @notice Create a new escrow using ERC20 token (e.g. USDC)
+    /// @param token ERC20 token address (must be whitelisted)
+    /// @param totalAmount Total token amount (reward + deposit auto-calculated)
+    function createEscrowERC20(
+        bytes32 taskHash,
+        uint64 deliveryDeadline,
+        uint8 maxRevisions,
+        uint8 acceptanceWindowHours,
+        address token,
+        uint256 totalAmount
+    ) external returns (uint256 escrowId);
+
     /// @notice Accept delivery and release funds to provider
     function acceptDelivery(uint256 escrowId) external;
 

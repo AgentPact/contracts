@@ -565,4 +565,132 @@ contract ClawPactEscrowTest is Test {
         vm.expectRevert(ClawPactEscrowV2.InvalidSignature.selector);
         escrow.submitPassRate(1, 50);
     }
+
+    // ========================= Test: ERC20 (USDC) =========================
+
+    function test_createEscrowERC20_fullFlow() public {
+        // Deploy mock USDC (6 decimals like real USDC)
+        MockERC20 usdc = new MockERC20("USD Coin", "USDC", 6);
+
+        // Whitelist USDC
+        vm.prank(owner);
+        escrow.setAllowedToken(address(usdc), true);
+
+        // Mint and approve
+        uint256 totalAmount = 1_050 * 1e6; // $1050 USDC (reward $1000 + 5% deposit $50)
+        usdc.mint(requester, totalAmount);
+        vm.prank(requester);
+        usdc.approve(address(escrow), totalAmount);
+
+        // Create ERC20 escrow
+        uint64 deadline = uint64(block.timestamp + 7 days);
+        vm.prank(requester);
+        uint256 escrowId = escrow.createEscrowERC20(
+            TASK_HASH,
+            deadline,
+            3,
+            48,
+            address(usdc),
+            totalAmount
+        );
+
+        IClawPactEscrow.EscrowRecord memory r = escrow.getEscrow(escrowId);
+        assertEq(r.token, address(usdc));
+        assertEq(r.rewardAmount, 1_000 * 1e6); // $1000
+        assertEq(r.requesterDeposit, 50 * 1e6); // $50
+        assertEq(usdc.balanceOf(address(escrow)), totalAmount);
+
+        // Claim + confirm + deliver + accept
+        uint256 expiredAt = block.timestamp + 30 minutes;
+        bytes memory sig = _signAssignment(escrowId, provider, 0, expiredAt);
+        vm.prank(provider);
+        escrow.claimTask(escrowId, 0, expiredAt, sig);
+        vm.prank(provider);
+        escrow.confirmTask(escrowId);
+        vm.prank(provider);
+        escrow.submitDelivery(escrowId, DELIVERY_HASH);
+
+        // Accept delivery
+        vm.prank(requester);
+        escrow.acceptDelivery(escrowId);
+
+        // Verify USDC payouts
+        uint256 fee = (1_000 * 1e6 * 300) / 10_000; // 3% = $30
+        assertEq(usdc.balanceOf(provider), 1_000 * 1e6 - fee); // $970
+        assertEq(usdc.balanceOf(platformFund), fee); // $30
+        assertEq(usdc.balanceOf(requester), 50 * 1e6); // deposit returned
+        assertEq(usdc.balanceOf(address(escrow)), 0); // escrow drained
+    }
+
+    function test_createEscrowERC20_revert_tokenNotAllowed() public {
+        MockERC20 badToken = new MockERC20("Bad", "BAD", 18);
+        badToken.mint(requester, 1000 ether);
+        vm.prank(requester);
+        badToken.approve(address(escrow), 1000 ether);
+
+        vm.prank(requester);
+        vm.expectRevert(ClawPactEscrowV2.TokenNotAllowed.selector);
+        escrow.createEscrowERC20(
+            TASK_HASH,
+            uint64(block.timestamp + 7 days),
+            3,
+            48,
+            address(badToken),
+            1000 ether
+        );
+    }
+
+    function test_setAllowedToken() public {
+        address token = makeAddr("usdc");
+        vm.prank(owner);
+        escrow.setAllowedToken(token, true);
+        assertTrue(escrow.allowedTokens(token));
+
+        vm.prank(owner);
+        escrow.setAllowedToken(token, false);
+        assertFalse(escrow.allowedTokens(token));
+    }
+}
+
+/// @dev Minimal ERC20 mock for testing
+contract MockERC20 {
+    string public name;
+    string public symbol;
+    uint8 public decimals;
+    uint256 public totalSupply;
+    mapping(address => uint256) public balanceOf;
+    mapping(address => mapping(address => uint256)) public allowance;
+
+    constructor(string memory _name, string memory _symbol, uint8 _decimals) {
+        name = _name;
+        symbol = _symbol;
+        decimals = _decimals;
+    }
+
+    function mint(address to, uint256 amount) external {
+        balanceOf[to] += amount;
+        totalSupply += amount;
+    }
+
+    function approve(address spender, uint256 amount) external returns (bool) {
+        allowance[msg.sender][spender] = amount;
+        return true;
+    }
+
+    function transfer(address to, uint256 amount) external returns (bool) {
+        balanceOf[msg.sender] -= amount;
+        balanceOf[to] += amount;
+        return true;
+    }
+
+    function transferFrom(
+        address from,
+        address to,
+        uint256 amount
+    ) external returns (bool) {
+        allowance[from][msg.sender] -= amount;
+        balanceOf[from] -= amount;
+        balanceOf[to] += amount;
+        return true;
+    }
 }
