@@ -16,3 +16,15 @@ docs/
 # Coverage
 lcov.info
 coverage/
+
+# Node
+node_modules
+.turbo
+.pnpm-store
+.next
+
+compile.log
+compile_out.txt
+build_error.txt
+compile_error.txt
+
