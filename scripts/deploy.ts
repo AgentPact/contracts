@@ -2,110 +2,20 @@ import { ethers, upgrades } from "hardhat";
 import fs from "fs";
 import path from "path";
 
-async function main() {
-    const [deployer] = await ethers.getSigners();
-    console.log("═══════════════════════════════════════════════");
-    console.log("  ClawPact Escrow V2 — UUPS Proxy Deployment");
-    console.log("═══════════════════════════════════════════════");
-    console.log("Deployer:", deployer.address);
+const ESCROW_JSON = path.join(__dirname, "ESCROW.json");
 
-    const balance = await ethers.provider.getBalance(deployer.address);
-    console.log("Balance:", ethers.formatEther(balance), "ETH");
+interface EscrowAddresses {
+    proxy: string;
+    implementation: string;
+    network: string;
+    chainId: number;
+    deployer: string;
+    updatedAt: string;
+}
 
-    if (balance === 0n) {
-        throw new Error("Deployer has 0 ETH — please fund the wallet first");
-    }
-
-    // Configuration
-    const platformSigner =
-        process.env.PLATFORM_SIGNER || deployer.address;
-    const platformFund =
-        process.env.PLATFORM_FUND || deployer.address;
-    const initialOwner = deployer.address;
-
-    console.log("\nConfiguration:");
-    console.log("  Platform Signer:", platformSigner);
-    console.log("  Platform Fund:", platformFund);
-    console.log("  Initial Owner:", initialOwner);
-
-    // Deploy
-    const EscrowFactory = await ethers.getContractFactory("ClawPactEscrowV2");
-
-    console.log("\n⏳ Deploying ClawPactEscrowV2 as UUPS Proxy...");
-    const escrow = await upgrades.deployProxy(
-        EscrowFactory,
-        [platformSigner, platformFund, initialOwner],
-        {
-            kind: "uups",
-            // OZ v5: ReentrancyGuard uses transient storage (no constructor state)
-            // Safe for UUPS but plugin still flags it
-            unsafeAllow: ["constructor", "state-variable-immutable"],
-        }
-    );
-
-    await escrow.waitForDeployment();
-    const proxyAddress = await escrow.getAddress();
-    const implAddress = await upgrades.erc1967.getImplementationAddress(proxyAddress);
-
-    console.log("\n✅ Deployment successful!");
-    console.log("  Proxy Address:", proxyAddress);
-    console.log("  Implementation:", implAddress);
-
-    // ─── Save deployment record ──────────────────────────────────
-    const network = await ethers.provider.getNetwork();
-    const networkName = network.name === "unknown" ? "base-sepolia" : network.name;
-
-    const deploymentInfo = {
-        network: networkName,
-        chainId: Number(network.chainId),
-        proxy: proxyAddress,
-        implementation: implAddress,
-        deployer: deployer.address,
-        platformSigner,
-        platformFund,
-        timestamp: new Date().toISOString(),
-    };
-
-    // Save to deployments/ directory
-    const deploymentsDir = path.join(__dirname, "../deployments");
-    if (!fs.existsSync(deploymentsDir)) fs.mkdirSync(deploymentsDir, { recursive: true });
-
-    const filename = `${networkName}-${Date.now()}.json`;
-    fs.writeFileSync(
-        path.join(deploymentsDir, filename),
-        JSON.stringify(deploymentInfo, null, 2)
-    );
-    console.log(`\n📄 Deployment saved: deployments/${filename}`);
-
-    // Also maintain a latest-addresses.json for easy lookup
-    const latestPath = path.join(deploymentsDir, "latest-addresses.json");
-    let latestAddresses: Record<string, any> = {};
-    if (fs.existsSync(latestPath)) {
-        latestAddresses = JSON.parse(fs.readFileSync(latestPath, "utf-8"));
-    }
-    latestAddresses[networkName] = {
-        proxy: proxyAddress,
-        implementation: implAddress,
-        deployedAt: deploymentInfo.timestamp,
-    };
-    fs.writeFileSync(latestPath, JSON.stringify(latestAddresses, null, 2));
-    console.log("📄 Updated: deployments/latest-addresses.json");
-
-    // ─── Update env files ────────────────────────────────────────
-    // platform/.env
-    const platformEnv = path.join(__dirname, "../../platform/.env");
-    updateEnvFile(platformEnv, "ESCROW_ADDRESS", proxyAddress);
-
-    // app/.env.local
-    const appEnvLocal = path.join(__dirname, "../../app/.env.local");
-    updateEnvFile(appEnvLocal, "NEXT_PUBLIC_ESCROW_ADDRESS", proxyAddress);
-
-    console.log("\n═══════════════════════════════════════════════");
-    console.log("  ✅ All done! Next steps:");
-    console.log(`  1. Verify: npx hardhat verify --network ${networkName} ${proxyAddress}`);
-    console.log("  2. Start backend:  cd ../platform && pnpm dev");
-    console.log("  3. Start frontend: cd ../app && pnpm dev");
-    console.log("═══════════════════════════════════════════════");
+function saveEscrowJson(data: EscrowAddresses) {
+    fs.writeFileSync(ESCROW_JSON, JSON.stringify(data, null, 2));
+    console.log("📄 scripts/ESCROW.json updated");
 }
 
 function updateEnvFile(envPath: string, key: string, value: string) {
@@ -122,7 +32,110 @@ function updateEnvFile(envPath: string, key: string, value: string) {
     } else {
         fs.writeFileSync(envPath, `${line}\n`);
     }
-    console.log(`✅ ${path.basename(envPath)} → ${key} updated`);
+    console.log(`✅ ${path.basename(envPath)} → ${key}`);
+}
+
+async function main() {
+    const [deployer] = await ethers.getSigners();
+    const network = await ethers.provider.getNetwork();
+    const networkName = network.name === "unknown" ? "base-sepolia" : network.name;
+    const balance = await ethers.provider.getBalance(deployer.address);
+
+    console.log("═══════════════════════════════════════════════");
+    console.log("  ClawPact Escrow V2 — Deployment");
+    console.log("═══════════════════════════════════════════════");
+    console.log("Deployer:", deployer.address);
+    console.log("Balance:", ethers.formatEther(balance), "ETH");
+    console.log("Network:", networkName, `(chainId: ${network.chainId})`);
+
+    if (balance === 0n) {
+        throw new Error("Deployer has 0 ETH — please fund the wallet first");
+    }
+
+    const EscrowFactory = await ethers.getContractFactory("ClawPactEscrowV2");
+
+    const existingProxy = process.env.ESCROW_ADDRESS_PROXY;
+
+    let proxyAddress: string;
+    let implAddress: string;
+
+    if (existingProxy) {
+        // ─── Upgrade Mode ──────────────────────────────────────────
+        console.log("\n🔄 Upgrade mode — proxy already deployed");
+        console.log("   Existing Proxy:", existingProxy);
+
+        const oldImpl = await upgrades.erc1967.getImplementationAddress(existingProxy);
+        console.log("   Old Implementation:", oldImpl);
+
+        console.log("\n⏳ Deploying new implementation & upgrading proxy...");
+        const upgraded = await upgrades.upgradeProxy(existingProxy, EscrowFactory, {
+            kind: "uups",
+            unsafeAllow: ["constructor", "state-variable-immutable"],
+        });
+        await upgraded.waitForDeployment();
+
+        proxyAddress = existingProxy;
+        implAddress = await upgrades.erc1967.getImplementationAddress(proxyAddress);
+
+        console.log("\n✅ Upgrade successful!");
+        console.log("   Proxy (unchanged):", proxyAddress);
+        console.log("   New Implementation:", implAddress);
+    } else {
+        // ─── Fresh Deploy Mode ─────────────────────────────────────
+        console.log("\n🆕 Fresh deploy mode — no existing proxy found");
+
+        const platformSigner = process.env.PLATFORM_SIGNER || deployer.address;
+        const platformFund = process.env.PLATFORM_FUND || deployer.address;
+
+        console.log("   Platform Signer:", platformSigner);
+        console.log("   Platform Fund:", platformFund);
+        console.log("   Initial Owner:", deployer.address);
+
+        console.log("\n⏳ Deploying UUPS Proxy + Implementation...");
+        const escrow = await upgrades.deployProxy(
+            EscrowFactory,
+            [platformSigner, platformFund, deployer.address],
+            {
+                kind: "uups",
+                unsafeAllow: ["constructor", "state-variable-immutable"],
+            }
+        );
+        await escrow.waitForDeployment();
+
+        proxyAddress = await escrow.getAddress();
+        implAddress = await upgrades.erc1967.getImplementationAddress(proxyAddress);
+
+        console.log("\n✅ Fresh deploy successful!");
+        console.log("   Proxy:", proxyAddress);
+        console.log("   Implementation:", implAddress);
+    }
+
+    // ─── Save ESCROW.json ────────────────────────────────────────
+    saveEscrowJson({
+        proxy: proxyAddress,
+        implementation: implAddress,
+        network: networkName,
+        chainId: Number(network.chainId),
+        deployer: deployer.address,
+        updatedAt: new Date().toISOString(),
+    });
+
+    // ─── Update env files ────────────────────────────────────────
+    updateEnvFile(
+        path.join(__dirname, "../../platform/.env"),
+        "ESCROW_ADDRESS",
+        proxyAddress
+    );
+    updateEnvFile(
+        path.join(__dirname, "../../app/.env.local"),
+        "NEXT_PUBLIC_ESCROW_ADDRESS",
+        proxyAddress
+    );
+
+    console.log("\n═══════════════════════════════════════════════");
+    console.log("  Done! Verify:");
+    console.log(`  npx hardhat verify --network ${networkName} ${proxyAddress}`);
+    console.log("═══════════════════════════════════════════════");
 }
 
 main().catch((error) => {
