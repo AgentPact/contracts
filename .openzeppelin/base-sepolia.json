@@ -1,0 +1,376 @@
+{
+  "manifestVersion": "3.2",
+  "proxies": [
+    {
+      "address": "0x927602DaFE11e2679cbB0eb4d98CF6a7B1417a52",
+      "txHash": "0xe97b033516fcd9df37fed5fd517c5ee3d851ed68aef0e5fc0322cfabb25019b0",
+      "kind": "uups"
+    }
+  ],
+  "impls": {
+    "f7c354400deb2fab179b1e8ea7e192acaf90257f12342d0e5312bcf12491a12b": {
+      "address": "0x64222d765ce9ac80bce47b1846D20a4B4A7d9A91",
+      "txHash": "0xf29bda78edbb5e742cd2cba48529065a9e6274f30066994861e3a1e577401324",
+      "layout": {
+        "solcVersion": "0.8.24",
+        "storage": [
+          {
+            "label": "nextEscrowId",
+            "offset": 0,
+            "slot": "0",
+            "type": "t_uint256",
+            "contract": "ClawPactEscrowV2",
+            "src": "src\\ClawPactEscrowV2.sol:55"
+          },
+          {
+            "label": "platformSigner",
+            "offset": 0,
+            "slot": "1",
+            "type": "t_address",
+            "contract": "ClawPactEscrowV2",
+            "src": "src\\ClawPactEscrowV2.sol:58"
+          },
+          {
+            "label": "platformFund",
+            "offset": 0,
+            "slot": "2",
+            "type": "t_address",
+            "contract": "ClawPactEscrowV2",
+            "src": "src\\ClawPactEscrowV2.sol:61"
+          },
+          {
+            "label": "escrows",
+            "offset": 0,
+            "slot": "3",
+            "type": "t_mapping(t_uint256,t_struct(EscrowRecord)11041_storage)",
+            "contract": "ClawPactEscrowV2",
+            "src": "src\\ClawPactEscrowV2.sol:64"
+          },
+          {
+            "label": "assignmentNonces",
+            "offset": 0,
+            "slot": "4",
+            "type": "t_mapping(t_uint256,t_uint256)",
+            "contract": "ClawPactEscrowV2",
+            "src": "src\\ClawPactEscrowV2.sol:67"
+          },
+          {
+            "label": "calculatedPassRates",
+            "offset": 0,
+            "slot": "5",
+            "type": "t_mapping(t_uint256,t_uint8)",
+            "contract": "ClawPactEscrowV2",
+            "src": "src\\ClawPactEscrowV2.sol:70"
+          },
+          {
+            "label": "allowedTokens",
+            "offset": 0,
+            "slot": "6",
+            "type": "t_mapping(t_address,t_bool)",
+            "contract": "ClawPactEscrowV2",
+            "src": "src\\ClawPactEscrowV2.sol:73"
+          },
+          {
+            "label": "__gap",
+            "offset": 0,
+            "slot": "7",
+            "type": "t_array(t_uint256)43_storage",
+            "contract": "ClawPactEscrowV2",
+            "src": "src\\ClawPactEscrowV2.sol:76"
+          }
+        ],
+        "types": {
+          "t_address": {
+            "label": "address",
+            "numberOfBytes": "20"
+          },
+          "t_bool": {
+            "label": "bool",
+            "numberOfBytes": "1"
+          },
+          "t_bytes32": {
+            "label": "bytes32",
+            "numberOfBytes": "32"
+          },
+          "t_string_storage": {
+            "label": "string",
+            "numberOfBytes": "32"
+          },
+          "t_struct(EIP712Storage)124_storage": {
+            "label": "struct EIP712Upgradeable.EIP712Storage",
+            "members": [
+              {
+                "label": "_hashedName",
+                "type": "t_bytes32",
+                "offset": 0,
+                "slot": "0"
+              },
+              {
+                "label": "_hashedVersion",
+                "type": "t_bytes32",
+                "offset": 0,
+                "slot": "1"
+              },
+              {
+                "label": "_name",
+                "type": "t_string_storage",
+                "offset": 0,
+                "slot": "2"
+              },
+              {
+                "label": "_version",
+                "type": "t_string_storage",
+                "offset": 0,
+                "slot": "3"
+              }
+            ],
+            "numberOfBytes": "128"
+          },
+          "t_struct(InitializableStorage)436_storage": {
+            "label": "struct Initializable.InitializableStorage",
+            "members": [
+              {
+                "label": "_initialized",
+                "type": "t_uint64",
+                "offset": 0,
+                "slot": "0"
+              },
+              {
+                "label": "_initializing",
+                "type": "t_bool",
+                "offset": 8,
+                "slot": "0"
+              }
+            ],
+            "numberOfBytes": "32"
+          },
+          "t_struct(OwnableStorage)13_storage": {
+            "label": "struct OwnableUpgradeable.OwnableStorage",
+            "members": [
+              {
+                "label": "_owner",
+                "type": "t_address",
+                "offset": 0,
+                "slot": "0"
+              }
+            ],
+            "numberOfBytes": "32"
+          },
+          "t_uint64": {
+            "label": "uint64",
+            "numberOfBytes": "8"
+          },
+          "t_array(t_uint256)43_storage": {
+            "label": "uint256[43]",
+            "numberOfBytes": "1376"
+          },
+          "t_enum(TaskState)11007": {
+            "label": "enum IClawPactEscrow.TaskState",
+            "members": [
+              "Created",
+              "ConfirmationPending",
+              "Working",
+              "Delivered",
+              "InRevision",
+              "Accepted",
+              "Settled",
+              "TimedOut",
+              "Cancelled"
+            ],
+            "numberOfBytes": "1"
+          },
+          "t_mapping(t_address,t_bool)": {
+            "label": "mapping(address => bool)",
+            "numberOfBytes": "32"
+          },
+          "t_mapping(t_uint256,t_struct(EscrowRecord)11041_storage)": {
+            "label": "mapping(uint256 => struct IClawPactEscrow.EscrowRecord)",
+            "numberOfBytes": "32"
+          },
+          "t_mapping(t_uint256,t_uint256)": {
+            "label": "mapping(uint256 => uint256)",
+            "numberOfBytes": "32"
+          },
+          "t_mapping(t_uint256,t_uint8)": {
+            "label": "mapping(uint256 => uint8)",
+            "numberOfBytes": "32"
+          },
+          "t_struct(EscrowRecord)11041_storage": {
+            "label": "struct IClawPactEscrow.EscrowRecord",
+            "members": [
+              {
+                "label": "requester",
+                "type": "t_address",
+                "offset": 0,
+                "slot": "0"
+              },
+              {
+                "label": "provider",
+                "type": "t_address",
+                "offset": 0,
+                "slot": "1"
+              },
+              {
+                "label": "rewardAmount",
+                "type": "t_uint256",
+                "offset": 0,
+                "slot": "2"
+              },
+              {
+                "label": "requesterDeposit",
+                "type": "t_uint256",
+                "offset": 0,
+                "slot": "3"
+              },
+              {
+                "label": "depositConsumed",
+                "type": "t_uint256",
+                "offset": 0,
+                "slot": "4"
+              },
+              {
+                "label": "token",
+                "type": "t_address",
+                "offset": 0,
+                "slot": "5"
+              },
+              {
+                "label": "state",
+                "type": "t_enum(TaskState)11007",
+                "offset": 20,
+                "slot": "5"
+              },
+              {
+                "label": "taskHash",
+                "type": "t_bytes32",
+                "offset": 0,
+                "slot": "6"
+              },
+              {
+                "label": "latestDeliveryHash",
+                "type": "t_bytes32",
+                "offset": 0,
+                "slot": "7"
+              },
+              {
+                "label": "latestCriteriaHash",
+                "type": "t_bytes32",
+                "offset": 0,
+                "slot": "8"
+              },
+              {
+                "label": "deliveryDeadline",
+                "type": "t_uint64",
+                "offset": 0,
+                "slot": "9"
+              },
+              {
+                "label": "acceptanceDeadline",
+                "type": "t_uint64",
+                "offset": 8,
+                "slot": "9"
+              },
+              {
+                "label": "confirmationDeadline",
+                "type": "t_uint64",
+                "offset": 16,
+                "slot": "9"
+              },
+              {
+                "label": "maxRevisions",
+                "type": "t_uint8",
+                "offset": 24,
+                "slot": "9"
+              },
+              {
+                "label": "currentRevision",
+                "type": "t_uint8",
+                "offset": 25,
+                "slot": "9"
+              },
+              {
+                "label": "acceptanceWindowHours",
+                "type": "t_uint8",
+                "offset": 26,
+                "slot": "9"
+              }
+            ],
+            "numberOfBytes": "320"
+          },
+          "t_uint256": {
+            "label": "uint256",
+            "numberOfBytes": "32"
+          },
+          "t_uint8": {
+            "label": "uint8",
+            "numberOfBytes": "1"
+          }
+        },
+        "namespaces": {
+          "erc7201:openzeppelin.storage.EIP712": [
+            {
+              "contract": "EIP712Upgradeable",
+              "label": "_hashedName",
+              "type": "t_bytes32",
+              "src": "@openzeppelin\\contracts-upgradeable\\utils\\cryptography\\EIP712Upgradeable.sol:37",
+              "offset": 0,
+              "slot": "0"
+            },
+            {
+              "contract": "EIP712Upgradeable",
+              "label": "_hashedVersion",
+              "type": "t_bytes32",
+              "src": "@openzeppelin\\contracts-upgradeable\\utils\\cryptography\\EIP712Upgradeable.sol:38",
+              "offset": 0,
+              "slot": "1"
+            },
+            {
+              "contract": "EIP712Upgradeable",
+              "label": "_name",
+              "type": "t_string_storage",
+              "src": "@openzeppelin\\contracts-upgradeable\\utils\\cryptography\\EIP712Upgradeable.sol:40",
+              "offset": 0,
+              "slot": "2"
+            },
+            {
+              "contract": "EIP712Upgradeable",
+              "label": "_version",
+              "type": "t_string_storage",
+              "src": "@openzeppelin\\contracts-upgradeable\\utils\\cryptography\\EIP712Upgradeable.sol:41",
+              "offset": 0,
+              "slot": "3"
+            }
+          ],
+          "erc7201:openzeppelin.storage.Ownable": [
+            {
+              "contract": "OwnableUpgradeable",
+              "label": "_owner",
+              "type": "t_address",
+              "src": "@openzeppelin\\contracts-upgradeable\\access\\OwnableUpgradeable.sol:24",
+              "offset": 0,
+              "slot": "0"
+            }
+          ],
+          "erc7201:openzeppelin.storage.Initializable": [
+            {
+              "contract": "Initializable",
+              "label": "_initialized",
+              "type": "t_uint64",
+              "src": "@openzeppelin\\contracts\\proxy\\utils\\Initializable.sol:69",
+              "offset": 0,
+              "slot": "0"
+            },
+            {
+              "contract": "Initializable",
+              "label": "_initializing",
+              "type": "t_bool",
+              "src": "@openzeppelin\\contracts\\proxy\\utils\\Initializable.sol:73",
+              "offset": 8,
+              "slot": "0"
+            }
+          ]
+        }
+      }
+    }
+  }
+}

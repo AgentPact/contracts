@@ -1,0 +1,7 @@
+{
+  "base-sepolia": {
+    "proxy": "0x927602DaFE11e2679cbB0eb4d98CF6a7B1417a52",
+    "implementation": "0x64222d765ce9ac80bce47b1846D20a4B4A7d9A91",
+    "deployedAt": "2026-03-03T03:33:47.909Z"
+  }
+}

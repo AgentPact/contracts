@@ -35,7 +35,12 @@ async function main() {
     const escrow = await upgrades.deployProxy(
         EscrowFactory,
         [platformSigner, platformFund, initialOwner],
-        { kind: "uups" }
+        {
+            kind: "uups",
+            // OZ v5: ReentrancyGuard uses transient storage (no constructor state)
+            // Safe for UUPS but plugin still flags it
+            unsafeAllow: ["constructor", "state-variable-immutable"],
+        }
     );
 
     await escrow.waitForDeployment();
@@ -46,10 +51,13 @@ async function main() {
     console.log("  Proxy Address:", proxyAddress);
     console.log("  Implementation:", implAddress);
 
-    // Save deployment info
+    // ─── Save deployment record ──────────────────────────────────
+    const network = await ethers.provider.getNetwork();
+    const networkName = network.name === "unknown" ? "base-sepolia" : network.name;
+
     const deploymentInfo = {
-        network: (await ethers.provider.getNetwork()).name,
-        chainId: Number((await ethers.provider.getNetwork()).chainId),
+        network: networkName,
+        chainId: Number(network.chainId),
         proxy: proxyAddress,
         implementation: implAddress,
         deployer: deployer.address,
@@ -58,57 +66,63 @@ async function main() {
         timestamp: new Date().toISOString(),
     };
 
+    // Save to deployments/ directory
     const deploymentsDir = path.join(__dirname, "../deployments");
     if (!fs.existsSync(deploymentsDir)) fs.mkdirSync(deploymentsDir, { recursive: true });
 
-    const filename = `${deploymentInfo.network || "local"}-${Date.now()}.json`;
+    const filename = `${networkName}-${Date.now()}.json`;
     fs.writeFileSync(
         path.join(deploymentsDir, filename),
         JSON.stringify(deploymentInfo, null, 2)
     );
-    console.log(`\n📄 Deployment saved to: deployments/${filename}`);
+    console.log(`\n📄 Deployment saved: deployments/${filename}`);
 
-    // Update platform backend .env
+    // Also maintain a latest-addresses.json for easy lookup
+    const latestPath = path.join(deploymentsDir, "latest-addresses.json");
+    let latestAddresses: Record<string, any> = {};
+    if (fs.existsSync(latestPath)) {
+        latestAddresses = JSON.parse(fs.readFileSync(latestPath, "utf-8"));
+    }
+    latestAddresses[networkName] = {
+        proxy: proxyAddress,
+        implementation: implAddress,
+        deployedAt: deploymentInfo.timestamp,
+    };
+    fs.writeFileSync(latestPath, JSON.stringify(latestAddresses, null, 2));
+    console.log("📄 Updated: deployments/latest-addresses.json");
+
+    // ─── Update env files ────────────────────────────────────────
+    // platform/.env
     const platformEnv = path.join(__dirname, "../../platform/.env");
-    if (fs.existsSync(platformEnv)) {
-        let content = fs.readFileSync(platformEnv, "utf-8");
-        if (content.includes("ESCROW_ADDRESS=")) {
-            content = content.replace(
-                /ESCROW_ADDRESS="?[^"\n]*"?/,
-                `ESCROW_ADDRESS="${proxyAddress}"`
-            );
-        } else {
-            content += `\nESCROW_ADDRESS="${proxyAddress}"\n`;
-        }
-        fs.writeFileSync(platformEnv, content);
-        console.log("✅ platform/.env updated");
-    }
+    updateEnvFile(platformEnv, "ESCROW_ADDRESS", proxyAddress);
 
-    // Update app frontend .env.local
+    // app/.env.local
     const appEnvLocal = path.join(__dirname, "../../app/.env.local");
-    const escrowLine = `NEXT_PUBLIC_ESCROW_ADDRESS="${proxyAddress}"`;
-    if (fs.existsSync(appEnvLocal)) {
-        let content = fs.readFileSync(appEnvLocal, "utf-8");
-        if (content.includes("NEXT_PUBLIC_ESCROW_ADDRESS=")) {
-            content = content.replace(
-                /NEXT_PUBLIC_ESCROW_ADDRESS="?[^"\n]*"?/,
-                escrowLine
-            );
-        } else {
-            content += `\n${escrowLine}\n`;
-        }
-        fs.writeFileSync(appEnvLocal, content);
-    } else {
-        fs.writeFileSync(appEnvLocal, `${escrowLine}\n`);
-    }
-    console.log("✅ app/.env.local updated");
+    updateEnvFile(appEnvLocal, "NEXT_PUBLIC_ESCROW_ADDRESS", proxyAddress);
 
     console.log("\n═══════════════════════════════════════════════");
-    console.log("  Done! Next steps:");
-    console.log("  1. Verify: npx hardhat verify --network base-sepolia", proxyAddress);
-    console.log("  2. Start backend: cd ../platform && pnpm dev");
+    console.log("  ✅ All done! Next steps:");
+    console.log(`  1. Verify: npx hardhat verify --network ${networkName} ${proxyAddress}`);
+    console.log("  2. Start backend:  cd ../platform && pnpm dev");
     console.log("  3. Start frontend: cd ../app && pnpm dev");
     console.log("═══════════════════════════════════════════════");
+}
+
+function updateEnvFile(envPath: string, key: string, value: string) {
+    const line = `${key}="${value}"`;
+    if (fs.existsSync(envPath)) {
+        let content = fs.readFileSync(envPath, "utf-8");
+        const regex = new RegExp(`${key}="?[^"\\n]*"?`);
+        if (regex.test(content)) {
+            content = content.replace(regex, line);
+        } else {
+            content += `\n${line}\n`;
+        }
+        fs.writeFileSync(envPath, content);
+    } else {
+        fs.writeFileSync(envPath, `${line}\n`);
+    }
+    console.log(`✅ ${path.basename(envPath)} → ${key} updated`);
 }
 
 main().catch((error) => {

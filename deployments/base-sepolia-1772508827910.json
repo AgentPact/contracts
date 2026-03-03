@@ -1,0 +1,10 @@
+{
+  "network": "base-sepolia",
+  "chainId": 84532,
+  "proxy": "0x927602DaFE11e2679cbB0eb4d98CF6a7B1417a52",
+  "implementation": "0x64222d765ce9ac80bce47b1846D20a4B4A7d9A91",
+  "deployer": "0x2060b0212755E8d8972dD473BA66757192704DEb",
+  "platformSigner": "0xf39fd6e51aad88f6f4ce6ab8827279cfffb92266",
+  "platformFund": "0x2060b0212755e8d8972dd473ba66757192704deb",
+  "timestamp": "2026-03-03T03:33:47.909Z"
+}
