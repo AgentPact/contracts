@@ -23,6 +23,8 @@ import {IClawPactEscrow} from "./interfaces/IClawPactEscrow.sol";
 /// @title ClawPactEscrowV2
 /// @notice Trustless escrow for AI agent task marketplace
 /// @dev UUPS upgradeable. Platform NEVER touches on-chain funds. Only requester & provider operate.
+///      V2.1 changes: on-chain passRate calculation, relative delivery duration, abandonTask,
+///      cancelTask compensation, decline counting, revision deadline extension.
 contract ClawPactEscrowV2 is
     IClawPactEscrow,
     UUPSUpgradeable,
@@ -49,6 +51,9 @@ contract ClawPactEscrowV2 is
     /// @notice Confirmation window duration
     uint64 public constant CONFIRMATION_WINDOW = 2 hours;
 
+    /// @notice Maximum decline count before task is suspended
+    uint8 public constant MAX_DECLINE_COUNT = 3;
+
     // ========================= Storage =========================
 
     /// @notice Auto-incrementing escrow ID counter
@@ -66,14 +71,15 @@ contract ClawPactEscrowV2 is
     /// @notice Assignment nonces: escrowId => nonce (prevents replay, increments on claim/decline)
     mapping(uint256 => uint256) public assignmentNonces;
 
-    /// @notice Calculated pass rates: escrowId => passRate (submitted by platform off-chain)
-    mapping(uint256 => uint8) public calculatedPassRates;
+    /// @notice Fund weights per escrow: escrowId => criteriaIndex => weight (%)
+    /// @dev Stored on-chain for trustless passRate calculation in _autoSettle
+    mapping(uint256 => mapping(uint8 => uint8)) public escrowFundWeights;
 
     /// @notice Allowed ERC20 tokens for payment (e.g. USDC)
     mapping(address => bool) public allowedTokens;
 
     /// @notice Storage gap for future upgrades
-    uint256[43] private __gap;
+    uint256[42] private __gap;
 
     // ========================= Errors =========================
 
@@ -85,7 +91,6 @@ contract ClawPactEscrowV2 is
     error InvalidNonce();
     error InvalidSignature();
     error InvalidMaxRevisions();
-    error InvalidDeadline();
     error InvalidAcceptanceWindow();
     error InsufficientDeposit();
     error DeadlineNotReached();
@@ -93,6 +98,11 @@ contract ClawPactEscrowV2 is
     error ZeroAmount();
     error InvalidPassRate();
     error TokenNotAllowed();
+    error InvalidCriteriaCount();
+    error InvalidFundWeight();
+    error WeightsSumNot100();
+    error WeightCountMismatch();
+    error InvalidDuration();
 
     // ========================= Modifiers =========================
 
@@ -152,16 +162,31 @@ contract ClawPactEscrowV2 is
     /// @inheritdoc IClawPactEscrow
     function createEscrow(
         bytes32 taskHash,
-        uint64 deliveryDeadline,
+        uint64 deliveryDurationSeconds,
         uint8 maxRevisions,
         uint8 acceptanceWindowHours,
+        uint8 criteriaCount,
+        uint8[] calldata fundWeights,
         address token,
         uint256 totalAmount
     ) external payable nonReentrant returns (uint256 escrowId) {
-        if (deliveryDeadline <= block.timestamp) revert InvalidDeadline();
+        // ✅ Opt-1: Minimum 1 hour delivery duration
+        if (deliveryDurationSeconds < 3600) revert InvalidDuration();
         if (maxRevisions < 1 || maxRevisions > 10) revert InvalidMaxRevisions();
         if (acceptanceWindowHours < 12 || acceptanceWindowHours > 168)
             revert InvalidAcceptanceWindow();
+
+        // ✅ Fix P0-2: Validate fund weights on-chain
+        if (criteriaCount < 3 || criteriaCount > 10)
+            revert InvalidCriteriaCount();
+        if (fundWeights.length != criteriaCount) revert WeightCountMismatch();
+        uint256 totalWeight = 0;
+        for (uint8 i = 0; i < criteriaCount; i++) {
+            if (fundWeights[i] < 5 || fundWeights[i] > 40)
+                revert InvalidFundWeight();
+            totalWeight += fundWeights[i];
+        }
+        if (totalWeight != 100) revert WeightsSumNot100();
 
         // Determine payment mode by token address
         if (token == address(0)) {
@@ -194,9 +219,17 @@ contract ClawPactEscrowV2 is
         r.token = token;
         r.state = TaskState.Created;
         r.taskHash = taskHash;
-        r.deliveryDeadline = deliveryDeadline;
+        // ✅ Fix P0-3: Store relative duration, deadline set in confirmTask()
+        r.deliveryDurationSeconds = deliveryDurationSeconds;
+        r.deliveryDeadline = 0; // Not yet set — will be set in confirmTask()
         r.maxRevisions = maxRevisions;
+        r.criteriaCount = criteriaCount;
         r.acceptanceWindowHours = acceptanceWindowHours;
+
+        // ✅ Fix P0-2: Store fund weights on-chain for passRate calculation
+        for (uint8 i = 0; i < criteriaCount; i++) {
+            escrowFundWeights[escrowId][i] = fundWeights[i];
+        }
 
         emit EscrowCreated(
             escrowId,
@@ -205,9 +238,10 @@ contract ClawPactEscrowV2 is
             rewardAmount,
             requesterDeposit,
             token,
-            deliveryDeadline,
+            deliveryDurationSeconds,
             maxRevisions,
-            acceptanceWindowHours
+            acceptanceWindowHours,
+            criteriaCount
         );
     }
 
@@ -243,7 +277,7 @@ contract ClawPactEscrowV2 is
     function requestRevision(
         uint256 escrowId,
         bytes32 reasonHash,
-        bytes32 criteriaResultsHash
+        bool[] calldata criteriaResults
     )
         external
         nonReentrant
@@ -251,6 +285,12 @@ contract ClawPactEscrowV2 is
         inState(escrowId, TaskState.Delivered)
     {
         EscrowRecord storage r = escrows[escrowId];
+
+        // ✅ Fix P0-1: Validate criteriaResults length matches on-chain criteriaCount
+        require(
+            criteriaResults.length == r.criteriaCount,
+            "Criteria count mismatch"
+        );
 
         // Progressive deposit penalty (skip first revision)
         uint256 penalty = 0;
@@ -265,21 +305,31 @@ contract ClawPactEscrowV2 is
         }
 
         r.currentRevision++;
-        r.latestCriteriaHash = criteriaResultsHash;
+
+        // ✅ Fix P0-1: Compute passRate on-chain from criteriaResults + fundWeights
+        uint8 passRate = _calcPassRate(escrowId, criteriaResults);
+
+        // Store criteria hash for off-chain reference (use abi.encode to avoid packed collision)
+        r.latestCriteriaHash = keccak256(abi.encode(criteriaResults));
 
         emit RevisionRequested(
             escrowId,
             reasonHash,
-            criteriaResultsHash,
+            r.latestCriteriaHash,
             r.currentRevision,
-            penalty
+            penalty,
+            passRate
         );
 
         // Auto-settle if revision limit reached
         if (r.currentRevision >= r.maxRevisions) {
-            _autoSettle(escrowId);
+            _autoSettle(escrowId, passRate);
         } else {
             r.state = TaskState.InRevision;
+            // ✅ Fix P1-7: Extend delivery deadline by 50% of original duration on each revision
+            r.deliveryDeadline = uint64(
+                block.timestamp + r.deliveryDurationSeconds / 2
+            );
         }
     }
 
@@ -295,12 +345,32 @@ contract ClawPactEscrowV2 is
             revert InvalidState(r.state, TaskState.Created);
         }
 
-        r.state = TaskState.Cancelled;
+        uint256 compensation = 0;
 
-        // Full refund to requester
-        _transfer(r.token, r.requester, r.rewardAmount + r.requesterDeposit);
+        if (r.state == TaskState.Created) {
+            // Created stage: full refund to requester
+            r.state = TaskState.Cancelled;
+            _transfer(
+                r.token,
+                r.requester,
+                r.rewardAmount + r.requesterDeposit
+            );
+        } else {
+            // ✅ Fix P1-5: ConfirmationPending — agent has seen confidential materials
+            // Deduct 10% of deposit as compensation to agent
+            compensation = r.requesterDeposit / 10;
+            r.depositConsumed += compensation;
+            r.state = TaskState.Cancelled;
 
-        emit TaskCancelled(escrowId);
+            _transfer(r.token, r.provider, compensation);
+            // Refund remaining to requester
+            uint256 remaining = r.rewardAmount +
+                r.requesterDeposit -
+                compensation;
+            _transfer(r.token, r.requester, remaining);
+        }
+
+        emit TaskCancelled(escrowId, compensation);
     }
 
     // ========================= Provider Functions =========================
@@ -345,11 +415,18 @@ contract ClawPactEscrowV2 is
         uint256 escrowId
     )
         external
+        nonReentrant
         onlyProvider(escrowId)
         inState(escrowId, TaskState.ConfirmationPending)
     {
-        escrows[escrowId].state = TaskState.Working;
-        emit TaskConfirmed(escrowId, msg.sender);
+        EscrowRecord storage r = escrows[escrowId];
+        r.state = TaskState.Working;
+        // ✅ Fix P1-6: Set delivery deadline from confirmation moment
+        r.deliveryDeadline = uint64(
+            block.timestamp + r.deliveryDurationSeconds
+        );
+
+        emit TaskConfirmed(escrowId, msg.sender, r.deliveryDeadline);
     }
 
     /// @inheritdoc IClawPactEscrow
@@ -368,7 +445,15 @@ contract ClawPactEscrowV2 is
         r.state = TaskState.Created;
         r.confirmationDeadline = 0;
 
+        // ✅ Fix P2-8: Track decline count on-chain
+        r.declineCount++;
+
         emit TaskDeclined(escrowId, previousProvider);
+
+        // Suspend matching after MAX_DECLINE_COUNT declines
+        if (r.declineCount >= MAX_DECLINE_COUNT) {
+            emit TaskSuspendedAfterDeclines(escrowId, r.declineCount);
+        }
     }
 
     /// @inheritdoc IClawPactEscrow
@@ -394,6 +479,31 @@ contract ClawPactEscrowV2 is
             r.currentRevision,
             r.acceptanceDeadline
         );
+    }
+
+    /// @inheritdoc IClawPactEscrow
+    /// @notice Agent voluntarily abandons during Working or InRevision
+    function abandonTask(
+        uint256 escrowId
+    ) external nonReentrant onlyProvider(escrowId) {
+        EscrowRecord storage r = escrows[escrowId];
+        if (r.state != TaskState.Working && r.state != TaskState.InRevision) {
+            revert InvalidState(r.state, TaskState.Working);
+        }
+
+        address previousProvider = r.provider;
+
+        // Task returns to Created for re-matching — reset all execution state
+        r.provider = address(0);
+        r.state = TaskState.Created;
+        r.deliveryDeadline = 0;
+        r.confirmationDeadline = 0;
+        r.currentRevision = 0;
+        r.latestDeliveryHash = bytes32(0);
+        r.latestCriteriaHash = bytes32(0);
+        // NOTE: Credit penalty (-15) is applied off-chain by Credit Service
+
+        emit TaskAbandoned(escrowId, previousProvider);
     }
 
     // ========================= Timeout Functions =========================
@@ -476,15 +586,6 @@ contract ClawPactEscrowV2 is
 
     // ========================= Admin Functions =========================
 
-    /// @notice Submit calculated passRate for an escrow (called before auto-settlement)
-    /// @dev Only callable by platform signer, used when requester triggers final requestRevision
-    function submitPassRate(uint256 escrowId, uint8 passRate) external {
-        if (msg.sender != platformSigner) revert InvalidSignature();
-        if (passRate > 100) revert InvalidPassRate();
-        calculatedPassRates[escrowId] = passRate;
-        emit PassRateSubmitted(escrowId, passRate);
-    }
-
     /// @notice Add or remove an allowed ERC20 token
     function setAllowedToken(address token, bool allowed) external onlyOwner {
         if (token == address(0)) revert ZeroAddress();
@@ -512,6 +613,26 @@ contract ClawPactEscrowV2 is
         return escrows[escrowId];
     }
 
+    /// @notice Get fund weight for a specific criterion
+    function getFundWeight(
+        uint256 escrowId,
+        uint8 criteriaIndex
+    ) external view returns (uint8) {
+        return escrowFundWeights[escrowId][criteriaIndex];
+    }
+
+    /// @notice Get all fund weights for an escrow
+    function getFundWeights(
+        uint256 escrowId
+    ) external view returns (uint8[] memory) {
+        uint8 count = escrows[escrowId].criteriaCount;
+        uint8[] memory weights = new uint8[](count);
+        for (uint8 i = 0; i < count; i++) {
+            weights[i] = escrowFundWeights[escrowId][i];
+        }
+        return weights;
+    }
+
     /// @notice Get the EIP-712 domain separator
     function getDomainSeparator() external view returns (bytes32) {
         return _domainSeparatorV4();
@@ -519,12 +640,32 @@ contract ClawPactEscrowV2 is
 
     // ========================= Internal Functions =========================
 
+    /// @dev Calculate passRate on-chain from criteriaResults and stored fundWeights
+    /// @param escrowId The escrow ID (to look up stored fund weights)
+    /// @param criteriaResults Per-criterion pass(true)/fail(false) array
+    /// @return passRate Weighted pass rate (0-100)
+    function _calcPassRate(
+        uint256 escrowId,
+        bool[] calldata criteriaResults
+    ) internal view returns (uint8) {
+        uint256 passed = 0;
+        uint8 count = escrows[escrowId].criteriaCount;
+        for (uint8 i = 0; i < count; i++) {
+            if (criteriaResults[i]) {
+                passed += escrowFundWeights[escrowId][i];
+            }
+        }
+        // Safe cast: passed is at most 100 (sum of all weights)
+        return uint8(passed);
+    }
+
     /// @dev Auto-settle when revision limit is reached
-    function _autoSettle(uint256 escrowId) internal {
+    /// @param escrowId The escrow to settle
+    /// @param passRate On-chain computed passRate from _calcPassRate
+    function _autoSettle(uint256 escrowId, uint8 passRate) internal {
         EscrowRecord storage r = escrows[escrowId];
 
-        uint8 passRate = calculatedPassRates[escrowId];
-        // Protection: if passRate is 0 (requester marked all fail), floor at MIN_PASS_RATE
+        // ✅ Fix P0-1: passRate computed on-chain, apply MIN_PASS_RATE floor
         if (passRate < MIN_PASS_RATE) passRate = MIN_PASS_RATE;
         if (passRate > 100) passRate = 100;
 

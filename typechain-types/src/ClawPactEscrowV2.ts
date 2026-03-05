@@ -35,11 +35,14 @@ export declare namespace IClawPactEscrow {
     taskHash: BytesLike;
     latestDeliveryHash: BytesLike;
     latestCriteriaHash: BytesLike;
+    deliveryDurationSeconds: BigNumberish;
     deliveryDeadline: BigNumberish;
     acceptanceDeadline: BigNumberish;
     confirmationDeadline: BigNumberish;
     maxRevisions: BigNumberish;
     currentRevision: BigNumberish;
+    criteriaCount: BigNumberish;
+    declineCount: BigNumberish;
     acceptanceWindowHours: BigNumberish;
   };
 
@@ -54,11 +57,14 @@ export declare namespace IClawPactEscrow {
     taskHash: string,
     latestDeliveryHash: string,
     latestCriteriaHash: string,
+    deliveryDurationSeconds: bigint,
     deliveryDeadline: bigint,
     acceptanceDeadline: bigint,
     confirmationDeadline: bigint,
     maxRevisions: bigint,
     currentRevision: bigint,
+    criteriaCount: bigint,
+    declineCount: bigint,
     acceptanceWindowHours: bigint
   ] & {
     requester: string;
@@ -71,11 +77,14 @@ export declare namespace IClawPactEscrow {
     taskHash: string;
     latestDeliveryHash: string;
     latestCriteriaHash: string;
+    deliveryDurationSeconds: bigint;
     deliveryDeadline: bigint;
     acceptanceDeadline: bigint;
     confirmationDeadline: bigint;
     maxRevisions: bigint;
     currentRevision: bigint;
+    criteriaCount: bigint;
+    declineCount: bigint;
     acceptanceWindowHours: bigint;
   };
 }
@@ -85,13 +94,14 @@ export interface ClawPactEscrowV2Interface extends Interface {
     nameOrSignature:
       | "ASSIGNMENT_TYPEHASH"
       | "CONFIRMATION_WINDOW"
+      | "MAX_DECLINE_COUNT"
       | "MIN_PASS_RATE"
       | "PLATFORM_FEE_BPS"
       | "UPGRADE_INTERFACE_VERSION"
+      | "abandonTask"
       | "acceptDelivery"
       | "allowedTokens"
       | "assignmentNonces"
-      | "calculatedPassRates"
       | "cancelTask"
       | "claimAcceptanceTimeout"
       | "claimConfirmationTimeout"
@@ -101,9 +111,12 @@ export interface ClawPactEscrowV2Interface extends Interface {
       | "createEscrow"
       | "declineTask"
       | "eip712Domain"
+      | "escrowFundWeights"
       | "escrows"
       | "getDomainSeparator"
       | "getEscrow"
+      | "getFundWeight"
+      | "getFundWeights"
       | "initialize"
       | "nextEscrowId"
       | "owner"
@@ -116,7 +129,6 @@ export interface ClawPactEscrowV2Interface extends Interface {
       | "setPlatformFund"
       | "setPlatformSigner"
       | "submitDelivery"
-      | "submitPassRate"
       | "transferOwnership"
       | "upgradeToAndCall"
   ): FunctionFragment;
@@ -129,13 +141,14 @@ export interface ClawPactEscrowV2Interface extends Interface {
       | "EscrowCreated"
       | "Initialized"
       | "OwnershipTransferred"
-      | "PassRateSubmitted"
       | "RevisionRequested"
+      | "TaskAbandoned"
       | "TaskAutoSettled"
       | "TaskCancelled"
       | "TaskClaimed"
       | "TaskConfirmed"
       | "TaskDeclined"
+      | "TaskSuspendedAfterDeclines"
       | "TimeoutClaimed"
       | "Upgraded"
   ): EventFragment;
@@ -146,6 +159,10 @@ export interface ClawPactEscrowV2Interface extends Interface {
   ): string;
   encodeFunctionData(
     functionFragment: "CONFIRMATION_WINDOW",
+    values?: undefined
+  ): string;
+  encodeFunctionData(
+    functionFragment: "MAX_DECLINE_COUNT",
     values?: undefined
   ): string;
   encodeFunctionData(
@@ -161,6 +178,10 @@ export interface ClawPactEscrowV2Interface extends Interface {
     values?: undefined
   ): string;
   encodeFunctionData(
+    functionFragment: "abandonTask",
+    values: [BigNumberish]
+  ): string;
+  encodeFunctionData(
     functionFragment: "acceptDelivery",
     values: [BigNumberish]
   ): string;
@@ -170,10 +191,6 @@ export interface ClawPactEscrowV2Interface extends Interface {
   ): string;
   encodeFunctionData(
     functionFragment: "assignmentNonces",
-    values: [BigNumberish]
-  ): string;
-  encodeFunctionData(
-    functionFragment: "calculatedPassRates",
     values: [BigNumberish]
   ): string;
   encodeFunctionData(
@@ -207,6 +224,8 @@ export interface ClawPactEscrowV2Interface extends Interface {
       BigNumberish,
       BigNumberish,
       BigNumberish,
+      BigNumberish,
+      BigNumberish[],
       AddressLike,
       BigNumberish
     ]
@@ -220,6 +239,10 @@ export interface ClawPactEscrowV2Interface extends Interface {
     values?: undefined
   ): string;
   encodeFunctionData(
+    functionFragment: "escrowFundWeights",
+    values: [BigNumberish, BigNumberish]
+  ): string;
+  encodeFunctionData(
     functionFragment: "escrows",
     values: [BigNumberish]
   ): string;
@@ -229,6 +252,14 @@ export interface ClawPactEscrowV2Interface extends Interface {
   ): string;
   encodeFunctionData(
     functionFragment: "getEscrow",
+    values: [BigNumberish]
+  ): string;
+  encodeFunctionData(
+    functionFragment: "getFundWeight",
+    values: [BigNumberish, BigNumberish]
+  ): string;
+  encodeFunctionData(
+    functionFragment: "getFundWeights",
     values: [BigNumberish]
   ): string;
   encodeFunctionData(
@@ -258,7 +289,7 @@ export interface ClawPactEscrowV2Interface extends Interface {
   ): string;
   encodeFunctionData(
     functionFragment: "requestRevision",
-    values: [BigNumberish, BytesLike, BytesLike]
+    values: [BigNumberish, BytesLike, boolean[]]
   ): string;
   encodeFunctionData(
     functionFragment: "setAllowedToken",
@@ -275,10 +306,6 @@ export interface ClawPactEscrowV2Interface extends Interface {
   encodeFunctionData(
     functionFragment: "submitDelivery",
     values: [BigNumberish, BytesLike]
-  ): string;
-  encodeFunctionData(
-    functionFragment: "submitPassRate",
-    values: [BigNumberish, BigNumberish]
   ): string;
   encodeFunctionData(
     functionFragment: "transferOwnership",
@@ -298,6 +325,10 @@ export interface ClawPactEscrowV2Interface extends Interface {
     data: BytesLike
   ): Result;
   decodeFunctionResult(
+    functionFragment: "MAX_DECLINE_COUNT",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
     functionFragment: "MIN_PASS_RATE",
     data: BytesLike
   ): Result;
@@ -310,6 +341,10 @@ export interface ClawPactEscrowV2Interface extends Interface {
     data: BytesLike
   ): Result;
   decodeFunctionResult(
+    functionFragment: "abandonTask",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
     functionFragment: "acceptDelivery",
     data: BytesLike
   ): Result;
@@ -319,10 +354,6 @@ export interface ClawPactEscrowV2Interface extends Interface {
   ): Result;
   decodeFunctionResult(
     functionFragment: "assignmentNonces",
-    data: BytesLike
-  ): Result;
-  decodeFunctionResult(
-    functionFragment: "calculatedPassRates",
     data: BytesLike
   ): Result;
   decodeFunctionResult(functionFragment: "cancelTask", data: BytesLike): Result;
@@ -355,12 +386,24 @@ export interface ClawPactEscrowV2Interface extends Interface {
     functionFragment: "eip712Domain",
     data: BytesLike
   ): Result;
+  decodeFunctionResult(
+    functionFragment: "escrowFundWeights",
+    data: BytesLike
+  ): Result;
   decodeFunctionResult(functionFragment: "escrows", data: BytesLike): Result;
   decodeFunctionResult(
     functionFragment: "getDomainSeparator",
     data: BytesLike
   ): Result;
   decodeFunctionResult(functionFragment: "getEscrow", data: BytesLike): Result;
+  decodeFunctionResult(
+    functionFragment: "getFundWeight",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
+    functionFragment: "getFundWeights",
+    data: BytesLike
+  ): Result;
   decodeFunctionResult(functionFragment: "initialize", data: BytesLike): Result;
   decodeFunctionResult(
     functionFragment: "nextEscrowId",
@@ -401,10 +444,6 @@ export interface ClawPactEscrowV2Interface extends Interface {
   ): Result;
   decodeFunctionResult(
     functionFragment: "submitDelivery",
-    data: BytesLike
-  ): Result;
-  decodeFunctionResult(
-    functionFragment: "submitPassRate",
     data: BytesLike
   ): Result;
   decodeFunctionResult(
@@ -482,9 +521,10 @@ export namespace EscrowCreatedEvent {
     rewardAmount: BigNumberish,
     requesterDeposit: BigNumberish,
     token: AddressLike,
-    deliveryDeadline: BigNumberish,
+    deliveryDurationSeconds: BigNumberish,
     maxRevisions: BigNumberish,
-    acceptanceWindowHours: BigNumberish
+    acceptanceWindowHours: BigNumberish,
+    criteriaCount: BigNumberish
   ];
   export type OutputTuple = [
     escrowId: bigint,
@@ -493,9 +533,10 @@ export namespace EscrowCreatedEvent {
     rewardAmount: bigint,
     requesterDeposit: bigint,
     token: string,
-    deliveryDeadline: bigint,
+    deliveryDurationSeconds: bigint,
     maxRevisions: bigint,
-    acceptanceWindowHours: bigint
+    acceptanceWindowHours: bigint,
+    criteriaCount: bigint
   ];
   export interface OutputObject {
     escrowId: bigint;
@@ -504,9 +545,10 @@ export namespace EscrowCreatedEvent {
     rewardAmount: bigint;
     requesterDeposit: bigint;
     token: string;
-    deliveryDeadline: bigint;
+    deliveryDurationSeconds: bigint;
     maxRevisions: bigint;
     acceptanceWindowHours: bigint;
+    criteriaCount: bigint;
   }
   export type Event = TypedContractEvent<InputTuple, OutputTuple, OutputObject>;
   export type Filter = TypedDeferredTopicFilter<Event>;
@@ -539,11 +581,29 @@ export namespace OwnershipTransferredEvent {
   export type LogDescription = TypedLogDescription<Event>;
 }
 
-export namespace PassRateSubmittedEvent {
-  export type InputTuple = [escrowId: BigNumberish, passRate: BigNumberish];
-  export type OutputTuple = [escrowId: bigint, passRate: bigint];
+export namespace RevisionRequestedEvent {
+  export type InputTuple = [
+    escrowId: BigNumberish,
+    reasonHash: BytesLike,
+    criteriaResultsHash: BytesLike,
+    currentRevision: BigNumberish,
+    depositPenalty: BigNumberish,
+    passRate: BigNumberish
+  ];
+  export type OutputTuple = [
+    escrowId: bigint,
+    reasonHash: string,
+    criteriaResultsHash: string,
+    currentRevision: bigint,
+    depositPenalty: bigint,
+    passRate: bigint
+  ];
   export interface OutputObject {
     escrowId: bigint;
+    reasonHash: string;
+    criteriaResultsHash: string;
+    currentRevision: bigint;
+    depositPenalty: bigint;
     passRate: bigint;
   }
   export type Event = TypedContractEvent<InputTuple, OutputTuple, OutputObject>;
@@ -552,27 +612,12 @@ export namespace PassRateSubmittedEvent {
   export type LogDescription = TypedLogDescription<Event>;
 }
 
-export namespace RevisionRequestedEvent {
-  export type InputTuple = [
-    escrowId: BigNumberish,
-    reasonHash: BytesLike,
-    criteriaResultsHash: BytesLike,
-    currentRevision: BigNumberish,
-    depositPenalty: BigNumberish
-  ];
-  export type OutputTuple = [
-    escrowId: bigint,
-    reasonHash: string,
-    criteriaResultsHash: string,
-    currentRevision: bigint,
-    depositPenalty: bigint
-  ];
+export namespace TaskAbandonedEvent {
+  export type InputTuple = [escrowId: BigNumberish, provider: AddressLike];
+  export type OutputTuple = [escrowId: bigint, provider: string];
   export interface OutputObject {
     escrowId: bigint;
-    reasonHash: string;
-    criteriaResultsHash: string;
-    currentRevision: bigint;
-    depositPenalty: bigint;
+    provider: string;
   }
   export type Event = TypedContractEvent<InputTuple, OutputTuple, OutputObject>;
   export type Filter = TypedDeferredTopicFilter<Event>;
@@ -609,10 +654,11 @@ export namespace TaskAutoSettledEvent {
 }
 
 export namespace TaskCancelledEvent {
-  export type InputTuple = [escrowId: BigNumberish];
-  export type OutputTuple = [escrowId: bigint];
+  export type InputTuple = [escrowId: BigNumberish, compensation: BigNumberish];
+  export type OutputTuple = [escrowId: bigint, compensation: bigint];
   export interface OutputObject {
     escrowId: bigint;
+    compensation: bigint;
   }
   export type Event = TypedContractEvent<InputTuple, OutputTuple, OutputObject>;
   export type Filter = TypedDeferredTopicFilter<Event>;
@@ -643,11 +689,20 @@ export namespace TaskClaimedEvent {
 }
 
 export namespace TaskConfirmedEvent {
-  export type InputTuple = [escrowId: BigNumberish, provider: AddressLike];
-  export type OutputTuple = [escrowId: bigint, provider: string];
+  export type InputTuple = [
+    escrowId: BigNumberish,
+    provider: AddressLike,
+    deliveryDeadline: BigNumberish
+  ];
+  export type OutputTuple = [
+    escrowId: bigint,
+    provider: string,
+    deliveryDeadline: bigint
+  ];
   export interface OutputObject {
     escrowId: bigint;
     provider: string;
+    deliveryDeadline: bigint;
   }
   export type Event = TypedContractEvent<InputTuple, OutputTuple, OutputObject>;
   export type Filter = TypedDeferredTopicFilter<Event>;
@@ -661,6 +716,19 @@ export namespace TaskDeclinedEvent {
   export interface OutputObject {
     escrowId: bigint;
     provider: string;
+  }
+  export type Event = TypedContractEvent<InputTuple, OutputTuple, OutputObject>;
+  export type Filter = TypedDeferredTopicFilter<Event>;
+  export type Log = TypedEventLog<Event>;
+  export type LogDescription = TypedLogDescription<Event>;
+}
+
+export namespace TaskSuspendedAfterDeclinesEvent {
+  export type InputTuple = [escrowId: BigNumberish, declineCount: BigNumberish];
+  export type OutputTuple = [escrowId: bigint, declineCount: bigint];
+  export interface OutputObject {
+    escrowId: bigint;
+    declineCount: bigint;
   }
   export type Event = TypedContractEvent<InputTuple, OutputTuple, OutputObject>;
   export type Filter = TypedDeferredTopicFilter<Event>;
@@ -749,11 +817,19 @@ export interface ClawPactEscrowV2 extends BaseContract {
 
   CONFIRMATION_WINDOW: TypedContractMethod<[], [bigint], "view">;
 
+  MAX_DECLINE_COUNT: TypedContractMethod<[], [bigint], "view">;
+
   MIN_PASS_RATE: TypedContractMethod<[], [bigint], "view">;
 
   PLATFORM_FEE_BPS: TypedContractMethod<[], [bigint], "view">;
 
   UPGRADE_INTERFACE_VERSION: TypedContractMethod<[], [string], "view">;
+
+  abandonTask: TypedContractMethod<
+    [escrowId: BigNumberish],
+    [void],
+    "nonpayable"
+  >;
 
   acceptDelivery: TypedContractMethod<
     [escrowId: BigNumberish],
@@ -764,12 +840,6 @@ export interface ClawPactEscrowV2 extends BaseContract {
   allowedTokens: TypedContractMethod<[arg0: AddressLike], [boolean], "view">;
 
   assignmentNonces: TypedContractMethod<[arg0: BigNumberish], [bigint], "view">;
-
-  calculatedPassRates: TypedContractMethod<
-    [arg0: BigNumberish],
-    [bigint],
-    "view"
-  >;
 
   cancelTask: TypedContractMethod<
     [escrowId: BigNumberish],
@@ -815,9 +885,11 @@ export interface ClawPactEscrowV2 extends BaseContract {
   createEscrow: TypedContractMethod<
     [
       taskHash: BytesLike,
-      deliveryDeadline: BigNumberish,
+      deliveryDurationSeconds: BigNumberish,
       maxRevisions: BigNumberish,
       acceptanceWindowHours: BigNumberish,
+      criteriaCount: BigNumberish,
+      fundWeights: BigNumberish[],
       token: AddressLike,
       totalAmount: BigNumberish
     ],
@@ -847,6 +919,12 @@ export interface ClawPactEscrowV2 extends BaseContract {
     "view"
   >;
 
+  escrowFundWeights: TypedContractMethod<
+    [arg0: BigNumberish, arg1: BigNumberish],
+    [bigint],
+    "view"
+  >;
+
   escrows: TypedContractMethod<
     [arg0: BigNumberish],
     [
@@ -866,6 +944,9 @@ export interface ClawPactEscrowV2 extends BaseContract {
         bigint,
         bigint,
         bigint,
+        bigint,
+        bigint,
+        bigint,
         bigint
       ] & {
         requester: string;
@@ -878,11 +959,14 @@ export interface ClawPactEscrowV2 extends BaseContract {
         taskHash: string;
         latestDeliveryHash: string;
         latestCriteriaHash: string;
+        deliveryDurationSeconds: bigint;
         deliveryDeadline: bigint;
         acceptanceDeadline: bigint;
         confirmationDeadline: bigint;
         maxRevisions: bigint;
         currentRevision: bigint;
+        criteriaCount: bigint;
+        declineCount: bigint;
         acceptanceWindowHours: bigint;
       }
     ],
@@ -894,6 +978,18 @@ export interface ClawPactEscrowV2 extends BaseContract {
   getEscrow: TypedContractMethod<
     [escrowId: BigNumberish],
     [IClawPactEscrow.EscrowRecordStructOutput],
+    "view"
+  >;
+
+  getFundWeight: TypedContractMethod<
+    [escrowId: BigNumberish, criteriaIndex: BigNumberish],
+    [bigint],
+    "view"
+  >;
+
+  getFundWeights: TypedContractMethod<
+    [escrowId: BigNumberish],
+    [bigint[]],
     "view"
   >;
 
@@ -920,11 +1016,7 @@ export interface ClawPactEscrowV2 extends BaseContract {
   renounceOwnership: TypedContractMethod<[], [void], "nonpayable">;
 
   requestRevision: TypedContractMethod<
-    [
-      escrowId: BigNumberish,
-      reasonHash: BytesLike,
-      criteriaResultsHash: BytesLike
-    ],
+    [escrowId: BigNumberish, reasonHash: BytesLike, criteriaResults: boolean[]],
     [void],
     "nonpayable"
   >;
@@ -953,12 +1045,6 @@ export interface ClawPactEscrowV2 extends BaseContract {
     "nonpayable"
   >;
 
-  submitPassRate: TypedContractMethod<
-    [escrowId: BigNumberish, passRate: BigNumberish],
-    [void],
-    "nonpayable"
-  >;
-
   transferOwnership: TypedContractMethod<
     [newOwner: AddressLike],
     [void],
@@ -982,6 +1068,9 @@ export interface ClawPactEscrowV2 extends BaseContract {
     nameOrSignature: "CONFIRMATION_WINDOW"
   ): TypedContractMethod<[], [bigint], "view">;
   getFunction(
+    nameOrSignature: "MAX_DECLINE_COUNT"
+  ): TypedContractMethod<[], [bigint], "view">;
+  getFunction(
     nameOrSignature: "MIN_PASS_RATE"
   ): TypedContractMethod<[], [bigint], "view">;
   getFunction(
@@ -991,6 +1080,9 @@ export interface ClawPactEscrowV2 extends BaseContract {
     nameOrSignature: "UPGRADE_INTERFACE_VERSION"
   ): TypedContractMethod<[], [string], "view">;
   getFunction(
+    nameOrSignature: "abandonTask"
+  ): TypedContractMethod<[escrowId: BigNumberish], [void], "nonpayable">;
+  getFunction(
     nameOrSignature: "acceptDelivery"
   ): TypedContractMethod<[escrowId: BigNumberish], [void], "nonpayable">;
   getFunction(
@@ -998,9 +1090,6 @@ export interface ClawPactEscrowV2 extends BaseContract {
   ): TypedContractMethod<[arg0: AddressLike], [boolean], "view">;
   getFunction(
     nameOrSignature: "assignmentNonces"
-  ): TypedContractMethod<[arg0: BigNumberish], [bigint], "view">;
-  getFunction(
-    nameOrSignature: "calculatedPassRates"
   ): TypedContractMethod<[arg0: BigNumberish], [bigint], "view">;
   getFunction(
     nameOrSignature: "cancelTask"
@@ -1034,9 +1123,11 @@ export interface ClawPactEscrowV2 extends BaseContract {
   ): TypedContractMethod<
     [
       taskHash: BytesLike,
-      deliveryDeadline: BigNumberish,
+      deliveryDurationSeconds: BigNumberish,
       maxRevisions: BigNumberish,
       acceptanceWindowHours: BigNumberish,
+      criteriaCount: BigNumberish,
+      fundWeights: BigNumberish[],
       token: AddressLike,
       totalAmount: BigNumberish
     ],
@@ -1064,6 +1155,13 @@ export interface ClawPactEscrowV2 extends BaseContract {
     "view"
   >;
   getFunction(
+    nameOrSignature: "escrowFundWeights"
+  ): TypedContractMethod<
+    [arg0: BigNumberish, arg1: BigNumberish],
+    [bigint],
+    "view"
+  >;
+  getFunction(
     nameOrSignature: "escrows"
   ): TypedContractMethod<
     [arg0: BigNumberish],
@@ -1084,6 +1182,9 @@ export interface ClawPactEscrowV2 extends BaseContract {
         bigint,
         bigint,
         bigint,
+        bigint,
+        bigint,
+        bigint,
         bigint
       ] & {
         requester: string;
@@ -1096,11 +1197,14 @@ export interface ClawPactEscrowV2 extends BaseContract {
         taskHash: string;
         latestDeliveryHash: string;
         latestCriteriaHash: string;
+        deliveryDurationSeconds: bigint;
         deliveryDeadline: bigint;
         acceptanceDeadline: bigint;
         confirmationDeadline: bigint;
         maxRevisions: bigint;
         currentRevision: bigint;
+        criteriaCount: bigint;
+        declineCount: bigint;
         acceptanceWindowHours: bigint;
       }
     ],
@@ -1116,6 +1220,16 @@ export interface ClawPactEscrowV2 extends BaseContract {
     [IClawPactEscrow.EscrowRecordStructOutput],
     "view"
   >;
+  getFunction(
+    nameOrSignature: "getFundWeight"
+  ): TypedContractMethod<
+    [escrowId: BigNumberish, criteriaIndex: BigNumberish],
+    [bigint],
+    "view"
+  >;
+  getFunction(
+    nameOrSignature: "getFundWeights"
+  ): TypedContractMethod<[escrowId: BigNumberish], [bigint[]], "view">;
   getFunction(
     nameOrSignature: "initialize"
   ): TypedContractMethod<
@@ -1148,11 +1262,7 @@ export interface ClawPactEscrowV2 extends BaseContract {
   getFunction(
     nameOrSignature: "requestRevision"
   ): TypedContractMethod<
-    [
-      escrowId: BigNumberish,
-      reasonHash: BytesLike,
-      criteriaResultsHash: BytesLike
-    ],
+    [escrowId: BigNumberish, reasonHash: BytesLike, criteriaResults: boolean[]],
     [void],
     "nonpayable"
   >;
@@ -1173,13 +1283,6 @@ export interface ClawPactEscrowV2 extends BaseContract {
     nameOrSignature: "submitDelivery"
   ): TypedContractMethod<
     [escrowId: BigNumberish, deliveryHash: BytesLike],
-    [void],
-    "nonpayable"
-  >;
-  getFunction(
-    nameOrSignature: "submitPassRate"
-  ): TypedContractMethod<
-    [escrowId: BigNumberish, passRate: BigNumberish],
     [void],
     "nonpayable"
   >;
@@ -1237,18 +1340,18 @@ export interface ClawPactEscrowV2 extends BaseContract {
     OwnershipTransferredEvent.OutputObject
   >;
   getEvent(
-    key: "PassRateSubmitted"
-  ): TypedContractEvent<
-    PassRateSubmittedEvent.InputTuple,
-    PassRateSubmittedEvent.OutputTuple,
-    PassRateSubmittedEvent.OutputObject
-  >;
-  getEvent(
     key: "RevisionRequested"
   ): TypedContractEvent<
     RevisionRequestedEvent.InputTuple,
     RevisionRequestedEvent.OutputTuple,
     RevisionRequestedEvent.OutputObject
+  >;
+  getEvent(
+    key: "TaskAbandoned"
+  ): TypedContractEvent<
+    TaskAbandonedEvent.InputTuple,
+    TaskAbandonedEvent.OutputTuple,
+    TaskAbandonedEvent.OutputObject
   >;
   getEvent(
     key: "TaskAutoSettled"
@@ -1284,6 +1387,13 @@ export interface ClawPactEscrowV2 extends BaseContract {
     TaskDeclinedEvent.InputTuple,
     TaskDeclinedEvent.OutputTuple,
     TaskDeclinedEvent.OutputObject
+  >;
+  getEvent(
+    key: "TaskSuspendedAfterDeclines"
+  ): TypedContractEvent<
+    TaskSuspendedAfterDeclinesEvent.InputTuple,
+    TaskSuspendedAfterDeclinesEvent.OutputTuple,
+    TaskSuspendedAfterDeclinesEvent.OutputObject
   >;
   getEvent(
     key: "TimeoutClaimed"
@@ -1334,7 +1444,7 @@ export interface ClawPactEscrowV2 extends BaseContract {
       EIP712DomainChangedEvent.OutputObject
     >;
 
-    "EscrowCreated(uint256,address,bytes32,uint256,uint256,address,uint64,uint8,uint8)": TypedContractEvent<
+    "EscrowCreated(uint256,address,bytes32,uint256,uint256,address,uint64,uint8,uint8,uint8)": TypedContractEvent<
       EscrowCreatedEvent.InputTuple,
       EscrowCreatedEvent.OutputTuple,
       EscrowCreatedEvent.OutputObject
@@ -1367,18 +1477,7 @@ export interface ClawPactEscrowV2 extends BaseContract {
       OwnershipTransferredEvent.OutputObject
     >;
 
-    "PassRateSubmitted(uint256,uint8)": TypedContractEvent<
-      PassRateSubmittedEvent.InputTuple,
-      PassRateSubmittedEvent.OutputTuple,
-      PassRateSubmittedEvent.OutputObject
-    >;
-    PassRateSubmitted: TypedContractEvent<
-      PassRateSubmittedEvent.InputTuple,
-      PassRateSubmittedEvent.OutputTuple,
-      PassRateSubmittedEvent.OutputObject
-    >;
-
-    "RevisionRequested(uint256,bytes32,bytes32,uint8,uint256)": TypedContractEvent<
+    "RevisionRequested(uint256,bytes32,bytes32,uint8,uint256,uint8)": TypedContractEvent<
       RevisionRequestedEvent.InputTuple,
       RevisionRequestedEvent.OutputTuple,
       RevisionRequestedEvent.OutputObject
@@ -1387,6 +1486,17 @@ export interface ClawPactEscrowV2 extends BaseContract {
       RevisionRequestedEvent.InputTuple,
       RevisionRequestedEvent.OutputTuple,
       RevisionRequestedEvent.OutputObject
+    >;
+
+    "TaskAbandoned(uint256,address)": TypedContractEvent<
+      TaskAbandonedEvent.InputTuple,
+      TaskAbandonedEvent.OutputTuple,
+      TaskAbandonedEvent.OutputObject
+    >;
+    TaskAbandoned: TypedContractEvent<
+      TaskAbandonedEvent.InputTuple,
+      TaskAbandonedEvent.OutputTuple,
+      TaskAbandonedEvent.OutputObject
     >;
 
     "TaskAutoSettled(uint256,uint8,uint256,uint256,uint256)": TypedContractEvent<
@@ -1400,7 +1510,7 @@ export interface ClawPactEscrowV2 extends BaseContract {
       TaskAutoSettledEvent.OutputObject
     >;
 
-    "TaskCancelled(uint256)": TypedContractEvent<
+    "TaskCancelled(uint256,uint256)": TypedContractEvent<
       TaskCancelledEvent.InputTuple,
       TaskCancelledEvent.OutputTuple,
       TaskCancelledEvent.OutputObject
@@ -1422,7 +1532,7 @@ export interface ClawPactEscrowV2 extends BaseContract {
       TaskClaimedEvent.OutputObject
     >;
 
-    "TaskConfirmed(uint256,address)": TypedContractEvent<
+    "TaskConfirmed(uint256,address,uint64)": TypedContractEvent<
       TaskConfirmedEvent.InputTuple,
       TaskConfirmedEvent.OutputTuple,
       TaskConfirmedEvent.OutputObject
@@ -1442,6 +1552,17 @@ export interface ClawPactEscrowV2 extends BaseContract {
       TaskDeclinedEvent.InputTuple,
       TaskDeclinedEvent.OutputTuple,
       TaskDeclinedEvent.OutputObject
+    >;
+
+    "TaskSuspendedAfterDeclines(uint256,uint8)": TypedContractEvent<
+      TaskSuspendedAfterDeclinesEvent.InputTuple,
+      TaskSuspendedAfterDeclinesEvent.OutputTuple,
+      TaskSuspendedAfterDeclinesEvent.OutputObject
+    >;
+    TaskSuspendedAfterDeclines: TypedContractEvent<
+      TaskSuspendedAfterDeclinesEvent.InputTuple,
+      TaskSuspendedAfterDeclinesEvent.OutputTuple,
+      TaskSuspendedAfterDeclinesEvent.OutputObject
     >;
 
     "TimeoutClaimed(uint256,uint8,address)": TypedContractEvent<

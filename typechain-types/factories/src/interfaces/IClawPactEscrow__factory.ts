@@ -107,7 +107,7 @@ const _abi = [
       {
         indexed: false,
         internalType: "uint64",
-        name: "deliveryDeadline",
+        name: "deliveryDurationSeconds",
         type: "uint64",
       },
       {
@@ -122,27 +122,14 @@ const _abi = [
         name: "acceptanceWindowHours",
         type: "uint8",
       },
-    ],
-    name: "EscrowCreated",
-    type: "event",
-  },
-  {
-    anonymous: false,
-    inputs: [
-      {
-        indexed: true,
-        internalType: "uint256",
-        name: "escrowId",
-        type: "uint256",
-      },
       {
         indexed: false,
         internalType: "uint8",
-        name: "passRate",
+        name: "criteriaCount",
         type: "uint8",
       },
     ],
-    name: "PassRateSubmitted",
+    name: "EscrowCreated",
     type: "event",
   },
   {
@@ -178,8 +165,33 @@ const _abi = [
         name: "depositPenalty",
         type: "uint256",
       },
+      {
+        indexed: false,
+        internalType: "uint8",
+        name: "passRate",
+        type: "uint8",
+      },
     ],
     name: "RevisionRequested",
+    type: "event",
+  },
+  {
+    anonymous: false,
+    inputs: [
+      {
+        indexed: true,
+        internalType: "uint256",
+        name: "escrowId",
+        type: "uint256",
+      },
+      {
+        indexed: true,
+        internalType: "address",
+        name: "provider",
+        type: "address",
+      },
+    ],
+    name: "TaskAbandoned",
     type: "event",
   },
   {
@@ -228,6 +240,12 @@ const _abi = [
         name: "escrowId",
         type: "uint256",
       },
+      {
+        indexed: false,
+        internalType: "uint256",
+        name: "compensation",
+        type: "uint256",
+      },
     ],
     name: "TaskCancelled",
     type: "event",
@@ -272,6 +290,12 @@ const _abi = [
         name: "provider",
         type: "address",
       },
+      {
+        indexed: false,
+        internalType: "uint64",
+        name: "deliveryDeadline",
+        type: "uint64",
+      },
     ],
     name: "TaskConfirmed",
     type: "event",
@@ -306,6 +330,25 @@ const _abi = [
       },
       {
         indexed: false,
+        internalType: "uint8",
+        name: "declineCount",
+        type: "uint8",
+      },
+    ],
+    name: "TaskSuspendedAfterDeclines",
+    type: "event",
+  },
+  {
+    anonymous: false,
+    inputs: [
+      {
+        indexed: true,
+        internalType: "uint256",
+        name: "escrowId",
+        type: "uint256",
+      },
+      {
+        indexed: false,
         internalType: "enum IClawPactEscrow.TaskState",
         name: "previousState",
         type: "uint8",
@@ -319,6 +362,19 @@ const _abi = [
     ],
     name: "TimeoutClaimed",
     type: "event",
+  },
+  {
+    inputs: [
+      {
+        internalType: "uint256",
+        name: "escrowId",
+        type: "uint256",
+      },
+    ],
+    name: "abandonTask",
+    outputs: [],
+    stateMutability: "nonpayable",
+    type: "function",
   },
   {
     inputs: [
@@ -435,7 +491,7 @@ const _abi = [
       },
       {
         internalType: "uint64",
-        name: "deliveryDeadline",
+        name: "deliveryDurationSeconds",
         type: "uint64",
       },
       {
@@ -447,6 +503,16 @@ const _abi = [
         internalType: "uint8",
         name: "acceptanceWindowHours",
         type: "uint8",
+      },
+      {
+        internalType: "uint8",
+        name: "criteriaCount",
+        type: "uint8",
+      },
+      {
+        internalType: "uint8[]",
+        name: "fundWeights",
+        type: "uint8[]",
       },
       {
         internalType: "address",
@@ -496,9 +562,9 @@ const _abi = [
         type: "bytes32",
       },
       {
-        internalType: "bytes32",
-        name: "criteriaResultsHash",
-        type: "bytes32",
+        internalType: "bool[]",
+        name: "criteriaResults",
+        type: "bool[]",
       },
     ],
     name: "requestRevision",
