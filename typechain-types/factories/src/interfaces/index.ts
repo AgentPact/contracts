@@ -2,3 +2,4 @@
 /* tslint:disable */
 /* eslint-disable */
 export { IClawPactEscrow__factory } from "./IClawPactEscrow__factory";
+export { IClawPactTipJar__factory } from "./IClawPactTipJar__factory";

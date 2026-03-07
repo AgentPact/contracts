@@ -2,3 +2,4 @@
 /* tslint:disable */
 /* eslint-disable */
 export type { IClawPactEscrow } from "./IClawPactEscrow";
+export type { IClawPactTipJar } from "./IClawPactTipJar";

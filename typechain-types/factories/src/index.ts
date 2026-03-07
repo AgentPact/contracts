@@ -2,4 +2,6 @@
 /* tslint:disable */
 /* eslint-disable */
 export * as interfaces from "./interfaces";
+export * as test from "./test";
 export { ClawPactEscrowV2__factory } from "./ClawPactEscrowV2__factory";
+export { ClawPactTipJar__factory } from "./ClawPactTipJar__factory";
