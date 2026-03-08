@@ -5,8 +5,10 @@ import path from "path";
 const ESCROW_JSON = path.join(__dirname, "ESCROW.json");
 
 interface EscrowAddresses {
-    proxy: string;
-    implementation: string;
+    escrowProxy: string;
+    escrowImplementation: string;
+    tipJarProxy: string;
+    tipJarImplementation: string;
     network: string;
     chainId: number;
     deployer: string;
@@ -110,31 +112,92 @@ async function main() {
         console.log("   Implementation:", implAddress);
     }
 
+    // ─── Deploy TipJar ───────────────────────────────────────────
+    const TipJarFactory = await ethers.getContractFactory("ClawPactTipJar");
+    const existingTipJarProxy = process.env.TIPJAR_ADDRESS_PROXY;
+
+    let tipJarProxyAddress: string;
+    let tipJarImplAddress: string;
+
+    if (existingTipJarProxy) {
+        console.log("\n🔄 TipJar Upgrade mode — proxy already deployed");
+        console.log("   Existing TipJar Proxy:", existingTipJarProxy);
+
+        const oldTipJarImpl = await upgrades.erc1967.getImplementationAddress(existingTipJarProxy);
+        console.log("   Old TipJar Implementation:", oldTipJarImpl);
+
+        console.log("\n⏳ Deploying new TipJar implementation & upgrading proxy...");
+        const upgradedTipJar = await upgrades.upgradeProxy(existingTipJarProxy, TipJarFactory as any, {
+            kind: "uups",
+            unsafeAllow: ["constructor", "state-variable-immutable"],
+        });
+        await upgradedTipJar.waitForDeployment();
+
+        tipJarProxyAddress = existingTipJarProxy;
+        tipJarImplAddress = await upgrades.erc1967.getImplementationAddress(tipJarProxyAddress);
+
+        console.log("\n✅ TipJar Upgrade successful!");
+        console.log("   TipJar Proxy (unchanged):", tipJarProxyAddress);
+        console.log("   TipJar New Implementation:", tipJarImplAddress);
+    } else {
+        console.log("\n🆕 TipJar Fresh deploy mode — no existing proxy found");
+
+        const platformSigner = process.env.PLATFORM_SIGNER || deployer.address;
+        const platformFund = process.env.PLATFORM_FUND || deployer.address;
+        const usdcAddress = process.env.USDC_ADDRESS || "0x036CbD53842c5426634e7929541eC2318f3dCF7e";
+
+        console.log("   USDC Address:", usdcAddress);
+        console.log("   Platform Signer:", platformSigner);
+        console.log("   Platform Fund:", platformFund);
+
+        console.log("\n⏳ Deploying TipJar UUPS Proxy + Implementation...");
+        const tipJar = await upgrades.deployProxy(
+            TipJarFactory as any,
+            [usdcAddress, platformSigner, platformFund, deployer.address],
+            {
+                kind: "uups",
+                unsafeAllow: ["constructor", "state-variable-immutable"],
+            }
+        );
+        await tipJar.waitForDeployment();
+
+        tipJarProxyAddress = await tipJar.getAddress();
+        tipJarImplAddress = await upgrades.erc1967.getImplementationAddress(tipJarProxyAddress);
+
+        console.log("\n✅ TipJar Fresh deploy successful!");
+        console.log("   TipJar Proxy:", tipJarProxyAddress);
+        console.log("   TipJar Implementation:", tipJarImplAddress);
+    }
+
+
     // ─── Save ESCROW.json ────────────────────────────────────────
     saveEscrowJson({
-        proxy: proxyAddress,
-        implementation: implAddress,
+        escrowProxy: proxyAddress,
+        escrowImplementation: implAddress,
+        tipJarProxy: tipJarProxyAddress,
+        tipJarImplementation: tipJarImplAddress,
         network: networkName,
         chainId: Number(network.chainId),
         deployer: deployer.address,
         updatedAt: new Date().toISOString(),
     });
 
-    // ─── Update env files ────────────────────────────────────────
-    updateEnvFile(
-        path.join(__dirname, "../../platform/.env"),
-        "ESCROW_ADDRESS",
-        proxyAddress
-    );
-    updateEnvFile(
-        path.join(__dirname, "../../app/.env.local"),
-        "NEXT_PUBLIC_ESCROW_ADDRESS",
-        proxyAddress
-    );
+    // // ─── Update env files ────────────────────────────────────────
+    // updateEnvFile(
+    //     path.join(__dirname, "../../platform/.env"),
+    //     "ESCROW_ADDRESS",
+    //     proxyAddress
+    // );
+    // updateEnvFile(
+    //     path.join(__dirname, "../../app/.env.local"),
+    //     "NEXT_PUBLIC_ESCROW_ADDRESS",
+    //     proxyAddress
+    // );
 
     console.log("\n═══════════════════════════════════════════════");
     console.log("  Done! Verify:");
     console.log(`  npx hardhat verify --network ${networkName} ${proxyAddress}`);
+    console.log(`  npx hardhat verify --network ${networkName} ${tipJarProxyAddress}`);
     console.log("═══════════════════════════════════════════════");
 }
 

@@ -27,4 +27,7 @@ compile.log
 compile_out.txt
 build_error.txt
 compile_error.txt
+test_output.txt
 
+ESCROW.json
+typechain-types/

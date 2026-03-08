@@ -19,6 +19,10 @@ import {
     ReentrancyGuard
 } from "@openzeppelin/contracts/utils/ReentrancyGuard.sol";
 import {IClawPactEscrow} from "./interfaces/IClawPactEscrow.sol";
+import {
+    IClawPactReputationRegistry
+} from "./interfaces/IClawPactReputationRegistry.sol";
+import {IClawPactTreasury} from "./interfaces/IClawPactTreasury.sol";
 
 /// @title ClawPactEscrowV2
 /// @notice Trustless escrow for AI agent task marketplace
@@ -78,8 +82,14 @@ contract ClawPactEscrowV2 is
     /// @notice Allowed ERC20 tokens for payment (e.g. USDC)
     mapping(address => bool) public allowedTokens;
 
+    /// @notice ERC-8004 Reputation Registry to send feedback
+    IClawPactReputationRegistry public reputationRegistry;
+
+    /// @notice Treasury contract for platform fee distribution (optional buyback)
+    IClawPactTreasury public treasuryContract;
+
     /// @notice Storage gap for future upgrades
-    uint256[42] private __gap;
+    uint256[40] private __gap;
 
     // ========================= Errors =========================
 
@@ -265,9 +275,24 @@ contract ClawPactEscrowV2 is
         r.state = TaskState.Accepted;
 
         _transfer(r.token, r.provider, providerPayout);
-        _transfer(r.token, platformFund, fee);
+        _transferPlatformFee(r.token, fee);
         if (remainingDeposit > 0) {
             _transfer(r.token, r.requester, remainingDeposit);
+        }
+
+        // --- ERC-8004 Hook ---
+        if (address(reputationRegistry) != address(0)) {
+            // Maximum positive score for accepted delivery
+            int256 baseScore = 5;
+            // Optional: convert payout to a string parameter or IPFS hash here if needed.
+            try
+                reputationRegistry.recordAttestation(
+                    r.provider,
+                    "ESCROW_ACCEPTED",
+                    baseScore,
+                    "ipfs://contract-auto-generated" // Placeholder for detailed breakdown
+                )
+            {} catch {} // gracefully fail to avoid blocking funds
         }
 
         emit DeliveryAccepted(escrowId, providerPayout, fee);
@@ -300,7 +325,7 @@ contract ClawPactEscrowV2 is
                 r.depositConsumed += penalty;
                 // 50% to provider, 50% to platform fund
                 _transfer(r.token, r.provider, penalty / 2);
-                _transfer(r.token, platformFund, penalty - penalty / 2); // handles odd wei
+                _transferPlatformFee(r.token, penalty - penalty / 2); // handles odd wei
             }
         }
 
@@ -527,7 +552,7 @@ contract ClawPactEscrowV2 is
         // Full reward to provider (requester defaulted)
         uint256 fee = (r.rewardAmount * PLATFORM_FEE_BPS) / 10_000;
         _transfer(r.token, r.provider, r.rewardAmount - fee);
-        _transfer(r.token, platformFund, fee);
+        _transferPlatformFee(r.token, fee);
 
         // Return remaining deposit to requester
         uint256 remainingDeposit = r.requesterDeposit - r.depositConsumed;
@@ -604,6 +629,11 @@ contract ClawPactEscrowV2 is
         platformFund = newFund;
     }
 
+    /// @notice Set the Treasury contract for platform fee distribution
+    function setTreasury(address _treasury) external onlyOwner {
+        treasuryContract = IClawPactTreasury(_treasury);
+    }
+
     // ========================= View Functions =========================
 
     /// @notice Get full escrow record
@@ -676,7 +706,7 @@ contract ClawPactEscrowV2 is
         r.state = TaskState.Settled;
 
         _transfer(r.token, r.provider, providerShare - fee);
-        _transfer(r.token, platformFund, fee);
+        _transferPlatformFee(r.token, fee);
         if (requesterRefund > 0) {
             _transfer(r.token, r.requester, requesterRefund);
         }
@@ -735,6 +765,17 @@ contract ClawPactEscrowV2 is
             require(success, "ETH transfer failed");
         } else {
             IERC20(token).safeTransfer(to, amount);
+        }
+    }
+
+    /// @dev Send platform fee via Treasury contract (with optional buyback).
+    ///      Falls back to direct transfer if Treasury is not configured.
+    function _transferPlatformFee(address token, uint256 feeAmount) internal {
+        if (address(treasuryContract) != address(0)) {
+            _transfer(token, address(treasuryContract), feeAmount);
+            try treasuryContract.receiveFee(token, feeAmount) {} catch {}
+        } else {
+            _transfer(token, platformFund, feeAmount);
         }
     }
 

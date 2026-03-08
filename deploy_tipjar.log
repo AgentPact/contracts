@@ -1,0 +1,52 @@
+﻿[dotenv@17.3.1] injecting env (6) from .env -- tip: 鈿欙笍  write to custom object with { processEnv: myObject }
+[dotenv@17.3.1] injecting env (0) from .env -- tip: 鈿欙笍  suppress all logs with { quiet: true }
+鈺愨晲鈺愨晲鈺愨晲鈺愨晲鈺愨晲鈺愨晲鈺愨晲鈺愨晲鈺愨晲鈺愨晲鈺愨晲鈺愨晲鈺愨晲鈺愨晲鈺愨晲鈺愨晲鈺愨晲鈺愨晲鈺愨晲鈺愨晲鈺愨晲鈺愨晲鈺愨晲鈺?  ClawPact Escrow V2 鈥?Deployment
+鈺愨晲鈺愨晲鈺愨晲鈺愨晲鈺愨晲鈺愨晲鈺愨晲鈺愨晲鈺愨晲鈺愨晲鈺愨晲鈺愨晲鈺愨晲鈺愨晲鈺愨晲鈺愨晲鈺愨晲鈺愨晲鈺愨晲鈺愨晲鈺愨晲鈺愨晲鈺愨晲鈺?Deployer: 0x2060b0212755E8d8972dD473BA66757192704DEb
+Balance: 0.09985755161030824 ETH
+Network: base-sepolia (chainId: 84532)
+
+馃啎 Deploying Identity Registry...
+   鉁?Deployed: 0x25C0b7d200e14F304573e3f7EABB7aE45A2E5774
+
+馃啎 Deploying Reputation Registry...
+   鉁?Deployed: 0x9CC467BA2f9D2C217Ce6577d1732745f98B72129
+
+馃攧 Upgrade mode 鈥?proxy already deployed
+   Existing Proxy: 0xB8C77709fF82D7F90CA1695a7495d0A33D2d19a5
+   Old Implementation: 0x42f0346911751A09A3a95CE678203E6F83Ac1f16
+
+鈴?Deploying new implementation & upgrading proxy...
+node.exe : Warning: Potentially unsafe deployment of src/ClawPactEscrowV2.sol:Cla
+wPactEscrowV2
+所在位置 行:1 字符: 1
++ & "C:\Program Files\nodejs/node.exe" "C:\Users\lm\AppData\Roaming\npm ...
++ ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    + CategoryInfo          : NotSpecified: (Warning: Potent...lawPactEscrowV2:St
+rin    g) [], RemoteException
+    + FullyQualifiedErrorId : NativeCommandError
+ 
+
+    You are using the `unsafeAllow.constructor` flag.
+
+
+鉁?Upgrade successful!
+   Proxy (unchanged): 0xB8C77709fF82D7F90CA1695a7495d0A33D2d19a5
+   New Implementation: 0x42f0346911751A09A3a95CE678203E6F83Ac1f16
+
+馃攧 TipJar Upgrade mode 鈥?proxy already deployed
+   Existing TipJar Proxy: 0x2CC381129bB48CfCA6d7efE84b58BFCd4A83FAAe
+   Old TipJar Implementation: 0xaFff53d9960D1f28ee8B77F79B6E11B91004eE4c
+
+鈴?Deploying new TipJar implementation & upgrading proxy...
+Warning: Potentially unsafe deployment of src/ClawPactTipJar.sol:ClawPactTipJar
+
+    You are using the `unsafeAllow.constructor` flag.
+
+
+鉁?TipJar Upgrade successful!
+   TipJar Proxy (unchanged): 0x2CC381129bB48CfCA6d7efE84b58BFCd4A83FAAe
+   TipJar New Implementation: 0xaFff53d9960D1f28ee8B77F79B6E11B91004eE4c
+
+鈴?Linking Reputation Registry to Escrow & TipJar...
+TypeError: escrowContract.setReputationRegistry is not a function
+    at main (D:\AntigravityProjects\ClawPact\contracts\scripts\deploy.ts:223:26)

@@ -19,6 +19,10 @@ import {
     ReentrancyGuard
 } from "@openzeppelin/contracts/utils/ReentrancyGuard.sol";
 import {IClawPactTipJar} from "./interfaces/IClawPactTipJar.sol";
+import {
+    IClawPactReputationRegistry
+} from "./interfaces/IClawPactReputationRegistry.sol";
+import {IClawPactTreasury} from "./interfaces/IClawPactTreasury.sol";
 
 /// @title ClawPactTipJar
 /// @notice On-chain tipping for ClawPact social layer (Tavern + Knowledge Mesh)
@@ -94,8 +98,14 @@ contract ClawPactTipJar is
     /// @notice Daily tip tracking: keccak256(tipper, dayTimestamp) => amount spent
     mapping(bytes32 => uint256) private _dailySpent;
 
+    /// @notice ERC-8004 Reputation Registry to send feedback
+    IClawPactReputationRegistry public reputationRegistry;
+
+    /// @notice Treasury contract for platform fee distribution (optional buyback)
+    IClawPactTreasury public treasuryContract;
+
     /// @notice Storage gap for future upgrades
-    uint256[40] private __gap;
+    uint256[38] private __gap;
 
     // ========================= Errors =========================
 
@@ -204,7 +214,19 @@ contract ClawPactTipJar is
         // ── Transfer: tipper → recipient (net) + tipper → treasury (fee) ──
         usdcToken.safeTransferFrom(msg.sender, recipient, recipientAmount);
         if (fee > 0) {
-            usdcToken.safeTransferFrom(msg.sender, treasury, fee);
+            if (address(treasuryContract) != address(0)) {
+                // Route fee through Treasury (supports auto-buyback)
+                usdcToken.safeTransferFrom(
+                    msg.sender,
+                    address(treasuryContract),
+                    fee
+                );
+                try
+                    treasuryContract.receiveFee(address(usdcToken), fee)
+                {} catch {}
+            } else {
+                usdcToken.safeTransferFrom(msg.sender, treasury, fee);
+            }
         }
 
         // ── Update stats ──
@@ -216,6 +238,20 @@ contract ClawPactTipJar is
         TipStats storage recipientStats = _tipStats[recipient];
         recipientStats.totalReceived += recipientAmount;
         recipientStats.tipsReceivedCount++;
+
+        // ── ERC-8004 Hook ──
+        if (address(reputationRegistry) != address(0)) {
+            // Using tip amount (in micro-USDC) as the score to indicate strength of support
+            int256 score = int256(amount);
+            try
+                reputationRegistry.recordAttestation(
+                    recipient,
+                    "TIP_RECEIVED",
+                    score,
+                    postId // IPFS hash or Post ID reference
+                )
+            {} catch {} // gracefully fail to avoid blocking funds
+        }
 
         // ── Emit event ──
         emit TipSent(msg.sender, recipient, amount, fee, postId);
@@ -295,6 +331,16 @@ contract ClawPactTipJar is
         address old = treasury;
         treasury = newTreasury;
         emit TreasuryUpdated(old, newTreasury);
+    }
+
+    /// @notice Hook up the external ERC-8004 Reputation registry
+    function setReputationRegistry(address registry) external onlyOwner {
+        reputationRegistry = IClawPactReputationRegistry(registry);
+    }
+
+    /// @notice Set the Treasury contract for platform fee distribution
+    function setTreasuryContract(address _treasury) external onlyOwner {
+        treasuryContract = IClawPactTreasury(_treasury);
     }
 
     // ========================= Internal Functions =========================
