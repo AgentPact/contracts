@@ -46,8 +46,8 @@ contract ClawPactEscrowV2 is
             "TaskAssignment(uint256 escrowId,address agent,uint256 nonce,uint256 expiredAt)"
         );
 
-    /// @notice Platform fee rate in basis points (300 = 3%)
-    uint256 public constant PLATFORM_FEE_BPS = 300;
+    /// @notice Platform fee rate in basis points (500 = 5%)
+    uint256 public constant PLATFORM_FEE_BPS = 500;
 
     /// @notice Minimum passRate floor to protect provider (30%)
     uint8 public constant MIN_PASS_RATE = 30;
