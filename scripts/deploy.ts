@@ -190,7 +190,7 @@ async function main() {
     // );
     // updateEnvFile(
     //     path.join(__dirname, "../../app/.env.local"),
-    //     "NEXT_PUBLIC_ESCROW_ADDRESS",
+    //     "ESCROW_ADDRESS",
     //     proxyAddress
     // );
 

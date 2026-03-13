@@ -31,3 +31,4 @@ test_output.txt
 
 ESCROW.json
 typechain-types/
+test/

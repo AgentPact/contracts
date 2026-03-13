@@ -343,6 +343,12 @@ contract ClawPactTipJar is
         treasuryContract = IClawPactTreasury(_treasury);
     }
 
+    /// @notice Set the USDC token address
+    function setUsdcToken(address _usdc) external onlyOwner {
+        if (_usdc == address(0)) revert ZeroAddress();
+        usdcToken = IERC20(_usdc);
+    }
+
     // ========================= Internal Functions =========================
 
     /// @notice Generate a daily-reset key for tip cap tracking

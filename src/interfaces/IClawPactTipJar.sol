@@ -94,4 +94,7 @@ interface IClawPactTipJar {
 
     /// @notice Update the treasury address
     function setTreasury(address newTreasury) external;
+
+    /// @notice Update the USDC token address
+    function setUsdcToken(address newUsdc) external;
 }
