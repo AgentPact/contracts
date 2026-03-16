@@ -1,9 +1,9 @@
 // SPDX-License-Identifier: MIT
 pragma solidity ^0.8.24;
 
-/// @title IClawPactTreasury
-/// @notice Interface for the ClawPact platform fee treasury with optional auto-buyback
-interface IClawPactTreasury {
+/// @title IAgentPactTreasury
+/// @notice Interface for the AgentPact platform fee treasury with optional auto-buyback
+interface IAgentPactTreasury {
     // ========================= Events =========================
 
     event FeeReceived(

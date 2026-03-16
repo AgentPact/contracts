@@ -18,14 +18,14 @@ import {
 import {
     ReentrancyGuard
 } from "@openzeppelin/contracts/utils/ReentrancyGuard.sol";
-import {IClawPactTipJar} from "./interfaces/IClawPactTipJar.sol";
+import {IAgentPactTipJar} from "./interfaces/IAgentPactTipJar.sol";
 import {
-    IClawPactReputationRegistry
-} from "./interfaces/IClawPactReputationRegistry.sol";
-import {IClawPactTreasury} from "./interfaces/IClawPactTreasury.sol";
+    IAgentPactReputationRegistry
+} from "./interfaces/IAgentPactReputationRegistry.sol";
+import {IAgentPactTreasury} from "./interfaces/IAgentPactTreasury.sol";
 
-/// @title ClawPactTipJar
-/// @notice On-chain tipping for ClawPact social layer (Tavern + Knowledge Mesh)
+/// @title AgentPactTipJar
+/// @notice On-chain tipping for AgentPact social layer (Tavern + Knowledge Mesh)
 /// @dev Push model — tips transfer instantly via USDC transferFrom (no custody).
 ///      Platform EIP-712 signature prevents bypassing backend validation (rate limits,
 ///      self-tip prevention, content existence checks, etc.).
@@ -40,8 +40,8 @@ import {IClawPactTreasury} from "./interfaces/IClawPactTreasury.sol";
 ///
 ///      Design principle: Contract NEVER holds user funds. All tips are direct
 ///      tipper → recipient transfers. Only platform fees accumulate in treasury.
-contract ClawPactTipJar is
-    IClawPactTipJar,
+contract AgentPactTipJar is
+    IAgentPactTipJar,
     UUPSUpgradeable,
     OwnableUpgradeable,
     EIP712Upgradeable,
@@ -99,10 +99,10 @@ contract ClawPactTipJar is
     mapping(bytes32 => uint256) private _dailySpent;
 
     /// @notice ERC-8004 Reputation Registry to send feedback
-    IClawPactReputationRegistry public reputationRegistry;
+    IAgentPactReputationRegistry public reputationRegistry;
 
     /// @notice Treasury contract for platform fee distribution (optional buyback)
-    IClawPactTreasury public treasuryContract;
+    IAgentPactTreasury public treasuryContract;
 
     /// @notice Storage gap for future upgrades
     uint256[38] private __gap;
@@ -146,7 +146,7 @@ contract ClawPactTipJar is
         if (_owner == address(0)) revert ZeroAddress();
 
         __Ownable_init(_owner);
-        __EIP712_init("ClawPactTipJar", "1");
+        __EIP712_init("AgentPactTipJar", "1");
 
         usdcToken = IERC20(_usdc);
         platformSigner = _platformSigner;
@@ -160,7 +160,7 @@ contract ClawPactTipJar is
 
     // ========================= Core Functions =========================
 
-    /// @inheritdoc IClawPactTipJar
+    /// @inheritdoc IAgentPactTipJar
     function tip(
         address recipient,
         uint256 amount,
@@ -259,17 +259,17 @@ contract ClawPactTipJar is
 
     // ========================= View Functions =========================
 
-    /// @inheritdoc IClawPactTipJar
+    /// @inheritdoc IAgentPactTipJar
     function tipStats(address user) external view returns (TipStats memory) {
         return _tipStats[user];
     }
 
-    /// @inheritdoc IClawPactTipJar
+    /// @inheritdoc IAgentPactTipJar
     function dailyTipSpent(address user) external view returns (uint256) {
         return _dailySpent[_dailyKey(user)];
     }
 
-    /// @inheritdoc IClawPactTipJar
+    /// @inheritdoc IAgentPactTipJar
     function usedNonces(bytes32 nonceHash) external view returns (bool) {
         return _usedNonces[nonceHash];
     }
@@ -289,7 +289,7 @@ contract ClawPactTipJar is
 
     // ========================= Admin Functions =========================
 
-    /// @inheritdoc IClawPactTipJar
+    /// @inheritdoc IAgentPactTipJar
     function setPlatformFeeBps(uint16 newFeeBps) external onlyOwner {
         if (newFeeBps > MAX_FEE_BPS) revert FeeTooHigh();
         uint16 old = platformFeeBps;
@@ -297,27 +297,27 @@ contract ClawPactTipJar is
         emit PlatformFeeUpdated(old, newFeeBps);
     }
 
-    /// @inheritdoc IClawPactTipJar
+    /// @inheritdoc IAgentPactTipJar
     function setMaxTipAmount(uint256 newMax) external onlyOwner {
         uint256 old = maxTipAmount;
         maxTipAmount = newMax;
         emit MaxTipAmountUpdated(old, newMax);
     }
 
-    /// @inheritdoc IClawPactTipJar
+    /// @inheritdoc IAgentPactTipJar
     function setDailyTipCap(uint256 newCap) external onlyOwner {
         uint256 old = dailyTipCap;
         dailyTipCap = newCap;
         emit DailyTipCapUpdated(old, newCap);
     }
 
-    /// @inheritdoc IClawPactTipJar
+    /// @inheritdoc IAgentPactTipJar
     function setPaused(bool _paused) external onlyOwner {
         paused = _paused;
         emit TippingPaused(_paused);
     }
 
-    /// @inheritdoc IClawPactTipJar
+    /// @inheritdoc IAgentPactTipJar
     function setPlatformSigner(address newSigner) external onlyOwner {
         if (newSigner == address(0)) revert ZeroAddress();
         address old = platformSigner;
@@ -325,7 +325,7 @@ contract ClawPactTipJar is
         emit PlatformSignerUpdated(old, newSigner);
     }
 
-    /// @inheritdoc IClawPactTipJar
+    /// @inheritdoc IAgentPactTipJar
     function setTreasury(address newTreasury) external onlyOwner {
         if (newTreasury == address(0)) revert ZeroAddress();
         address old = treasury;
@@ -335,12 +335,12 @@ contract ClawPactTipJar is
 
     /// @notice Hook up the external ERC-8004 Reputation registry
     function setReputationRegistry(address registry) external onlyOwner {
-        reputationRegistry = IClawPactReputationRegistry(registry);
+        reputationRegistry = IAgentPactReputationRegistry(registry);
     }
 
     /// @notice Set the Treasury contract for platform fee distribution
     function setTreasuryContract(address _treasury) external onlyOwner {
-        treasuryContract = IClawPactTreasury(_treasury);
+        treasuryContract = IAgentPactTreasury(_treasury);
     }
 
     /// @notice Set the USDC token address

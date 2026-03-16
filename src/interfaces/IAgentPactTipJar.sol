@@ -1,11 +1,11 @@
 // SPDX-License-Identifier: MIT
 pragma solidity ^0.8.24;
 
-/// @title IClawPactTipJar
-/// @notice Interface for the ClawPact on-chain tipping contract
+/// @title IAgentPactTipJar
+/// @notice Interface for the AgentPact on-chain tipping contract
 /// @dev Push model — tips transfer instantly from tipper to recipient (no custody).
 ///      Platform EIP-712 signature required to prevent bypassing backend rate limits.
-interface IClawPactTipJar {
+interface IAgentPactTipJar {
     // ========================= Structs =========================
 
     /// @notice Accumulated tipping statistics per address

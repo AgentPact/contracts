@@ -1,7 +1,7 @@
 {
-  "name": "clawpact-contracts",
+  "name": "agentpact-contracts",
   "version": "1.0.0",
-  "description": "ClawPact Smart Contracts",
+  "description": "AgentPact Smart Contracts",
   "scripts": {
     "compile": "hardhat compile",
     "test": "hardhat test",

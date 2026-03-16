@@ -25,7 +25,7 @@ async function main() {
     const balance = await ethers.provider.getBalance(deployer.address);
 
     console.log("═══════════════════════════════════════════════");
-    console.log("  ClawPact Treasury — Deployment");
+    console.log("  AgentPact Treasury — Deployment");
     console.log("═══════════════════════════════════════════════");
     console.log("Deployer:", deployer.address);
     console.log("Balance:", ethers.formatEther(balance), "ETH");
@@ -44,7 +44,7 @@ async function main() {
     console.log("   WETH:", wethAddress);
 
     // ─── Deploy Treasury ───────────────────────────────────────
-    const TreasuryFactory = await ethers.getContractFactory("ClawPactTreasury");
+    const TreasuryFactory = await ethers.getContractFactory("AgentPactTreasury");
     const existingProxy = process.env.TREASURY_ADDRESS_PROXY;
 
     let treasuryProxyAddress: string;
@@ -77,7 +77,7 @@ async function main() {
     }
 
     // ─── Authorize Escrow & TipJar as callers ──────────────────
-    const treasury = await ethers.getContractAt("ClawPactTreasury", treasuryProxyAddress) as any;
+    const treasury = await ethers.getContractAt("AgentPactTreasury", treasuryProxyAddress) as any;
 
     const escrowProxy = process.env.ESCROW_ADDRESS_PROXY;
     const tipJarProxy = process.env.TIPJAR_ADDRESS_PROXY;
@@ -88,7 +88,7 @@ async function main() {
         console.log("   🔗 Escrow authorized");
 
         console.log("⏳ Setting Treasury on Escrow...");
-        const escrow = await ethers.getContractAt("ClawPactEscrowV2", escrowProxy) as any;
+        const escrow = await ethers.getContractAt("AgentPactEscrowV2", escrowProxy) as any;
         await escrow.setTreasury(treasuryProxyAddress);
         console.log("   🔗 Escrow → Treasury linked");
     }
@@ -99,7 +99,7 @@ async function main() {
         console.log("   🔗 TipJar authorized");
 
         console.log("⏳ Setting Treasury on TipJar...");
-        const tipJar = await ethers.getContractAt("ClawPactTipJar", tipJarProxy) as any;
+        const tipJar = await ethers.getContractAt("AgentPactTipJar", tipJarProxy) as any;
         await tipJar.setTreasuryContract(treasuryProxyAddress);
         console.log("   🔗 TipJar → Treasury linked");
     }

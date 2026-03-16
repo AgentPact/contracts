@@ -44,7 +44,7 @@ async function main() {
     const balance = await ethers.provider.getBalance(deployer.address);
 
     console.log("═══════════════════════════════════════════════");
-    console.log("  ClawPact Escrow V2 — Deployment");
+    console.log("  AgentPact Escrow V2 — Deployment");
     console.log("═══════════════════════════════════════════════");
     console.log("Deployer:", deployer.address);
     console.log("Balance:", ethers.formatEther(balance), "ETH");
@@ -54,7 +54,7 @@ async function main() {
         throw new Error("Deployer has 0 ETH — please fund the wallet first");
     }
 
-    const EscrowFactory = await ethers.getContractFactory("ClawPactEscrowV2");
+    const EscrowFactory = await ethers.getContractFactory("AgentPactEscrowV2");
 
     const existingProxy = process.env.ESCROW_ADDRESS_PROXY;
 
@@ -113,7 +113,7 @@ async function main() {
     }
 
     // ─── Deploy TipJar ───────────────────────────────────────────
-    const TipJarFactory = await ethers.getContractFactory("ClawPactTipJar");
+    const TipJarFactory = await ethers.getContractFactory("AgentPactTipJar");
     const existingTipJarProxy = process.env.TIPJAR_ADDRESS_PROXY;
 
     let tipJarProxyAddress: string;

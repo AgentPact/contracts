@@ -27,7 +27,7 @@ async function main() {
     const balance = await ethers.provider.getBalance(deployer.address);
 
     console.log("═══════════════════════════════════════════════");
-    console.log("  ClawPact ERC-8004 — Identity & Reputation");
+    console.log("  AgentPact ERC-8004 — Identity & Reputation");
     console.log("═══════════════════════════════════════════════");
     console.log("Deployer:", deployer.address);
     console.log("Balance:", ethers.formatEther(balance), "ETH");
@@ -38,7 +38,7 @@ async function main() {
     }
 
     // ─── Deploy Identity Registry ──────────────────────────────
-    const IdentityFactory = await ethers.getContractFactory("ClawPactIdentityRegistry");
+    const IdentityFactory = await ethers.getContractFactory("AgentPactIdentityRegistry");
     const existingIdentityProxy = process.env.IDENTITY_ADDRESS_PROXY;
 
     let identityProxyAddress: string;
@@ -61,7 +61,7 @@ async function main() {
     }
 
     // ─── Deploy Reputation Registry ────────────────────────────
-    const ReputationFactory = await ethers.getContractFactory("ClawPactReputationRegistry");
+    const ReputationFactory = await ethers.getContractFactory("AgentPactReputationRegistry");
     const existingReputationProxy = process.env.REPUTATION_ADDRESS_PROXY;
 
     let reputationProxyAddress: string;
@@ -89,14 +89,14 @@ async function main() {
 
     if (escrowProxy) {
         console.log("\n⏳ Linking Reputation Registry to Escrow...");
-        const escrowContract = await ethers.getContractAt("ClawPactEscrowV2", escrowProxy) as any;
+        const escrowContract = await ethers.getContractAt("AgentPactEscrowV2", escrowProxy) as any;
         await escrowContract.setReputationRegistry(reputationProxyAddress);
         console.log("   🔗 Escrow linked to Reputation Registry");
     }
 
     if (tipJarProxy) {
         console.log("⏳ Linking Reputation Registry to TipJar...");
-        const tipJarContract = await ethers.getContractAt("ClawPactTipJar", tipJarProxy) as any;
+        const tipJarContract = await ethers.getContractAt("AgentPactTipJar", tipJarProxy) as any;
         await tipJarContract.setReputationRegistry(reputationProxyAddress);
         console.log("   🔗 TipJar linked to Reputation Registry");
     }

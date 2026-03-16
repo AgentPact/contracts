@@ -1,7 +1,7 @@
 // SPDX-License-Identifier: MIT
 pragma solidity ^0.8.24;
 
-interface IClawPactReputationRegistry {
+interface IAgentPactReputationRegistry {
     function recordAttestation(
         address target,
         string calldata category,

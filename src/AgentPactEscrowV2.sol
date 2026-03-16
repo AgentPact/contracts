@@ -18,19 +18,19 @@ import {
 import {
     ReentrancyGuard
 } from "@openzeppelin/contracts/utils/ReentrancyGuard.sol";
-import {IClawPactEscrow} from "./interfaces/IClawPactEscrow.sol";
+import {IAgentPactEscrow} from "./interfaces/IAgentPactEscrow.sol";
 import {
-    IClawPactReputationRegistry
-} from "./interfaces/IClawPactReputationRegistry.sol";
-import {IClawPactTreasury} from "./interfaces/IClawPactTreasury.sol";
+    IAgentPactReputationRegistry
+} from "./interfaces/IAgentPactReputationRegistry.sol";
+import {IAgentPactTreasury} from "./interfaces/IAgentPactTreasury.sol";
 
-/// @title ClawPactEscrowV2
+/// @title AgentPactEscrowV2
 /// @notice Trustless escrow for AI agent task marketplace
 /// @dev UUPS upgradeable. Platform NEVER touches on-chain funds. Only requester & provider operate.
 ///      V2.1 changes: on-chain passRate calculation, relative delivery duration, abandonTask,
 ///      cancelTask compensation, decline counting, revision deadline extension.
-contract ClawPactEscrowV2 is
-    IClawPactEscrow,
+contract AgentPactEscrowV2 is
+    IAgentPactEscrow,
     UUPSUpgradeable,
     OwnableUpgradeable,
     EIP712Upgradeable,
@@ -83,10 +83,10 @@ contract ClawPactEscrowV2 is
     mapping(address => bool) public allowedTokens;
 
     /// @notice ERC-8004 Reputation Registry to send feedback
-    IClawPactReputationRegistry public reputationRegistry;
+    IAgentPactReputationRegistry public reputationRegistry;
 
     /// @notice Treasury contract for platform fee distribution (optional buyback)
-    IClawPactTreasury public treasuryContract;
+    IAgentPactTreasury public treasuryContract;
 
     /// @notice Storage gap for future upgrades
     uint256[40] private __gap;
@@ -160,7 +160,7 @@ contract ClawPactEscrowV2 is
         if (_owner == address(0)) revert ZeroAddress();
 
         __Ownable_init(_owner);
-        __EIP712_init("ClawPact", "2");
+        __EIP712_init("AgentPact", "2");
 
         platformSigner = _platformSigner;
         platformFund = _platformFund;
@@ -169,7 +169,7 @@ contract ClawPactEscrowV2 is
 
     // ========================= Requester Functions =========================
 
-    /// @inheritdoc IClawPactEscrow
+    /// @inheritdoc IAgentPactEscrow
     function createEscrow(
         bytes32 taskHash,
         uint64 deliveryDurationSeconds,
@@ -255,7 +255,7 @@ contract ClawPactEscrowV2 is
         );
     }
 
-    /// @inheritdoc IClawPactEscrow
+    /// @inheritdoc IAgentPactEscrow
     function acceptDelivery(
         uint256 escrowId
     )
@@ -298,7 +298,7 @@ contract ClawPactEscrowV2 is
         emit DeliveryAccepted(escrowId, providerPayout, fee);
     }
 
-    /// @inheritdoc IClawPactEscrow
+    /// @inheritdoc IAgentPactEscrow
     function requestRevision(
         uint256 escrowId,
         bytes32 reasonHash,
@@ -358,7 +358,7 @@ contract ClawPactEscrowV2 is
         }
     }
 
-    /// @inheritdoc IClawPactEscrow
+    /// @inheritdoc IAgentPactEscrow
     function cancelTask(
         uint256 escrowId
     ) external nonReentrant onlyRequester(escrowId) {
@@ -400,7 +400,7 @@ contract ClawPactEscrowV2 is
 
     // ========================= Provider Functions =========================
 
-    /// @inheritdoc IClawPactEscrow
+    /// @inheritdoc IAgentPactEscrow
     function claimTask(
         uint256 escrowId,
         uint256 nonce,
@@ -435,7 +435,7 @@ contract ClawPactEscrowV2 is
         emit TaskClaimed(escrowId, msg.sender, r.confirmationDeadline);
     }
 
-    /// @inheritdoc IClawPactEscrow
+    /// @inheritdoc IAgentPactEscrow
     function confirmTask(
         uint256 escrowId
     )
@@ -454,7 +454,7 @@ contract ClawPactEscrowV2 is
         emit TaskConfirmed(escrowId, msg.sender, r.deliveryDeadline);
     }
 
-    /// @inheritdoc IClawPactEscrow
+    /// @inheritdoc IAgentPactEscrow
     function declineTask(
         uint256 escrowId
     )
@@ -481,7 +481,7 @@ contract ClawPactEscrowV2 is
         }
     }
 
-    /// @inheritdoc IClawPactEscrow
+    /// @inheritdoc IAgentPactEscrow
     function submitDelivery(
         uint256 escrowId,
         bytes32 deliveryHash
@@ -506,7 +506,7 @@ contract ClawPactEscrowV2 is
         );
     }
 
-    /// @inheritdoc IClawPactEscrow
+    /// @inheritdoc IAgentPactEscrow
     /// @notice Agent voluntarily abandons during Working or InRevision
     function abandonTask(
         uint256 escrowId
@@ -533,7 +533,7 @@ contract ClawPactEscrowV2 is
 
     // ========================= Timeout Functions =========================
 
-    /// @inheritdoc IClawPactEscrow
+    /// @inheritdoc IAgentPactEscrow
     function claimAcceptanceTimeout(
         uint256 escrowId
     )
@@ -563,7 +563,7 @@ contract ClawPactEscrowV2 is
         emit TimeoutClaimed(escrowId, previousState, msg.sender);
     }
 
-    /// @inheritdoc IClawPactEscrow
+    /// @inheritdoc IAgentPactEscrow
     function claimDeliveryTimeout(
         uint256 escrowId
     ) external nonReentrant onlyParties(escrowId) {
@@ -586,7 +586,7 @@ contract ClawPactEscrowV2 is
         emit TimeoutClaimed(escrowId, previousState, msg.sender);
     }
 
-    /// @inheritdoc IClawPactEscrow
+    /// @inheritdoc IAgentPactEscrow
     function claimConfirmationTimeout(
         uint256 escrowId
     )
@@ -631,7 +631,7 @@ contract ClawPactEscrowV2 is
 
     /// @notice Set the Treasury contract for platform fee distribution
     function setTreasury(address _treasury) external onlyOwner {
-        treasuryContract = IClawPactTreasury(_treasury);
+        treasuryContract = IAgentPactTreasury(_treasury);
     }
 
     // ========================= View Functions =========================

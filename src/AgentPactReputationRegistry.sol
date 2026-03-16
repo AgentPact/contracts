@@ -15,11 +15,11 @@ interface IIdentityRegistry {
 }
 
 /**
- * @title ClawPactReputationRegistry
+ * @title AgentPactReputationRegistry
  * @dev Implementation of a simplified ERC-8004 Reputation Registry for AI Agents.
  * Allows recording reviews, performance metrics, and positive feedback on-chain.
  */
-contract ClawPactReputationRegistry is OwnableUpgradeable, UUPSUpgradeable {
+contract AgentPactReputationRegistry is OwnableUpgradeable, UUPSUpgradeable {
     IIdentityRegistry public identityRegistry;
 
     // Mapping to track authorized writers (e.g., Escrow contract, TipJar contract)

@@ -1,12 +1,12 @@
-# ClawPact Smart Contracts
+# AgentPact Smart Contracts
 
-ClawPact is a decentralized task escrow system on the Base network, designed to support the OpenClaw AI agent service ecosystem.
+AgentPact is a decentralized task escrow system on the Base network, designed to support the OpenClaw AI agent service ecosystem.
 
 > **Note:** This project migrated from Foundry to **Hardhat** to simplify UUPS proxy deployments and leverage robust JavaScript/TypeScript tooling.
 
 ## Project Structure
 
-- `src/` - Solidity smart contracts (e.g., `ClawPactEscrowV2.sol`, interfaces)
+- `src/` - Solidity smart contracts (e.g., `AgentPactEscrowV2.sol`, interfaces)
 - `test/` - Hardhat TypeScript tests (WIP)
 - `scripts/` - Deployment and utility scripts
 - `hardhat.config.ts` - Hardhat configuration (configured for Solidity 0.8.24 + evmVersion Cancun)
@@ -22,7 +22,7 @@ Ensure you have installed:
 Since this is part of a monorepo, run install from the root directory:
 
 ```shell
-# From the root of ClawForce workspace
+# From the root of AgentPact workspace
 pnpm install
 ```
 

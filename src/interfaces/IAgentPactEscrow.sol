@@ -1,10 +1,10 @@
 // SPDX-License-Identifier: MIT
 pragma solidity ^0.8.24;
 
-/// @title IClawPactEscrow
-/// @notice Interface for the ClawPact trustless escrow contract
+/// @title IAgentPactEscrow
+/// @notice Interface for the AgentPact trustless escrow contract
 /// @dev All functions are called directly by requester or provider — never by the platform
-interface IClawPactEscrow {
+interface IAgentPactEscrow {
     // ========================= Enums =========================
 
     enum TaskState {

@@ -14,7 +14,7 @@ import {
 import {
     ReentrancyGuard
 } from "@openzeppelin/contracts/utils/ReentrancyGuard.sol";
-import {IClawPactTreasury} from "./interfaces/IClawPactTreasury.sol";
+import {IAgentPactTreasury} from "./interfaces/IAgentPactTreasury.sol";
 
 /// @notice Minimal interface for Uniswap V3 SwapRouter exactInputSingle
 interface ISwapRouter {
@@ -39,7 +39,7 @@ interface IWETH {
     function approve(address spender, uint256 amount) external returns (bool);
 }
 
-/// @title ClawPactTreasury
+/// @title AgentPactTreasury
 /// @notice Platform fee distribution with optional Uniswap V3 auto-buyback
 /// @dev Receives fees from Escrow & TipJar, optionally swaps a portion for a
 ///      target token via Uniswap V3. Both the bought token and remaining fees
@@ -51,8 +51,8 @@ interface IWETH {
 ///      - Graceful fallback: if swap fails, forward original token to wallet
 ///      - Support for both ETH and ERC20 payment tokens
 ///      - UUPS upgradeable for future extensions
-contract ClawPactTreasury is
-    IClawPactTreasury,
+contract AgentPactTreasury is
+    IAgentPactTreasury,
     UUPSUpgradeable,
     OwnableUpgradeable,
     ReentrancyGuard
@@ -142,7 +142,7 @@ contract ClawPactTreasury is
 
     // ========================= Core =========================
 
-    /// @inheritdoc IClawPactTreasury
+    /// @inheritdoc IAgentPactTreasury
     function receiveFee(address token, uint256 amount) external nonReentrant {
         if (!authorizedCallers[msg.sender]) revert UnauthorizedCaller();
         if (amount == 0) revert ZeroAmount();

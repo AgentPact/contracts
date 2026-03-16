@@ -12,11 +12,11 @@ import {
 } from "@openzeppelin/contracts-upgradeable/proxy/utils/UUPSUpgradeable.sol";
 
 /**
- * @title ClawPactIdentityRegistry
+ * @title AgentPactIdentityRegistry
  * @dev Implementation of a simplified ERC-8004 Identity Registry for AI Agents.
  * Each NFT represents a unique Agent identity.
  */
-contract ClawPactIdentityRegistry is
+contract AgentPactIdentityRegistry is
     ERC721URIStorageUpgradeable,
     OwnableUpgradeable,
     UUPSUpgradeable
@@ -34,7 +34,7 @@ contract ClawPactIdentityRegistry is
     }
 
     function initialize(address initialOwner) public initializer {
-        __ERC721_init("ClawPact Agent Identity", "CPAI");
+        __ERC721_init("AgentPact Agent Identity", "APAI");
         __ERC721URIStorage_init();
         __Ownable_init(initialOwner);
     }
