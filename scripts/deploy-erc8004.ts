@@ -26,15 +26,15 @@ async function main() {
     const networkName = network.name === "unknown" ? "base-sepolia" : network.name;
     const balance = await ethers.provider.getBalance(deployer.address);
 
-    console.log("═══════════════════════════════════════════════");
-    console.log("  AgentPact ERC-8004 — Identity & Reputation");
-    console.log("═══════════════════════════════════════════════");
+    console.log("══════════════════════════════════════════════�?);
+    console.log("  AgentPact ERC-8004 �?Identity & Reputation");
+    console.log("══════════════════════════════════════════════�?);
     console.log("Deployer:", deployer.address);
     console.log("Balance:", ethers.formatEther(balance), "ETH");
     console.log("Network:", networkName, `(chainId: ${network.chainId})`);
 
     if (balance === 0n) {
-        throw new Error("Deployer has 0 ETH — please fund the wallet first");
+        throw new Error("Deployer has 0 ETH �?please fund the wallet first");
     }
 
     // ─── Deploy Identity Registry ──────────────────────────────
@@ -50,14 +50,14 @@ async function main() {
         await upgraded.waitForDeployment();
         identityProxyAddress = existingIdentityProxy;
         identityImplAddress = await upgrades.erc1967.getImplementationAddress(identityProxyAddress);
-        console.log("   ✅ Upgraded:", identityProxyAddress);
+        console.log("   �?Upgraded:", identityProxyAddress);
     } else {
         console.log("\n🆕 Deploying Identity Registry...");
         const identity = await upgrades.deployProxy(IdentityFactory as any, [deployer.address], { kind: "uups" });
         await identity.waitForDeployment();
         identityProxyAddress = await identity.getAddress();
         identityImplAddress = await upgrades.erc1967.getImplementationAddress(identityProxyAddress);
-        console.log("   ✅ Deployed:", identityProxyAddress);
+        console.log("   �?Deployed:", identityProxyAddress);
     }
 
     // ─── Deploy Reputation Registry ────────────────────────────
@@ -73,14 +73,14 @@ async function main() {
         await upgraded.waitForDeployment();
         reputationProxyAddress = existingReputationProxy;
         reputationImplAddress = await upgrades.erc1967.getImplementationAddress(reputationProxyAddress);
-        console.log("   ✅ Upgraded:", reputationProxyAddress);
+        console.log("   �?Upgraded:", reputationProxyAddress);
     } else {
         console.log("\n🆕 Deploying Reputation Registry...");
         const reputation = await upgrades.deployProxy(ReputationFactory as any, [deployer.address, identityProxyAddress], { kind: "uups" });
         await reputation.waitForDeployment();
         reputationProxyAddress = await reputation.getAddress();
         reputationImplAddress = await upgrades.erc1967.getImplementationAddress(reputationProxyAddress);
-        console.log("   ✅ Deployed:", reputationProxyAddress);
+        console.log("   �?Deployed:", reputationProxyAddress);
     }
 
     // ─── Optional: Link Reputation to Escrow & TipJar ──────────
@@ -88,14 +88,14 @@ async function main() {
     const tipJarProxy = process.env.TIPJAR_ADDRESS_PROXY;
 
     if (escrowProxy) {
-        console.log("\n⏳ Linking Reputation Registry to Escrow...");
-        const escrowContract = await ethers.getContractAt("AgentPactEscrowV2", escrowProxy) as any;
+        console.log("\n�?Linking Reputation Registry to Escrow...");
+        const escrowContract = await ethers.getContractAt("AgentPactEscrow", escrowProxy) as any;
         await escrowContract.setReputationRegistry(reputationProxyAddress);
         console.log("   🔗 Escrow linked to Reputation Registry");
     }
 
     if (tipJarProxy) {
-        console.log("⏳ Linking Reputation Registry to TipJar...");
+        console.log("�?Linking Reputation Registry to TipJar...");
         const tipJarContract = await ethers.getContractAt("AgentPactTipJar", tipJarProxy) as any;
         await tipJarContract.setReputationRegistry(reputationProxyAddress);
         console.log("   🔗 TipJar linked to Reputation Registry");
@@ -113,7 +113,7 @@ async function main() {
         updatedAt: new Date().toISOString(),
     });
 
-    console.log("\n═══════════════════════════════════════════════");
+    console.log("\n══════════════════════════════════════════════�?);
     console.log("  ERC-8004 deployment complete!");
     console.log("  Identity Proxy:", identityProxyAddress);
     console.log("  Reputation Proxy:", reputationProxyAddress);
@@ -121,7 +121,7 @@ async function main() {
         console.log("\n  ⚠️  No ESCROW_ADDRESS_PROXY / TIPJAR_ADDRESS_PROXY set.");
         console.log("  To link, set env vars and re-run, or call setReputationRegistry() manually.");
     }
-    console.log("═══════════════════════════════════════════════");
+    console.log("══════════════════════════════════════════════�?);
 }
 
 main().catch((error) => {

@@ -24,15 +24,15 @@ async function main() {
     const networkName = network.name === "unknown" ? "base-sepolia" : network.name;
     const balance = await ethers.provider.getBalance(deployer.address);
 
-    console.log("═══════════════════════════════════════════════");
-    console.log("  AgentPact Treasury — Deployment");
-    console.log("═══════════════════════════════════════════════");
+    console.log("══════════════════════════════════════════════�?);
+    console.log("  AgentPact Treasury �?Deployment");
+    console.log("══════════════════════════════════════════════�?);
     console.log("Deployer:", deployer.address);
     console.log("Balance:", ethers.formatEther(balance), "ETH");
     console.log("Network:", networkName, `(chainId: ${network.chainId})`);
 
     if (balance === 0n) {
-        throw new Error("Deployer has 0 ETH — please fund the wallet first");
+        throw new Error("Deployer has 0 ETH �?please fund the wallet first");
     }
 
     const platformWallet = process.env.PLATFORM_FUND || deployer.address;
@@ -59,7 +59,7 @@ async function main() {
         await upgraded.waitForDeployment();
         treasuryProxyAddress = existingProxy;
         treasuryImplAddress = await upgrades.erc1967.getImplementationAddress(treasuryProxyAddress);
-        console.log("   ✅ Upgraded:", treasuryProxyAddress);
+        console.log("   �?Upgraded:", treasuryProxyAddress);
     } else {
         console.log("\n🆕 Deploying Treasury...");
         const treasury = await upgrades.deployProxy(
@@ -73,7 +73,7 @@ async function main() {
         await treasury.waitForDeployment();
         treasuryProxyAddress = await treasury.getAddress();
         treasuryImplAddress = await upgrades.erc1967.getImplementationAddress(treasuryProxyAddress);
-        console.log("   ✅ Deployed:", treasuryProxyAddress);
+        console.log("   �?Deployed:", treasuryProxyAddress);
     }
 
     // ─── Authorize Escrow & TipJar as callers ──────────────────
@@ -83,31 +83,31 @@ async function main() {
     const tipJarProxy = process.env.TIPJAR_ADDRESS_PROXY;
 
     if (escrowProxy) {
-        console.log("\n⏳ Authorizing Escrow as Treasury caller...");
+        console.log("\n�?Authorizing Escrow as Treasury caller...");
         await treasury.setAuthorizedCaller(escrowProxy, true);
         console.log("   🔗 Escrow authorized");
 
-        console.log("⏳ Setting Treasury on Escrow...");
-        const escrow = await ethers.getContractAt("AgentPactEscrowV2", escrowProxy) as any;
+        console.log("�?Setting Treasury on Escrow...");
+        const escrow = await ethers.getContractAt("AgentPactEscrow", escrowProxy) as any;
         await escrow.setTreasury(treasuryProxyAddress);
-        console.log("   🔗 Escrow → Treasury linked");
+        console.log("   🔗 Escrow �?Treasury linked");
     }
 
     if (tipJarProxy) {
-        console.log("\n⏳ Authorizing TipJar as Treasury caller...");
+        console.log("\n�?Authorizing TipJar as Treasury caller...");
         await treasury.setAuthorizedCaller(tipJarProxy, true);
         console.log("   🔗 TipJar authorized");
 
-        console.log("⏳ Setting Treasury on TipJar...");
+        console.log("�?Setting Treasury on TipJar...");
         const tipJar = await ethers.getContractAt("AgentPactTipJar", tipJarProxy) as any;
         await tipJar.setTreasuryContract(treasuryProxyAddress);
-        console.log("   🔗 TipJar → Treasury linked");
+        console.log("   🔗 TipJar �?Treasury linked");
     }
 
     // ─── Optional: Configure Uniswap Buyback ───────────────────
     const swapRouterAddr = process.env.SWAP_ROUTER;
     if (swapRouterAddr) {
-        console.log("\n⏳ Configuring Uniswap SwapRouter...");
+        console.log("\n�?Configuring Uniswap SwapRouter...");
         await treasury.setSwapRouter(swapRouterAddr);
         console.log("   🔗 SwapRouter:", swapRouterAddr);
     }
@@ -122,7 +122,7 @@ async function main() {
         updatedAt: new Date().toISOString(),
     });
 
-    console.log("\n═══════════════════════════════════════════════");
+    console.log("\n══════════════════════════════════════════════�?);
     console.log("  Treasury deployment complete!");
     console.log("  Proxy:", treasuryProxyAddress);
     console.log("  Buyback: DISABLED (default)");
@@ -132,7 +132,7 @@ async function main() {
     if (!escrowProxy || !tipJarProxy) {
         console.log("\n  ⚠️  Set ESCROW_ADDRESS_PROXY and TIPJAR_ADDRESS_PROXY to auto-link.");
     }
-    console.log("═══════════════════════════════════════════════");
+    console.log("══════════════════════════════════════════════�?);
 }
 
 main().catch((error) => {

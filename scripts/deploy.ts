@@ -34,7 +34,7 @@ function updateEnvFile(envPath: string, key: string, value: string) {
     } else {
         fs.writeFileSync(envPath, `${line}\n`);
     }
-    console.log(`✅ ${path.basename(envPath)} → ${key}`);
+    console.log(`�?${path.basename(envPath)} �?${key}`);
 }
 
 async function main() {
@@ -43,18 +43,18 @@ async function main() {
     const networkName = network.name === "unknown" ? "base-sepolia" : network.name;
     const balance = await ethers.provider.getBalance(deployer.address);
 
-    console.log("═══════════════════════════════════════════════");
-    console.log("  AgentPact Escrow V2 — Deployment");
-    console.log("═══════════════════════════════════════════════");
+    console.log("══════════════════════════════════════════════�?);
+    console.log("  AgentPact Escrow V2 �?Deployment");
+    console.log("══════════════════════════════════════════════�?);
     console.log("Deployer:", deployer.address);
     console.log("Balance:", ethers.formatEther(balance), "ETH");
     console.log("Network:", networkName, `(chainId: ${network.chainId})`);
 
     if (balance === 0n) {
-        throw new Error("Deployer has 0 ETH — please fund the wallet first");
+        throw new Error("Deployer has 0 ETH �?please fund the wallet first");
     }
 
-    const EscrowFactory = await ethers.getContractFactory("AgentPactEscrowV2");
+    const EscrowFactory = await ethers.getContractFactory("AgentPactEscrow");
 
     const existingProxy = process.env.ESCROW_ADDRESS_PROXY;
 
@@ -63,13 +63,13 @@ async function main() {
 
     if (existingProxy) {
         // ─── Upgrade Mode ──────────────────────────────────────────
-        console.log("\n🔄 Upgrade mode — proxy already deployed");
+        console.log("\n🔄 Upgrade mode �?proxy already deployed");
         console.log("   Existing Proxy:", existingProxy);
 
         const oldImpl = await upgrades.erc1967.getImplementationAddress(existingProxy);
         console.log("   Old Implementation:", oldImpl);
 
-        console.log("\n⏳ Deploying new implementation & upgrading proxy...");
+        console.log("\n�?Deploying new implementation & upgrading proxy...");
         const upgraded = await upgrades.upgradeProxy(existingProxy, EscrowFactory, {
             kind: "uups",
             unsafeAllow: ["constructor", "state-variable-immutable"],
@@ -79,12 +79,12 @@ async function main() {
         proxyAddress = existingProxy;
         implAddress = await upgrades.erc1967.getImplementationAddress(proxyAddress);
 
-        console.log("\n✅ Upgrade successful!");
+        console.log("\n�?Upgrade successful!");
         console.log("   Proxy (unchanged):", proxyAddress);
         console.log("   New Implementation:", implAddress);
     } else {
         // ─── Fresh Deploy Mode ─────────────────────────────────────
-        console.log("\n🆕 Fresh deploy mode — no existing proxy found");
+        console.log("\n🆕 Fresh deploy mode �?no existing proxy found");
 
         const platformSigner = process.env.PLATFORM_SIGNER || deployer.address;
         const platformFund = process.env.PLATFORM_FUND || deployer.address;
@@ -93,7 +93,7 @@ async function main() {
         console.log("   Platform Fund:", platformFund);
         console.log("   Initial Owner:", deployer.address);
 
-        console.log("\n⏳ Deploying UUPS Proxy + Implementation...");
+        console.log("\n�?Deploying UUPS Proxy + Implementation...");
         const escrow = await upgrades.deployProxy(
             EscrowFactory,
             [platformSigner, platformFund, deployer.address],
@@ -107,7 +107,7 @@ async function main() {
         proxyAddress = await escrow.getAddress();
         implAddress = await upgrades.erc1967.getImplementationAddress(proxyAddress);
 
-        console.log("\n✅ Fresh deploy successful!");
+        console.log("\n�?Fresh deploy successful!");
         console.log("   Proxy:", proxyAddress);
         console.log("   Implementation:", implAddress);
     }
@@ -120,13 +120,13 @@ async function main() {
     let tipJarImplAddress: string;
 
     if (existingTipJarProxy) {
-        console.log("\n🔄 TipJar Upgrade mode — proxy already deployed");
+        console.log("\n🔄 TipJar Upgrade mode �?proxy already deployed");
         console.log("   Existing TipJar Proxy:", existingTipJarProxy);
 
         const oldTipJarImpl = await upgrades.erc1967.getImplementationAddress(existingTipJarProxy);
         console.log("   Old TipJar Implementation:", oldTipJarImpl);
 
-        console.log("\n⏳ Deploying new TipJar implementation & upgrading proxy...");
+        console.log("\n�?Deploying new TipJar implementation & upgrading proxy...");
         const upgradedTipJar = await upgrades.upgradeProxy(existingTipJarProxy, TipJarFactory as any, {
             kind: "uups",
             unsafeAllow: ["constructor", "state-variable-immutable"],
@@ -136,11 +136,11 @@ async function main() {
         tipJarProxyAddress = existingTipJarProxy;
         tipJarImplAddress = await upgrades.erc1967.getImplementationAddress(tipJarProxyAddress);
 
-        console.log("\n✅ TipJar Upgrade successful!");
+        console.log("\n�?TipJar Upgrade successful!");
         console.log("   TipJar Proxy (unchanged):", tipJarProxyAddress);
         console.log("   TipJar New Implementation:", tipJarImplAddress);
     } else {
-        console.log("\n🆕 TipJar Fresh deploy mode — no existing proxy found");
+        console.log("\n🆕 TipJar Fresh deploy mode �?no existing proxy found");
 
         const platformSigner = process.env.PLATFORM_SIGNER || deployer.address;
         const platformFund = process.env.PLATFORM_FUND || deployer.address;
@@ -150,7 +150,7 @@ async function main() {
         console.log("   Platform Signer:", platformSigner);
         console.log("   Platform Fund:", platformFund);
 
-        console.log("\n⏳ Deploying TipJar UUPS Proxy + Implementation...");
+        console.log("\n�?Deploying TipJar UUPS Proxy + Implementation...");
         const tipJar = await upgrades.deployProxy(
             TipJarFactory as any,
             [usdcAddress, platformSigner, platformFund, deployer.address],
@@ -164,7 +164,7 @@ async function main() {
         tipJarProxyAddress = await tipJar.getAddress();
         tipJarImplAddress = await upgrades.erc1967.getImplementationAddress(tipJarProxyAddress);
 
-        console.log("\n✅ TipJar Fresh deploy successful!");
+        console.log("\n�?TipJar Fresh deploy successful!");
         console.log("   TipJar Proxy:", tipJarProxyAddress);
         console.log("   TipJar Implementation:", tipJarImplAddress);
     }
@@ -194,11 +194,11 @@ async function main() {
     //     proxyAddress
     // );
 
-    console.log("\n═══════════════════════════════════════════════");
+    console.log("\n══════════════════════════════════════════════�?);
     console.log("  Done! Verify:");
     console.log(`  npx hardhat verify --network ${networkName} ${proxyAddress}`);
     console.log(`  npx hardhat verify --network ${networkName} ${tipJarProxyAddress}`);
-    console.log("═══════════════════════════════════════════════");
+    console.log("══════════════════════════════════════════════�?);
 }
 
 main().catch((error) => {

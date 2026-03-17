@@ -24,12 +24,12 @@ import {
 } from "./interfaces/IAgentPactReputationRegistry.sol";
 import {IAgentPactTreasury} from "./interfaces/IAgentPactTreasury.sol";
 
-/// @title AgentPactEscrowV2
+/// @title AgentPactEscrow
 /// @notice Trustless escrow for AI agent task marketplace
 /// @dev UUPS upgradeable. Platform NEVER touches on-chain funds. Only requester & provider operate.
 ///      V2.1 changes: on-chain passRate calculation, relative delivery duration, abandonTask,
 ///      cancelTask compensation, decline counting, revision deadline extension.
-contract AgentPactEscrowV2 is
+contract AgentPactEscrow is
     IAgentPactEscrow,
     UUPSUpgradeable,
     OwnableUpgradeable,
@@ -87,9 +87,16 @@ contract AgentPactEscrowV2 is
 
     /// @notice Treasury contract for platform fee distribution (optional buyback)
     IAgentPactTreasury public treasuryContract;
-
+    /// @notice Total number of escrows that reached a terminal state
+    uint256 public totalClosedEscrows;
+    /// @notice Total number of escrows considered successful settlements
+    uint256 public totalSuccessfulEscrows;
+    /// @notice Cumulative reward volume by token for successful settlements
+    mapping(address => uint256) public totalRewardVolumeByToken;
+    /// @notice Cumulative provider payout volume by token for successful settlements
+    mapping(address => uint256) public totalPayoutVolumeByToken;
     /// @notice Storage gap for future upgrades
-    uint256[40] private __gap;
+    uint256[36] private __gap;
 
     // ========================= Errors =========================
 
@@ -180,13 +187,13 @@ contract AgentPactEscrowV2 is
         address token,
         uint256 totalAmount
     ) external payable nonReentrant returns (uint256 escrowId) {
-        // ✅ Opt-1: Minimum 1 hour delivery duration
+        // 閴?Opt-1: Minimum 1 hour delivery duration
         if (deliveryDurationSeconds < 3600) revert InvalidDuration();
         if (maxRevisions < 1 || maxRevisions > 10) revert InvalidMaxRevisions();
         if (acceptanceWindowHours < 12 || acceptanceWindowHours > 168)
             revert InvalidAcceptanceWindow();
 
-        // ✅ Fix P0-2: Validate fund weights on-chain
+        // 閴?Fix P0-2: Validate fund weights on-chain
         if (criteriaCount < 3 || criteriaCount > 10)
             revert InvalidCriteriaCount();
         if (fundWeights.length != criteriaCount) revert WeightCountMismatch();
@@ -229,14 +236,14 @@ contract AgentPactEscrowV2 is
         r.token = token;
         r.state = TaskState.Created;
         r.taskHash = taskHash;
-        // ✅ Fix P0-3: Store relative duration, deadline set in confirmTask()
+        // 閴?Fix P0-3: Store relative duration, deadline set in confirmTask()
         r.deliveryDurationSeconds = deliveryDurationSeconds;
-        r.deliveryDeadline = 0; // Not yet set — will be set in confirmTask()
+        r.deliveryDeadline = 0; // Not yet set 閳?will be set in confirmTask()
         r.maxRevisions = maxRevisions;
         r.criteriaCount = criteriaCount;
         r.acceptanceWindowHours = acceptanceWindowHours;
 
-        // ✅ Fix P0-2: Store fund weights on-chain for passRate calculation
+        // 閴?Fix P0-2: Store fund weights on-chain for passRate calculation
         for (uint8 i = 0; i < criteriaCount; i++) {
             escrowFundWeights[escrowId][i] = fundWeights[i];
         }
@@ -273,7 +280,10 @@ contract AgentPactEscrowV2 is
         uint256 remainingDeposit = r.requesterDeposit - r.depositConsumed;
 
         r.state = TaskState.Accepted;
-
+        totalClosedEscrows += 1;
+        totalSuccessfulEscrows += 1;
+        totalRewardVolumeByToken[r.token] += r.rewardAmount;
+        totalPayoutVolumeByToken[r.token] += providerPayout;
         _transfer(r.token, r.provider, providerPayout);
         _transferPlatformFee(r.token, fee);
         if (remainingDeposit > 0) {
@@ -311,7 +321,7 @@ contract AgentPactEscrowV2 is
     {
         EscrowRecord storage r = escrows[escrowId];
 
-        // ✅ Fix P0-1: Validate criteriaResults length matches on-chain criteriaCount
+        // 閴?Fix P0-1: Validate criteriaResults length matches on-chain criteriaCount
         require(
             criteriaResults.length == r.criteriaCount,
             "Criteria count mismatch"
@@ -331,7 +341,7 @@ contract AgentPactEscrowV2 is
 
         r.currentRevision++;
 
-        // ✅ Fix P0-1: Compute passRate on-chain from criteriaResults + fundWeights
+        // 閴?Fix P0-1: Compute passRate on-chain from criteriaResults + fundWeights
         uint8 passRate = _calcPassRate(escrowId, criteriaResults);
 
         // Store criteria hash for off-chain reference (use abi.encode to avoid packed collision)
@@ -351,7 +361,7 @@ contract AgentPactEscrowV2 is
             _autoSettle(escrowId, passRate);
         } else {
             r.state = TaskState.InRevision;
-            // ✅ Fix P1-7: Extend delivery deadline by 50% of original duration on each revision
+            // 閴?Fix P1-7: Extend delivery deadline by 50% of original duration on each revision
             r.deliveryDeadline = uint64(
                 block.timestamp + r.deliveryDurationSeconds / 2
             );
@@ -375,18 +385,19 @@ contract AgentPactEscrowV2 is
         if (r.state == TaskState.Created) {
             // Created stage: full refund to requester
             r.state = TaskState.Cancelled;
+            totalClosedEscrows += 1;
             _transfer(
                 r.token,
                 r.requester,
                 r.rewardAmount + r.requesterDeposit
             );
         } else {
-            // ✅ Fix P1-5: ConfirmationPending — agent has seen confidential materials
+            // 閴?Fix P1-5: ConfirmationPending 閳?agent has seen confidential materials
             // Deduct 10% of deposit as compensation to agent
             compensation = r.requesterDeposit / 10;
             r.depositConsumed += compensation;
             r.state = TaskState.Cancelled;
-
+            totalClosedEscrows += 1;
             _transfer(r.token, r.provider, compensation);
             // Refund remaining to requester
             uint256 remaining = r.rewardAmount +
@@ -446,7 +457,7 @@ contract AgentPactEscrowV2 is
     {
         EscrowRecord storage r = escrows[escrowId];
         r.state = TaskState.Working;
-        // ✅ Fix P1-6: Set delivery deadline from confirmation moment
+        // 閴?Fix P1-6: Set delivery deadline from confirmation moment
         r.deliveryDeadline = uint64(
             block.timestamp + r.deliveryDurationSeconds
         );
@@ -465,12 +476,12 @@ contract AgentPactEscrowV2 is
         EscrowRecord storage r = escrows[escrowId];
         address previousProvider = r.provider;
 
-        // No penalty — task returns to Created for next agent
+        // No penalty 閳?task returns to Created for next agent
         r.provider = address(0);
         r.state = TaskState.Created;
         r.confirmationDeadline = 0;
 
-        // ✅ Fix P2-8: Track decline count on-chain
+        // 閴?Fix P2-8: Track decline count on-chain
         r.declineCount++;
 
         emit TaskDeclined(escrowId, previousProvider);
@@ -518,7 +529,7 @@ contract AgentPactEscrowV2 is
 
         address previousProvider = r.provider;
 
-        // Task returns to Created for re-matching — reset all execution state
+        // Task returns to Created for re-matching 閳?reset all execution state
         r.provider = address(0);
         r.state = TaskState.Created;
         r.deliveryDeadline = 0;
@@ -551,7 +562,12 @@ contract AgentPactEscrowV2 is
 
         // Full reward to provider (requester defaulted)
         uint256 fee = (r.rewardAmount * PLATFORM_FEE_BPS) / 10_000;
-        _transfer(r.token, r.provider, r.rewardAmount - fee);
+        uint256 providerPayout = r.rewardAmount - fee;
+        totalClosedEscrows += 1;
+        totalSuccessfulEscrows += 1;
+        totalRewardVolumeByToken[r.token] += r.rewardAmount;
+        totalPayoutVolumeByToken[r.token] += providerPayout;
+        _transfer(r.token, r.provider, providerPayout);
         _transferPlatformFee(r.token, fee);
 
         // Return remaining deposit to requester
@@ -575,7 +591,7 @@ contract AgentPactEscrowV2 is
 
         TaskState previousState = r.state;
         r.state = TaskState.TimedOut;
-
+        totalClosedEscrows += 1;
         // Full refund to requester
         _transfer(
             r.token,
@@ -695,17 +711,20 @@ contract AgentPactEscrowV2 is
     function _autoSettle(uint256 escrowId, uint8 passRate) internal {
         EscrowRecord storage r = escrows[escrowId];
 
-        // ✅ Fix P0-1: passRate computed on-chain, apply MIN_PASS_RATE floor
+        // 閴?Fix P0-1: passRate computed on-chain, apply MIN_PASS_RATE floor
         if (passRate < MIN_PASS_RATE) passRate = MIN_PASS_RATE;
         if (passRate > 100) passRate = 100;
 
         uint256 providerShare = (r.rewardAmount * passRate) / 100;
         uint256 requesterRefund = r.rewardAmount - providerShare;
         uint256 fee = (providerShare * PLATFORM_FEE_BPS) / 10_000;
-
+        uint256 providerPayout = providerShare - fee;
         r.state = TaskState.Settled;
-
-        _transfer(r.token, r.provider, providerShare - fee);
+        totalClosedEscrows += 1;
+        totalSuccessfulEscrows += 1;
+        totalRewardVolumeByToken[r.token] += r.rewardAmount;
+        totalPayoutVolumeByToken[r.token] += providerPayout;
+        _transfer(r.token, r.provider, providerPayout);
         _transferPlatformFee(r.token, fee);
         if (requesterRefund > 0) {
             _transfer(r.token, r.requester, requesterRefund);
@@ -720,14 +739,14 @@ contract AgentPactEscrowV2 is
         emit TaskAutoSettled(
             escrowId,
             passRate,
-            providerShare - fee,
+            providerPayout,
             requesterRefund,
             fee
         );
     }
 
     /// @dev Calculate deposit rate based on maxRevisions
-    ///      maxRevisions 1-3 → 5%, 4-5 → 8%, 6-7 → 12%, 8+ → 15%
+    ///      maxRevisions 1-3 閳?5%, 4-5 閳?8%, 6-7 閳?12%, 8+ 閳?15%
     function _depositRate(uint8 maxRevisions) internal pure returns (uint256) {
         if (maxRevisions <= 3) return 5;
         if (maxRevisions <= 5) return 8;
@@ -779,7 +798,7 @@ contract AgentPactEscrowV2 is
         }
     }
 
-    /// @dev Required by UUPS — only owner can authorize upgrades
+    /// @dev Required by UUPS 閳?only owner can authorize upgrades
     function _authorizeUpgrade(
         address newImplementation
     ) internal override onlyOwner {}
