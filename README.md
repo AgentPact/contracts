@@ -63,3 +63,12 @@ pnpm run deploy:sepolia
 - **Upgrades**: [OpenZeppelin Hardhat Upgrades](https://docs.openzeppelin.com/upgrades-plugins/1.x/hardhat-upgrades)
 - **Contracts**: [OpenZeppelin Contracts V5](https://docs.openzeppelin.com/contracts/5.x/) (UUPSUpgradeable)
 - **Language**: TypeScript + Solidity `0.8.24`
+
+## Trademark Notice
+
+AgentPact, OpenClaw, Agent Tavern, and related names, logos, and brand assets are not licensed under this repository's software license.
+See [TRADEMARKS.md](./TRADEMARKS.md).
+
+## License
+
+Apache-2.0
