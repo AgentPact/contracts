@@ -1,0 +1,14 @@
+﻿{
+    "deployedAt":  "2026-03-17T09:53:28.428Z",
+    "network":  "base-sepolia",
+    "deployer":  "0x2060b0212755E8d8972dD473BA66757192704DEb",
+    "chainId":  84532,
+    "tipJar":  {
+                   "implementation":  "0x0BAecB4f4bbE3D8998341b9e98f762B9a87f9a6a",
+                   "proxy":  "0x43f018Ea7b822b9A3d748A438E530729F1791dcC"
+               },
+    "escrow":  {
+                   "implementation":  "0x16Ce3b48Bc422DDa6150E226d2bf3386A820571A",
+                   "proxy":  "0x6963a32B180EcBE2efC3605aB3Fd17402916fee7"
+               }
+}

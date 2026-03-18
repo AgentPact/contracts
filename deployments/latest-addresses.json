@@ -1,7 +1,9 @@
-{
-  "base-sepolia": {
-    "proxy": "0x927602DaFE11e2679cbB0eb4d98CF6a7B1417a52",
-    "implementation": "0x64222d765ce9ac80bce47b1846D20a4B4A7d9A91",
-    "deployedAt": "2026-03-03T03:33:47.909Z"
-  }
+﻿{
+    "base-sepolia":  {
+                         "proxy":  "0x6963a32B180EcBE2efC3605aB3Fd17402916fee7",
+                         "implementation":  "0x16Ce3b48Bc422DDa6150E226d2bf3386A820571A",
+                         "deployedAt":  "2026-03-17T09:53:28.428Z",
+                         "tipJarProxy":  "0x43f018Ea7b822b9A3d748A438E530729F1791dcC",
+                         "tipJarImplementation":  "0x0BAecB4f4bbE3D8998341b9e98f762B9a87f9a6a"
+                     }
 }
