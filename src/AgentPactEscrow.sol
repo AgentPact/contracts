@@ -72,7 +72,7 @@ contract AgentPactEscrow is
     /// @notice Escrow records: escrowId => EscrowRecord
     mapping(uint256 => EscrowRecord) public escrows;
 
-    /// @notice Assignment nonces: escrowId => nonce (prevents replay, increments on claim/decline)
+    /// @notice Assignment nonces: escrowId => nonce (prevents replay, consumed on successful claim)
     mapping(uint256 => uint256) public assignmentNonces;
 
     /// @notice Fund weights per escrow: escrowId => criteriaIndex => weight (%)
@@ -329,7 +329,7 @@ contract AgentPactEscrow is
 
         // Progressive deposit penalty (skip first revision)
         uint256 penalty = 0;
-        if (r.currentRevision > 0) {
+        if (r.currentRevision > 0 && r.currentRevision < r.maxRevisions) {
             penalty = _calcPenalty(r);
             if (penalty > 0) {
                 r.depositConsumed += penalty;
@@ -351,13 +351,14 @@ contract AgentPactEscrow is
             escrowId,
             reasonHash,
             r.latestCriteriaHash,
-            r.currentRevision,
+            r.currentRevision > r.maxRevisions ? r.maxRevisions : r.currentRevision,
             penalty,
             passRate
         );
 
-        // Auto-settle if revision limit reached
-        if (r.currentRevision >= r.maxRevisions) {
+        // Auto-settle only after all granted revision rounds have already been used
+        if (r.currentRevision > r.maxRevisions) {
+            r.currentRevision = r.maxRevisions;
             _autoSettle(escrowId, passRate);
         } else {
             r.state = TaskState.InRevision;

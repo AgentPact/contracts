@@ -6,7 +6,7 @@
     "compile": "hardhat compile",
     "test": "hardhat test",
     "deploy:sepolia": "hardhat run scripts/deploy.ts --network base-sepolia",
-    "sync-usdc:sepolia": "hardhat run test/updateUSDC.ts --network base-sepolia",
+    "sync-usdc:sepolia": "hardhat run scripts/updateUSDC.ts --network base-sepolia",
     "clean": "hardhat clean"
   },
   "devDependencies": {
@@ -14,6 +14,8 @@
     "@openzeppelin/contracts": "^5.0.1",
     "@openzeppelin/contracts-upgradeable": "^5.0.1",
     "@openzeppelin/hardhat-upgrades": "^3.0.0",
+    "@types/chai": "^4.3.20",
+    "chai": "^4.5.0",
     "hardhat": "^2.19.0",
     "secp256k1": "^5.0.1",
     "typescript": "^5.0.0",
