@@ -120,6 +120,8 @@ contract AgentPactEscrow is
     error WeightsSumNot100();
     error WeightCountMismatch();
     error InvalidDuration();
+    error DeadlinePassed();
+    error TaskSuspended();
 
     // ========================= Modifiers =========================
 
@@ -327,10 +329,14 @@ contract AgentPactEscrow is
             "Criteria count mismatch"
         );
 
-        // Progressive deposit penalty (skip first revision)
+        uint8 requestedRevision = r.currentRevision + 1;
+
+        // Progressive deposit penalty is charged for the revision being requested.
+        // Round 1 is free; rounds 2+ consume requester deposit even if this
+        // request exhausts the revision allowance and immediately auto-settles.
         uint256 penalty = 0;
-        if (r.currentRevision > 0 && r.currentRevision < r.maxRevisions) {
-            penalty = _calcPenalty(r);
+        if (requestedRevision > 1) {
+            penalty = _calcPenalty(r, requestedRevision);
             if (penalty > 0) {
                 r.depositConsumed += penalty;
                 // 50% to provider, 50% to platform fund
@@ -339,7 +345,7 @@ contract AgentPactEscrow is
             }
         }
 
-        r.currentRevision++;
+        r.currentRevision = requestedRevision;
 
         // 閴?Fix P0-1: Compute passRate on-chain from criteriaResults + fundWeights
         uint8 passRate = _calcPassRate(escrowId, criteriaResults);
@@ -351,7 +357,7 @@ contract AgentPactEscrow is
             escrowId,
             reasonHash,
             r.latestCriteriaHash,
-            r.currentRevision > r.maxRevisions ? r.maxRevisions : r.currentRevision,
+            r.currentRevision,
             penalty,
             passRate
         );
@@ -419,6 +425,8 @@ contract AgentPactEscrow is
         uint256 expiredAt,
         bytes calldata platformSignature
     ) external nonReentrant inState(escrowId, TaskState.Created) {
+        if (escrows[escrowId].declineCount >= MAX_DECLINE_COUNT)
+            revert TaskSuspended();
         if (block.timestamp > expiredAt) revert SignatureExpired();
         if (nonce != assignmentNonces[escrowId]) revert InvalidNonce();
 
@@ -457,6 +465,7 @@ contract AgentPactEscrow is
         inState(escrowId, TaskState.ConfirmationPending)
     {
         EscrowRecord storage r = escrows[escrowId];
+        if (block.timestamp > r.confirmationDeadline) revert DeadlinePassed();
         r.state = TaskState.Working;
         // 閴?Fix P1-6: Set delivery deadline from confirmation moment
         r.deliveryDeadline = uint64(
@@ -502,6 +511,7 @@ contract AgentPactEscrow is
         if (r.state != TaskState.Working && r.state != TaskState.InRevision) {
             revert InvalidState(r.state, TaskState.Working);
         }
+        if (block.timestamp > r.deliveryDeadline) revert DeadlinePassed();
 
         r.latestDeliveryHash = deliveryHash;
         r.state = TaskState.Delivered;
@@ -755,17 +765,17 @@ contract AgentPactEscrow is
         return 15;
     }
 
-    /// @dev Calculate progressive penalty for current revision round
+    /// @dev Calculate progressive penalty for the revision round being requested
     ///      Round 2: 10%, Round 3: 20%, Round 4: 30%, Round 5+: 40%
     function _calcPenalty(
-        EscrowRecord storage r
+        EscrowRecord storage r,
+        uint8 requestedRevision
     ) internal view returns (uint256) {
         uint256 penaltyRate;
-        uint8 rev = r.currentRevision; // 0-indexed, represents completed revisions
 
-        if (rev == 1) penaltyRate = 10;
-        else if (rev == 2) penaltyRate = 20;
-        else if (rev == 3) penaltyRate = 30;
+        if (requestedRevision == 2) penaltyRate = 10;
+        else if (requestedRevision == 3) penaltyRate = 20;
+        else if (requestedRevision == 4) penaltyRate = 30;
         else penaltyRate = 40;
 
         uint256 penalty = (r.requesterDeposit * penaltyRate) / 100;
@@ -793,7 +803,7 @@ contract AgentPactEscrow is
     function _transferPlatformFee(address token, uint256 feeAmount) internal {
         if (address(treasuryContract) != address(0)) {
             _transfer(token, address(treasuryContract), feeAmount);
-            try treasuryContract.receiveFee(token, feeAmount) {} catch {}
+            treasuryContract.receiveFee(token, feeAmount);
         } else {
             _transfer(token, platformFund, feeAmount);
         }

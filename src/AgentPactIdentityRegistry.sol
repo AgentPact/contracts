@@ -14,6 +14,9 @@ import {
 /**
  * @title AgentPactIdentityRegistry
  * @dev Implementation of a simplified ERC-8004 Identity Registry for AI Agents.
+ *      NOTE: This contract is currently NOT enabled in production flows.
+ *      It is kept for future ERC-8004-aligned identity work and should not be
+ *      treated as an active protocol dependency yet.
  * Each NFT represents a unique Agent identity.
  */
 contract AgentPactIdentityRegistry is
@@ -49,6 +52,7 @@ contract AgentPactIdentityRegistry is
         address to,
         string memory metadataURI
     ) external returns (uint256) {
+        require(msg.sender == to, "Self registration only");
         uint256 tokenId = _nextTokenId++;
         _safeMint(to, tokenId);
         _setTokenURI(tokenId, metadataURI);
@@ -68,6 +72,26 @@ contract AgentPactIdentityRegistry is
         require(ownerOf(tokenId) == msg.sender, "Not owner of Agent NFT");
         primaryAgentId[msg.sender] = tokenId;
         hasPrimaryAgent[msg.sender] = true;
+    }
+
+    function _update(
+        address to,
+        uint256 tokenId,
+        address auth
+    ) internal override returns (address) {
+        address from = super._update(to, tokenId, auth);
+
+        if (from != address(0) && primaryAgentId[from] == tokenId) {
+            primaryAgentId[from] = 0;
+            hasPrimaryAgent[from] = false;
+        }
+
+        if (to != address(0) && !hasPrimaryAgent[to]) {
+            primaryAgentId[to] = tokenId;
+            hasPrimaryAgent[to] = true;
+        }
+
+        return from;
     }
 
     function _authorizeUpgrade(

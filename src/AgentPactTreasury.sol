@@ -33,6 +33,28 @@ interface ISwapRouter {
     ) external payable returns (uint256 amountOut);
 }
 
+/// @notice Minimal interface for Uniswap V3 QuoterV2
+interface IQuoterV2 {
+    struct QuoteExactInputSingleParams {
+        address tokenIn;
+        address tokenOut;
+        uint256 amountIn;
+        uint24 fee;
+        uint160 sqrtPriceLimitX96;
+    }
+
+    function quoteExactInputSingle(
+        QuoteExactInputSingleParams calldata params
+    )
+        external
+        returns (
+            uint256 amountOut,
+            uint160 sqrtPriceX96After,
+            uint32 initializedTicksCrossed,
+            uint256 gasEstimate
+        );
+}
+
 /// @notice Minimal interface for WETH deposit/withdraw
 interface IWETH {
     function deposit() external payable;
@@ -59,6 +81,8 @@ contract AgentPactTreasury is
 {
     using SafeERC20 for IERC20;
 
+    event SwapQuoterUpdated(address oldQuoter, address newQuoter);
+
     // ========================= Constants =========================
 
     /// @notice Maximum buyback ratio: 100% = 10000 bps
@@ -84,6 +108,9 @@ contract AgentPactTreasury is
     /// @notice Uniswap V3 SwapRouter address
     ISwapRouter public swapRouter;
 
+    /// @notice Uniswap QuoterV2 address used to derive a protected minOut
+    IQuoterV2 public swapQuoter;
+
     /// @notice Uniswap pool fee tier (3000 = 0.3%, 10000 = 1%)
     uint24 public swapPoolFee;
 
@@ -97,7 +124,7 @@ contract AgentPactTreasury is
     mapping(address => bool) public authorizedCallers;
 
     /// @notice Storage gap for future upgrades
-    uint256[40] private __gap;
+    uint256[39] private __gap;
 
     // ========================= Errors =========================
 
@@ -154,7 +181,8 @@ contract AgentPactTreasury is
             !buybackEnabled ||
             buybackBps == 0 ||
             buybackToken == address(0) ||
-            address(swapRouter) == address(0)
+            address(swapRouter) == address(0) ||
+            address(swapQuoter) == address(0)
         ) {
             _forwardToWallet(token, amount);
             return;
@@ -202,6 +230,25 @@ contract AgentPactTreasury is
         // Wrap ETH → WETH first
         try IWETH(weth).deposit{value: amountIn}() {
             IWETH(weth).approve(address(swapRouter), amountIn);
+            uint256 minOut;
+
+            try
+                swapQuoter.quoteExactInputSingle(
+                    IQuoterV2.QuoteExactInputSingleParams({
+                        tokenIn: weth,
+                        tokenOut: buybackToken,
+                        amountIn: amountIn,
+                        fee: swapPoolFee,
+                        sqrtPriceLimitX96: 0
+                    })
+                )
+            returns (uint256 quotedOut, uint160, uint32, uint256) {
+                minOut = (quotedOut * (10_000 - maxSlippageBps)) / 10_000;
+            } catch {
+                IERC20(weth).safeTransfer(platformWallet, amountIn);
+                emit BuybackFailed(address(0), amountIn, "quote_failed");
+                return;
+            }
 
             ISwapRouter.ExactInputSingleParams memory params = ISwapRouter
                 .ExactInputSingleParams({
@@ -210,7 +257,7 @@ contract AgentPactTreasury is
                     fee: swapPoolFee,
                     recipient: platformWallet,
                     amountIn: amountIn,
-                    amountOutMinimum: 0, // Controlled by maxSlippageBps at application layer
+                    amountOutMinimum: minOut,
                     sqrtPriceLimitX96: 0
                 });
 
@@ -235,6 +282,25 @@ contract AgentPactTreasury is
     /// @dev Swap ERC20 → buybackToken
     function _swapERC20ForToken(address tokenIn, uint256 amountIn) internal {
         IERC20(tokenIn).approve(address(swapRouter), amountIn);
+        uint256 minOut;
+
+        try
+            swapQuoter.quoteExactInputSingle(
+                IQuoterV2.QuoteExactInputSingleParams({
+                    tokenIn: tokenIn,
+                    tokenOut: buybackToken,
+                    amountIn: amountIn,
+                    fee: swapPoolFee,
+                    sqrtPriceLimitX96: 0
+                })
+            )
+        returns (uint256 quotedOut, uint160, uint32, uint256) {
+            minOut = (quotedOut * (10_000 - maxSlippageBps)) / 10_000;
+        } catch {
+            IERC20(tokenIn).safeTransfer(platformWallet, amountIn);
+            emit BuybackFailed(tokenIn, amountIn, "quote_failed");
+            return;
+        }
 
         ISwapRouter.ExactInputSingleParams memory params = ISwapRouter
             .ExactInputSingleParams({
@@ -243,7 +309,7 @@ contract AgentPactTreasury is
                 fee: swapPoolFee,
                 recipient: platformWallet,
                 amountIn: amountIn,
-                amountOutMinimum: 0,
+                amountOutMinimum: minOut,
                 sqrtPriceLimitX96: 0
             });
 
@@ -290,6 +356,14 @@ contract AgentPactTreasury is
         address old = address(swapRouter);
         swapRouter = ISwapRouter(_router);
         emit SwapRouterUpdated(old, _router);
+    }
+
+    /// @notice Update the Uniswap QuoterV2 address
+    function setSwapQuoter(address _quoter) external onlyOwner {
+        if (_quoter == address(0)) revert ZeroAddress();
+        address old = address(swapQuoter);
+        swapQuoter = IQuoterV2(_quoter);
+        emit SwapQuoterUpdated(old, _quoter);
     }
 
     /// @notice Update the platform wallet (final fee destination)

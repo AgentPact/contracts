@@ -17,6 +17,9 @@ interface IIdentityRegistry {
 /**
  * @title AgentPactReputationRegistry
  * @dev Implementation of a simplified ERC-8004 Reputation Registry for AI Agents.
+ *      NOTE: This contract is currently NOT enabled in production flows.
+ *      It is kept for future ERC-8004-aligned reputation signals and should not
+ *      be treated as an active protocol dependency yet.
  * Allows recording reviews, performance metrics, and positive feedback on-chain.
  */
 contract AgentPactReputationRegistry is OwnableUpgradeable, UUPSUpgradeable {
@@ -45,6 +48,8 @@ contract AgentPactReputationRegistry is OwnableUpgradeable, UUPSUpgradeable {
 
     event WriterAuthorized(address writer, bool status);
 
+    error UnauthorizedWriter();
+
     /// @custom:oz-upgrades-unsafe-allow constructor
     constructor() {
         _disableInitializers();
@@ -72,6 +77,7 @@ contract AgentPactReputationRegistry is OwnableUpgradeable, UUPSUpgradeable {
         int256 score,
         string calldata dataURI
     ) external {
+        if (!authorizedWriters[msg.sender]) revert UnauthorizedWriter();
         if (!identityRegistry.hasPrimaryAgent(target)) {
             return; // Target has no agent identity, ignore the attestation
         }

@@ -221,9 +221,7 @@ contract AgentPactTipJar is
                     address(treasuryContract),
                     fee
                 );
-                try
-                    treasuryContract.receiveFee(address(usdcToken), fee)
-                {} catch {}
+                treasuryContract.receiveFee(address(usdcToken), fee);
             } else {
                 usdcToken.safeTransferFrom(msg.sender, treasury, fee);
             }
