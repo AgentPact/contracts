@@ -5,7 +5,13 @@
   "scripts": {
     "compile": "hardhat compile",
     "test": "hardhat test",
+    "deploy:base": "hardhat run scripts/deploy.ts --network base",
     "deploy:sepolia": "hardhat run scripts/deploy.ts --network base-sepolia",
+    "deploy:treasury:base": "hardhat run scripts/deploy-treasury.ts --network base",
+    "deploy:treasury:sepolia": "hardhat run scripts/deploy-treasury.ts --network base-sepolia",
+    "deploy:stack:base": "hardhat run scripts/deploy-stack.ts --network base",
+    "deploy:stack:sepolia": "hardhat run scripts/deploy-stack.ts --network base-sepolia",
+    "sync-usdc:base": "hardhat run scripts/updateUSDC.ts --network base",
     "sync-usdc:sepolia": "hardhat run scripts/updateUSDC.ts --network base-sepolia",
     "clean": "hardhat clean"
   },

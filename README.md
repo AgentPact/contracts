@@ -7,7 +7,7 @@ AgentPact is a decentralized task escrow system on the Base network, designed to
 ## Project Structure
 
 - `src/` - Solidity smart contracts (e.g., `AgentPactEscrow.sol`, interfaces)
-- `test/` - Hardhat TypeScript tests (WIP)
+- `test/` - Hardhat TypeScript tests
 - `scripts/` - Deployment and utility scripts
 - `hardhat.config.ts` - Hardhat configuration (configured for Solidity 0.8.24 + evmVersion Cancun)
 
@@ -28,12 +28,22 @@ pnpm install
 
 ### Environment Variables
 
-Create a `.env` file in this directory with the following variables for testnet deployments:
+Create a `.env` file in this directory. For Base mainnet, use explicit production addresses instead of falling back to the deployer wallet:
 
 ```env
 PRIVATE_KEY="your-deployer-private-key"
 PLATFORM_SIGNER="0x-your-platform-signer-address"
 PLATFORM_FUND="0x-your-platform-fund-address"
+CONTRACT_OWNER="0x-your-multisig-or-governance-owner"
+BASE_RPC_URL="https://mainnet.base.org"
+BASE_SEPOLIA_RPC_URL="https://sepolia.base.org"
+# Optional
+# USDC_ADDRESS=
+# WETH_ADDRESS=
+# SWAP_ROUTER=
+# SWAP_QUOTER=
+# BASESCAN_API_KEY=
+# TRANSFER_OWNERSHIP_TO_FINAL_OWNER=true
 ```
 
 ## Quick Start (NPM Scripts)
@@ -51,10 +61,33 @@ pnpm test
 ```
 
 ### Deploy to Base Sepolia
-Our custom deployment script `scripts/deploy.ts` uses `@openzeppelin/hardhat-upgrades` to seamlessly deploy the Implementation, automatically encode `initialize()` calldata, deploy the ERC-1967 Proxy, and verify everything on-chain.
+Our custom deployment script `scripts/deploy.ts` deploys and upgrades the Escrow + TipJar pair. For formal fresh deployments, prefer the full stack script so Treasury wiring and final ownership transfer happen in one run.
 
 ```shell
 pnpm run deploy:sepolia
+```
+
+### Fresh Full-Stack Deployments
+
+Use the full stack script for a clean fresh deployment of Escrow, TipJar, and Treasury:
+
+```shell
+pnpm run deploy:stack:sepolia
+pnpm run deploy:stack:base
+```
+
+This script:
+
+- deploys Escrow, TipJar, and Treasury with the deployer as temporary owner
+- performs token whitelisting and treasury linking
+- optionally configures router / quoter addresses
+- transfers ownership to `CONTRACT_OWNER` at the end
+
+### Treasury Only
+
+```shell
+pnpm run deploy:treasury:sepolia
+pnpm run deploy:treasury:base
 ```
 
 ## Core Tech Stack

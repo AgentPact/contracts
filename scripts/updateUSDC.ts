@@ -1,11 +1,17 @@
 import { ethers } from "hardhat";
-import { readEscrowJson, resolveUsdcAddress } from "./env";
+import {
+    normalizeNetworkName,
+    readEscrowJson,
+    resolveUsdcAddress,
+} from "./env";
 
 async function main() {
     const [deployer] = await ethers.getSigners();
+    const network = await ethers.provider.getNetwork();
+    const networkName = normalizeNetworkName(network.name, network.chainId);
     const escrowJson = readEscrowJson();
 
-    const usdcAddress = resolveUsdcAddress();
+    const usdcAddress = resolveUsdcAddress(networkName);
     const escrowProxyAddress =
         process.env.ESCROW_ADDRESS_PROXY?.trim() || escrowJson.escrowProxy;
     const tipJarProxyAddress =

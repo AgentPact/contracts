@@ -1,7 +1,18 @@
-﻿import { ethers, upgrades } from "hardhat";
+import { ethers, upgrades } from "hardhat";
 import fs from "fs";
 import path from "path";
-import { resolveUsdcAddress } from "./env";
+import {
+    normalizeNetworkName,
+    resolveContractOwner,
+    resolvePlatformFundAddress,
+    resolvePlatformSignerAddress,
+    resolveUsdcAddress,
+} from "./env";
+import {
+    assertDeployerControlsOwnerActions,
+    shouldTransferOwnershipByDefault,
+    transferOwnershipIfRequested,
+} from "./deploy-helpers";
 
 const ESCROW_JSON = path.join(__dirname, "ESCROW.json");
 
@@ -13,6 +24,7 @@ interface EscrowAddresses {
     network: string;
     chainId: number;
     deployer: string;
+    owner: string;
     updatedAt: string;
 }
 
@@ -41,8 +53,19 @@ function updateEnvFile(envPath: string, key: string, value: string) {
 async function main() {
     const [deployer] = await ethers.getSigners();
     const network = await ethers.provider.getNetwork();
-    const networkName = network.name === "unknown" ? "base-sepolia" : network.name;
+    const networkName = normalizeNetworkName(network.name, network.chainId);
     const balance = await ethers.provider.getBalance(deployer.address);
+    const finalOwner = resolveContractOwner(networkName, deployer.address);
+    const platformSigner = resolvePlatformSignerAddress(
+        networkName,
+        deployer.address
+    );
+    const platformFund = resolvePlatformFundAddress(
+        networkName,
+        deployer.address
+    );
+    const usdcAddress = resolveUsdcAddress(networkName);
+    const transferOwnership = shouldTransferOwnershipByDefault();
 
     console.log("==================================================");
     console.log("  AgentPact Escrow Deployment");
@@ -50,6 +73,10 @@ async function main() {
     console.log("Deployer:", deployer.address);
     console.log("Balance:", ethers.formatEther(balance), "ETH");
     console.log("Network:", networkName, `(chainId: ${network.chainId})`);
+    console.log("Platform Signer:", platformSigner);
+    console.log("Platform Fund:", platformFund);
+    console.log("Final Owner:", finalOwner);
+    console.log("Transfer Ownership:", transferOwnership);
 
     if (balance === 0n) {
         throw new Error("Deployer has 0 ETH - please fund the wallet first");
@@ -57,7 +84,6 @@ async function main() {
 
     const EscrowFactory = await ethers.getContractFactory("AgentPactEscrow");
     const existingProxy = process.env.ESCROW_ADDRESS_PROXY?.trim();
-    const usdcAddress = resolveUsdcAddress();
 
     let proxyAddress: string;
     let implAddress: string;
@@ -65,6 +91,13 @@ async function main() {
     if (existingProxy) {
         console.log("\nUpgrade mode - proxy already deployed");
         console.log("Existing Proxy:", existingProxy);
+
+        const existingEscrow = EscrowFactory.attach(existingProxy) as any;
+        await assertDeployerControlsOwnerActions(
+            existingEscrow,
+            "Escrow",
+            deployer.address
+        );
 
         const oldImpl = await upgrades.erc1967.getImplementationAddress(existingProxy);
         console.log("Old Implementation:", oldImpl);
@@ -84,13 +117,7 @@ async function main() {
         console.log("Implementation:", implAddress);
     } else {
         console.log("\nFresh deploy mode - no existing escrow proxy found");
-
-        const platformSigner = process.env.PLATFORM_SIGNER || deployer.address;
-        const platformFund = process.env.PLATFORM_FUND || deployer.address;
-
-        console.log("Platform Signer:", platformSigner);
-        console.log("Platform Fund:", platformFund);
-        console.log("Initial Owner:", deployer.address);
+        console.log("Temporary Owner:", deployer.address);
 
         console.log("\nDeploying Escrow UUPS proxy and implementation...");
         const escrow = await upgrades.deployProxy(
@@ -121,6 +148,13 @@ async function main() {
         console.log("\nTipJar upgrade mode - proxy already deployed");
         console.log("Existing TipJar Proxy:", existingTipJarProxy);
 
+        const existingTipJar = TipJarFactory.attach(existingTipJarProxy) as any;
+        await assertDeployerControlsOwnerActions(
+            existingTipJar,
+            "TipJar",
+            deployer.address
+        );
+
         const oldTipJarImpl = await upgrades.erc1967.getImplementationAddress(existingTipJarProxy);
         console.log("Old TipJar Implementation:", oldTipJarImpl);
 
@@ -139,13 +173,8 @@ async function main() {
         console.log("Implementation:", tipJarImplAddress);
     } else {
         console.log("\nTipJar fresh deploy mode - no existing proxy found");
-
-        const platformSigner = process.env.PLATFORM_SIGNER || deployer.address;
-        const platformFund = process.env.PLATFORM_FUND || deployer.address;
-
         console.log("USDC Address:", usdcAddress);
-        console.log("Platform Signer:", platformSigner);
-        console.log("Platform Fund:", platformFund);
+        console.log("Temporary Owner:", deployer.address);
 
         console.log("\nDeploying TipJar UUPS proxy and implementation...");
         const tipJar = await upgrades.deployProxy(
@@ -188,6 +217,21 @@ async function main() {
         console.log("\nTipJar already uses USDC:", usdcAddress);
     }
 
+    await transferOwnershipIfRequested(
+        escrow,
+        "Escrow",
+        finalOwner,
+        deployer.address,
+        transferOwnership && !existingProxy
+    );
+    await transferOwnershipIfRequested(
+        tipJar,
+        "TipJar",
+        finalOwner,
+        deployer.address,
+        transferOwnership && !existingTipJarProxy
+    );
+
     saveEscrowJson({
         escrowProxy: proxyAddress,
         escrowImplementation: implAddress,
@@ -196,6 +240,8 @@ async function main() {
         network: networkName,
         chainId: Number(network.chainId),
         deployer: deployer.address,
+        owner:
+            transferOwnership && !existingProxy ? finalOwner : deployer.address,
         updatedAt: new Date().toISOString(),
     });
 
@@ -206,6 +252,11 @@ async function main() {
     }
 
     console.log("\n==================================================");
+    if (!transferOwnership && finalOwner.toLowerCase() !== deployer.address.toLowerCase()) {
+        console.log(
+            "Ownership transfer skipped. Re-run with TRANSFER_OWNERSHIP_TO_FINAL_OWNER=true once treasury linking is complete."
+        );
+    }
     console.log("Done. Verify if needed:");
     console.log(`npx hardhat verify --network ${networkName} ${proxyAddress}`);
     console.log(`npx hardhat verify --network ${networkName} ${tipJarProxyAddress}`);

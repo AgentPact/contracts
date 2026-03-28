@@ -5,6 +5,15 @@ import * as dotenv from "dotenv";
 
 dotenv.config();
 
+function resolveAccounts(): string[] {
+    const privateKey = process.env.PRIVATE_KEY?.trim();
+    if (!privateKey) {
+        return [];
+    }
+
+    return [privateKey.startsWith("0x") ? privateKey : `0x${privateKey}`];
+}
+
 const config: HardhatUserConfig = {
     solidity: {
         version: "0.8.24",
@@ -24,9 +33,21 @@ const config: HardhatUserConfig = {
         artifacts: "./artifacts",
     },
     networks: {
+        base: {
+            url: process.env.BASE_RPC_URL || "https://mainnet.base.org",
+            chainId: 8453,
+            accounts: resolveAccounts(),
+        },
         "base-sepolia": {
-            url: "https://sepolia.base.org",
-            accounts: process.env.PRIVATE_KEY ? [process.env.PRIVATE_KEY] : [],
+            url: process.env.BASE_SEPOLIA_RPC_URL || "https://sepolia.base.org",
+            chainId: 84532,
+            accounts: resolveAccounts(),
+        },
+    },
+    etherscan: {
+        apiKey: {
+            base: process.env.BASESCAN_API_KEY || "",
+            baseSepolia: process.env.BASESCAN_API_KEY || "",
         },
     },
 };

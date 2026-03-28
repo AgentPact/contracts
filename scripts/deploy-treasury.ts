@@ -1,6 +1,20 @@
 import { ethers, upgrades } from "hardhat";
 import fs from "fs";
 import path from "path";
+import {
+    normalizeNetworkName,
+    readEscrowJson,
+    resolveContractOwner,
+    resolvePlatformFundAddress,
+    resolveSwapQuoterAddress,
+    resolveSwapRouterAddress,
+    resolveWethAddress,
+} from "./env";
+import {
+    assertDeployerControlsOwnerActions,
+    shouldTransferOwnershipByDefault,
+    transferOwnershipIfRequested,
+} from "./deploy-helpers";
 
 const TREASURY_JSON = path.join(__dirname, "TREASURY.json");
 
@@ -10,48 +24,61 @@ interface TreasuryAddresses {
     network: string;
     chainId: number;
     deployer: string;
+    owner: string;
     updatedAt: string;
 }
 
 function saveTreasuryJson(data: TreasuryAddresses) {
     fs.writeFileSync(TREASURY_JSON, JSON.stringify(data, null, 2));
-    console.log("📄 scripts/TREASURY.json updated");
+    console.log("scripts/TREASURY.json updated");
 }
 
 async function main() {
     const [deployer] = await ethers.getSigners();
     const network = await ethers.provider.getNetwork();
-    const networkName = network.name === "unknown" ? "base-sepolia" : network.name;
+    const networkName = normalizeNetworkName(network.name, network.chainId);
     const balance = await ethers.provider.getBalance(deployer.address);
+    const finalOwner = resolveContractOwner(networkName, deployer.address);
+    const platformWallet = resolvePlatformFundAddress(
+        networkName,
+        deployer.address
+    );
+    const wethAddress = resolveWethAddress(networkName);
+    const swapRouterAddr = resolveSwapRouterAddress();
+    const swapQuoterAddr = resolveSwapQuoterAddress();
+    const transferOwnership = shouldTransferOwnershipByDefault();
+    const escrowJson = readEscrowJson();
 
-    console.log("══════════════════════════════════════════════�?);
-    console.log("  AgentPact Treasury �?Deployment");
-    console.log("══════════════════════════════════════════════�?);
+    console.log("==================================================");
+    console.log("  AgentPact Treasury Deployment");
+    console.log("==================================================");
     console.log("Deployer:", deployer.address);
     console.log("Balance:", ethers.formatEther(balance), "ETH");
     console.log("Network:", networkName, `(chainId: ${network.chainId})`);
+    console.log("Platform Wallet:", platformWallet);
+    console.log("WETH:", wethAddress);
+    console.log("Final Owner:", finalOwner);
+    console.log("Transfer Ownership:", transferOwnership);
 
     if (balance === 0n) {
-        throw new Error("Deployer has 0 ETH �?please fund the wallet first");
+        throw new Error("Deployer has 0 ETH - please fund the wallet first");
     }
 
-    const platformWallet = process.env.PLATFORM_FUND || deployer.address;
-    // WETH on Base: 0x4200000000000000000000000000000000000006
-    // WETH on Base Sepolia: same address (canonical WETH)
-    const wethAddress = process.env.WETH_ADDRESS || "0x4200000000000000000000000000000000000006";
-
-    console.log("   Platform Wallet:", platformWallet);
-    console.log("   WETH:", wethAddress);
-
-    // ─── Deploy Treasury ───────────────────────────────────────
     const TreasuryFactory = await ethers.getContractFactory("AgentPactTreasury");
-    const existingProxy = process.env.TREASURY_ADDRESS_PROXY;
+    const existingProxy = process.env.TREASURY_ADDRESS_PROXY?.trim();
 
     let treasuryProxyAddress: string;
     let treasuryImplAddress: string;
 
     if (existingProxy) {
-        console.log("\n🔄 Upgrading Treasury...");
+        const existingTreasury = TreasuryFactory.attach(existingProxy) as any;
+        await assertDeployerControlsOwnerActions(
+            existingTreasury,
+            "Treasury",
+            deployer.address
+        );
+
+        console.log("\nUpgrading Treasury...");
         const upgraded = await upgrades.upgradeProxy(existingProxy, TreasuryFactory as any, {
             kind: "uups",
             unsafeAllow: ["constructor"],
@@ -59,9 +86,9 @@ async function main() {
         await upgraded.waitForDeployment();
         treasuryProxyAddress = existingProxy;
         treasuryImplAddress = await upgrades.erc1967.getImplementationAddress(treasuryProxyAddress);
-        console.log("   �?Upgraded:", treasuryProxyAddress);
+        console.log("Upgraded:", treasuryProxyAddress);
     } else {
-        console.log("\n🆕 Deploying Treasury...");
+        console.log("\nDeploying Treasury...");
         const treasury = await upgrades.deployProxy(
             TreasuryFactory as any,
             [platformWallet, wethAddress, deployer.address],
@@ -73,56 +100,106 @@ async function main() {
         await treasury.waitForDeployment();
         treasuryProxyAddress = await treasury.getAddress();
         treasuryImplAddress = await upgrades.erc1967.getImplementationAddress(treasuryProxyAddress);
-        console.log("   �?Deployed:", treasuryProxyAddress);
+        console.log("Deployed:", treasuryProxyAddress);
     }
 
-    // ─── Authorize Escrow & TipJar as callers ──────────────────
-    const treasury = await ethers.getContractAt("AgentPactTreasury", treasuryProxyAddress) as any;
+    const treasury = (await ethers.getContractAt(
+        "AgentPactTreasury",
+        treasuryProxyAddress
+    )) as any;
+    await assertDeployerControlsOwnerActions(
+        treasury,
+        "Treasury",
+        deployer.address
+    );
 
-    const escrowProxy = process.env.ESCROW_ADDRESS_PROXY;
-    const tipJarProxy = process.env.TIPJAR_ADDRESS_PROXY;
+    const escrowProxy =
+        process.env.ESCROW_ADDRESS_PROXY?.trim() || escrowJson.escrowProxy;
+    const tipJarProxy =
+        process.env.TIPJAR_ADDRESS_PROXY?.trim() || escrowJson.tipJarProxy;
 
     if (escrowProxy) {
-        console.log("\n�?Authorizing Escrow as Treasury caller...");
-        await treasury.setAuthorizedCaller(escrowProxy, true);
-        console.log("   🔗 Escrow authorized");
+        const escrow = (await ethers.getContractAt(
+            "AgentPactEscrow",
+            escrowProxy
+        )) as any;
+        try {
+            await assertDeployerControlsOwnerActions(
+                escrow,
+                "Escrow",
+                deployer.address
+            );
+            console.log("\nAuthorizing Escrow as Treasury caller...");
+            await (await treasury.setAuthorizedCaller(escrowProxy, true)).wait();
+            console.log("Escrow authorized");
 
-        console.log("�?Setting Treasury on Escrow...");
-        const escrow = await ethers.getContractAt("AgentPactEscrow", escrowProxy) as any;
-        await escrow.setTreasury(treasuryProxyAddress);
-        console.log("   🔗 Escrow �?Treasury linked");
+            console.log("Setting Treasury on Escrow...");
+            await (await escrow.setTreasury(treasuryProxyAddress)).wait();
+            console.log("Escrow -> Treasury linked");
+        } catch (error) {
+            console.log(
+                `Skipped Escrow auto-linking: ${(error as Error).message}`
+            );
+        }
     }
 
     if (tipJarProxy) {
-        console.log("\n�?Authorizing TipJar as Treasury caller...");
-        await treasury.setAuthorizedCaller(tipJarProxy, true);
-        console.log("   🔗 TipJar authorized");
+        const tipJar = (await ethers.getContractAt(
+            "AgentPactTipJar",
+            tipJarProxy
+        )) as any;
+        try {
+            await assertDeployerControlsOwnerActions(
+                tipJar,
+                "TipJar",
+                deployer.address
+            );
+            console.log("\nAuthorizing TipJar as Treasury caller...");
+            await (await treasury.setAuthorizedCaller(tipJarProxy, true)).wait();
+            console.log("TipJar authorized");
 
-        console.log("�?Setting Treasury on TipJar...");
-        const tipJar = await ethers.getContractAt("AgentPactTipJar", tipJarProxy) as any;
-        await tipJar.setTreasuryContract(treasuryProxyAddress);
-        console.log("   🔗 TipJar �?Treasury linked");
+            console.log("Setting Treasury on TipJar...");
+            await (await tipJar.setTreasuryContract(treasuryProxyAddress)).wait();
+            console.log("TipJar -> Treasury linked");
+        } catch (error) {
+            console.log(
+                `Skipped TipJar auto-linking: ${(error as Error).message}`
+            );
+        }
     }
 
-    // ─── Optional: Configure Uniswap Buyback ───────────────────
-    const swapRouterAddr = process.env.SWAP_ROUTER;
     if (swapRouterAddr) {
-        console.log("\n�?Configuring Uniswap SwapRouter...");
-        await treasury.setSwapRouter(swapRouterAddr);
-        console.log("   🔗 SwapRouter:", swapRouterAddr);
+        console.log("\nConfiguring Uniswap SwapRouter...");
+        await (await treasury.setSwapRouter(swapRouterAddr)).wait();
+        console.log("SwapRouter:", swapRouterAddr);
     }
 
-    // ─── Save TREASURY.json ─────────────────────────────────────
+    if (swapQuoterAddr) {
+        console.log("Configuring Uniswap SwapQuoter...");
+        await (await treasury.setSwapQuoter(swapQuoterAddr)).wait();
+        console.log("SwapQuoter:", swapQuoterAddr);
+    }
+
+    await transferOwnershipIfRequested(
+        treasury,
+        "Treasury",
+        finalOwner,
+        deployer.address,
+        transferOwnership && !existingProxy
+    );
+
     saveTreasuryJson({
         treasuryProxy: treasuryProxyAddress,
         treasuryImplementation: treasuryImplAddress,
         network: networkName,
         chainId: Number(network.chainId),
         deployer: deployer.address,
+        owner:
+            transferOwnership && !existingProxy ? finalOwner : deployer.address,
         updatedAt: new Date().toISOString(),
     });
 
-    console.log("\n══════════════════════════════════════════════�?);
+    console.log("\n==================================================");
     console.log("  Treasury deployment complete!");
     console.log("  Proxy:", treasuryProxyAddress);
     console.log("  Buyback: DISABLED (default)");
@@ -130,9 +207,16 @@ async function main() {
     console.log("  To enable buyback, call:");
     console.log("  treasury.setBuybackConfig(true, 5000, <TOKEN>, 3000, 500)");
     if (!escrowProxy || !tipJarProxy) {
-        console.log("\n  ⚠️  Set ESCROW_ADDRESS_PROXY and TIPJAR_ADDRESS_PROXY to auto-link.");
+        console.log(
+            "\n  Set ESCROW_ADDRESS_PROXY and TIPJAR_ADDRESS_PROXY to auto-link."
+        );
     }
-    console.log("══════════════════════════════════════════════�?);
+    if (!transferOwnership && finalOwner.toLowerCase() !== deployer.address.toLowerCase()) {
+        console.log(
+            "  Ownership transfer skipped. Re-run with TRANSFER_OWNERSHIP_TO_FINAL_OWNER=true once linking is complete."
+        );
+    }
+    console.log("==================================================");
 }
 
 main().catch((error) => {
