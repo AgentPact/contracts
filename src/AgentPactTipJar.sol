@@ -324,11 +324,16 @@ contract AgentPactTipJar is
     }
 
     /// @inheritdoc IAgentPactTipJar
-    function setTreasury(address newTreasury) external onlyOwner {
-        if (newTreasury == address(0)) revert ZeroAddress();
+    function setPlatformFund(address newPlatformFund) external onlyOwner {
+        if (newPlatformFund == address(0)) revert ZeroAddress();
         address old = treasury;
-        treasury = newTreasury;
-        emit TreasuryUpdated(old, newTreasury);
+        treasury = newPlatformFund;
+        emit TreasuryUpdated(old, newPlatformFund);
+    }
+
+    /// @notice Compatibility alias for the direct fee receiver address
+    function platformFund() external view returns (address) {
+        return treasury;
     }
 
     /// @notice Hook up the external ERC-8004 Reputation registry

@@ -1,12 +1,10 @@
 import { HardhatUserConfig } from "hardhat/config";
 import "@nomicfoundation/hardhat-toolbox";
 import "@openzeppelin/hardhat-upgrades";
-import * as dotenv from "dotenv";
-
-dotenv.config();
+import { readContractsEnvValue } from "./scripts/contracts-env";
 
 function resolveAccounts(): string[] {
-    const privateKey = process.env.PRIVATE_KEY?.trim();
+    const privateKey = readContractsEnvValue("PRIVATE_KEY");
     if (!privateKey) {
         return [];
     }
@@ -34,20 +32,24 @@ const config: HardhatUserConfig = {
     },
     networks: {
         base: {
-            url: process.env.BASE_RPC_URL || "https://mainnet.base.org",
+            url:
+                readContractsEnvValue("BASE_RPC_URL") ||
+                "https://mainnet.base.org",
             chainId: 8453,
             accounts: resolveAccounts(),
         },
         "base-sepolia": {
-            url: process.env.BASE_SEPOLIA_RPC_URL || "https://sepolia.base.org",
+            url:
+                readContractsEnvValue("BASE_SEPOLIA_RPC_URL") ||
+                "https://sepolia.base.org",
             chainId: 84532,
             accounts: resolveAccounts(),
         },
     },
     etherscan: {
         apiKey: {
-            base: process.env.BASESCAN_API_KEY || "",
-            baseSepolia: process.env.BASESCAN_API_KEY || "",
+            base: readContractsEnvValue("BASESCAN_API_KEY") || "",
+            baseSepolia: readContractsEnvValue("BASESCAN_API_KEY") || "",
         },
     },
 };

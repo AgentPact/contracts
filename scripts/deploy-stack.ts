@@ -1,8 +1,10 @@
 import { ethers, upgrades } from "hardhat";
 import fs from "fs";
 import path from "path";
+import { readContractsEnvValue } from "./contracts-env";
 import {
     normalizeNetworkName,
+    resolveBuybackConfig,
     resolveContractOwner,
     resolvePlatformFundAddress,
     resolvePlatformSignerAddress,
@@ -31,9 +33,9 @@ async function main() {
     }
 
     if (
-        process.env.ESCROW_ADDRESS_PROXY ||
-        process.env.TIPJAR_ADDRESS_PROXY ||
-        process.env.TREASURY_ADDRESS_PROXY
+        readContractsEnvValue("ESCROW_ADDRESS_PROXY") ||
+        readContractsEnvValue("TIPJAR_ADDRESS_PROXY") ||
+        readContractsEnvValue("TREASURY_ADDRESS_PROXY")
     ) {
         throw new Error(
             "deploy-stack.ts is intended for fresh deployments. Remove existing proxy env vars first."
@@ -53,6 +55,7 @@ async function main() {
     const wethAddress = resolveWethAddress(networkName);
     const swapRouterAddr = resolveSwapRouterAddress();
     const swapQuoterAddr = resolveSwapQuoterAddress();
+    const buybackConfig = resolveBuybackConfig();
 
     console.log("==================================================");
     console.log("  AgentPact Full Stack Deployment");
@@ -65,6 +68,9 @@ async function main() {
     console.log("USDC:", usdcAddress);
     console.log("WETH:", wethAddress);
     console.log("Final Owner:", finalOwner);
+    if (buybackConfig) {
+        console.log("Buyback Config:", buybackConfig);
+    }
 
     const EscrowFactory = await ethers.getContractFactory("AgentPactEscrow");
     const TipJarFactory = await ethers.getContractFactory("AgentPactTipJar");
@@ -129,6 +135,23 @@ async function main() {
     if (swapQuoterAddr) {
         await (await treasury.setSwapQuoter(swapQuoterAddr)).wait();
     }
+    if (buybackConfig) {
+        if (buybackConfig.enabled && (!swapRouterAddr || !swapQuoterAddr)) {
+            throw new Error(
+                "BUYBACK_ENABLED=true requires both SWAP_ROUTER and SWAP_QUOTER."
+            );
+        }
+
+        await (
+            await treasury.setBuybackConfig(
+                buybackConfig.enabled,
+                buybackConfig.buybackBps,
+                buybackConfig.buybackToken,
+                buybackConfig.poolFee,
+                buybackConfig.maxSlippageBps
+            )
+        ).wait();
+    }
 
     if (finalOwner.toLowerCase() !== deployer.address.toLowerCase()) {
         console.log("\nTransferring ownership to final owner...");
@@ -164,6 +187,12 @@ async function main() {
     console.log("Escrow Proxy:", escrowProxy);
     console.log("TipJar Proxy:", tipJarProxy);
     console.log("Treasury Proxy:", treasuryProxy);
+    console.log(
+        "Buyback:",
+        buybackConfig
+            ? `${buybackConfig.enabled ? "CONFIGURED" : "CONFIGURED_DISABLED"}`
+            : "DISABLED (default)"
+    );
     console.log("==================================================");
 }
 

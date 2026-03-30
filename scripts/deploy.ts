@@ -2,6 +2,10 @@ import { ethers, upgrades } from "hardhat";
 import fs from "fs";
 import path from "path";
 import {
+    readContractsEnvFlag,
+    readContractsEnvValue,
+} from "./contracts-env";
+import {
     normalizeNetworkName,
     resolveContractOwner,
     resolvePlatformFundAddress,
@@ -83,7 +87,7 @@ async function main() {
     }
 
     const EscrowFactory = await ethers.getContractFactory("AgentPactEscrow");
-    const existingProxy = process.env.ESCROW_ADDRESS_PROXY?.trim();
+    const existingProxy = readContractsEnvValue("ESCROW_ADDRESS_PROXY");
 
     let proxyAddress: string;
     let implAddress: string;
@@ -139,7 +143,7 @@ async function main() {
     }
 
     const TipJarFactory = await ethers.getContractFactory("AgentPactTipJar");
-    const existingTipJarProxy = process.env.TIPJAR_ADDRESS_PROXY?.trim();
+    const existingTipJarProxy = readContractsEnvValue("TIPJAR_ADDRESS_PROXY");
 
     let tipJarProxyAddress: string;
     let tipJarImplAddress: string;
@@ -245,7 +249,7 @@ async function main() {
         updatedAt: new Date().toISOString(),
     });
 
-    if (process.env.UPDATE_PLATFORM_ENV === "true") {
+    if (readContractsEnvFlag("UPDATE_PLATFORM_ENV")) {
         updateEnvFile(path.join(__dirname, "../../platform/.env"), "ESCROW_ADDRESS", proxyAddress);
         updateEnvFile(path.join(__dirname, "../../platform/.env"), "TIPJAR_ADDRESS", tipJarProxyAddress);
         updateEnvFile(path.join(__dirname, "../../platform/.env"), "USDC_ADDRESS", usdcAddress);

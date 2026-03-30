@@ -114,6 +114,8 @@ interface IAgentPactEscrow {
         uint256 compensation
     );
 
+    event PlatformFeeUpdated(uint256 oldFeeBps, uint256 newFeeBps);
+
     function totalClosedEscrows() external view returns (uint256);
 
     function totalSuccessfulEscrows() external view returns (uint256);
@@ -163,4 +165,6 @@ interface IAgentPactEscrow {
     function claimDeliveryTimeout(uint256 escrowId) external;
 
     function claimConfirmationTimeout(uint256 escrowId) external;
+
+    function setPlatformFeeBps(uint16 newFeeBps) external;
 }

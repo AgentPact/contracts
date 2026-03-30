@@ -28,7 +28,7 @@ pnpm install
 
 ### Environment Variables
 
-Create a `.env` file in this directory. For Base mainnet, use explicit production addresses instead of falling back to the deployer wallet:
+Create a `.env` file in this directory. The Hardhat config and deployment scripts only read `contracts/.env`, so keep the deploy-time settings here. For Base mainnet, use explicit production addresses instead of falling back to the deployer wallet:
 
 ```env
 PRIVATE_KEY="your-deployer-private-key"
@@ -42,9 +42,22 @@ BASE_SEPOLIA_RPC_URL="https://sepolia.base.org"
 # WETH_ADDRESS=
 # SWAP_ROUTER=
 # SWAP_QUOTER=
+# BUYBACK_ENABLED=false
+# BUYBACK_BPS=5000
+# BUYBACK_TOKEN=
+# SWAP_POOL_FEE=3000
+# MAX_SLIPPAGE_BPS=500
 # BASESCAN_API_KEY=
 # TRANSFER_OWNERSHIP_TO_FINAL_OWNER=true
+# UPDATE_PLATFORM_ENV=true
 ```
+
+When running `scripts/deploy.ts`:
+
+- if `ESCROW_ADDRESS_PROXY` / `TIPJAR_ADDRESS_PROXY` are present, the script upgrades those UUPS proxies
+- if either proxy address is missing or empty, the script performs a fresh deployment for that contract
+- `CONTRACT_OWNER`, `PLATFORM_SIGNER`, and `PLATFORM_FUND` are read from `contracts/.env`
+- Treasury deploy scripts also read `SWAP_ROUTER`, `SWAP_QUOTER`, `BUYBACK_ENABLED`, `BUYBACK_BPS`, `BUYBACK_TOKEN`, `SWAP_POOL_FEE`, and `MAX_SLIPPAGE_BPS` from `contracts/.env`
 
 ## Quick Start (NPM Scripts)
 

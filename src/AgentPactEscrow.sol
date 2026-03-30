@@ -46,8 +46,11 @@ contract AgentPactEscrow is
             "TaskAssignment(uint256 escrowId,address agent,uint256 nonce,uint256 expiredAt)"
         );
 
-    /// @notice Platform fee rate in basis points (500 = 5%)
-    uint256 public constant PLATFORM_FEE_BPS = 500;
+    /// @notice Default platform fee rate in basis points (500 = 5%)
+    uint16 public constant DEFAULT_PLATFORM_FEE_BPS = 500;
+
+    /// @notice Maximum platform fee rate in basis points (1000 = 10%)
+    uint16 public constant MAX_PLATFORM_FEE_BPS = 1000;
 
     /// @notice Minimum passRate floor to protect provider (30%)
     uint8 public constant MIN_PASS_RATE = 30;
@@ -87,6 +90,8 @@ contract AgentPactEscrow is
 
     /// @notice Treasury contract for platform fee distribution (optional buyback)
     IAgentPactTreasury public treasuryContract;
+    /// @notice Platform fee rate in basis points (500 = 5%)
+    uint16 public platformFeeBps;
     /// @notice Total number of escrows that reached a terminal state
     uint256 public totalClosedEscrows;
     /// @notice Total number of escrows considered successful settlements
@@ -96,7 +101,7 @@ contract AgentPactEscrow is
     /// @notice Cumulative provider payout volume by token for successful settlements
     mapping(address => uint256) public totalPayoutVolumeByToken;
     /// @notice Storage gap for future upgrades
-    uint256[36] private __gap;
+    uint256[35] private __gap;
 
     // ========================= Errors =========================
 
@@ -122,6 +127,7 @@ contract AgentPactEscrow is
     error InvalidDuration();
     error DeadlinePassed();
     error TaskSuspended();
+    error FeeTooHigh();
 
     // ========================= Modifiers =========================
 
@@ -173,6 +179,7 @@ contract AgentPactEscrow is
 
         platformSigner = _platformSigner;
         platformFund = _platformFund;
+        platformFeeBps = DEFAULT_PLATFORM_FEE_BPS;
         nextEscrowId = 1;
     }
 
@@ -275,7 +282,7 @@ contract AgentPactEscrow is
     {
         EscrowRecord storage r = escrows[escrowId];
 
-        uint256 fee = (r.rewardAmount * PLATFORM_FEE_BPS) / 10_000;
+        uint256 fee = (r.rewardAmount * platformFeeBps) / 10_000;
         uint256 providerPayout = r.rewardAmount - fee;
 
         // Return remaining deposit to requester
@@ -572,7 +579,7 @@ contract AgentPactEscrow is
         r.state = TaskState.TimedOut;
 
         // Full reward to provider (requester defaulted)
-        uint256 fee = (r.rewardAmount * PLATFORM_FEE_BPS) / 10_000;
+        uint256 fee = (r.rewardAmount * platformFeeBps) / 10_000;
         uint256 providerPayout = r.rewardAmount - fee;
         totalClosedEscrows += 1;
         totalSuccessfulEscrows += 1;
@@ -656,6 +663,14 @@ contract AgentPactEscrow is
         platformFund = newFund;
     }
 
+    /// @inheritdoc IAgentPactEscrow
+    function setPlatformFeeBps(uint16 newFeeBps) external onlyOwner {
+        if (newFeeBps > MAX_PLATFORM_FEE_BPS) revert FeeTooHigh();
+        uint16 oldFeeBps = platformFeeBps;
+        platformFeeBps = newFeeBps;
+        emit PlatformFeeUpdated(oldFeeBps, newFeeBps);
+    }
+
     /// @notice Set the Treasury contract for platform fee distribution
     function setTreasury(address _treasury) external onlyOwner {
         treasuryContract = IAgentPactTreasury(_treasury);
@@ -728,7 +743,7 @@ contract AgentPactEscrow is
 
         uint256 providerShare = (r.rewardAmount * passRate) / 100;
         uint256 requesterRefund = r.rewardAmount - providerShare;
-        uint256 fee = (providerShare * PLATFORM_FEE_BPS) / 10_000;
+        uint256 fee = (providerShare * platformFeeBps) / 10_000;
         uint256 providerPayout = providerShare - fee;
         r.state = TaskState.Settled;
         totalClosedEscrows += 1;

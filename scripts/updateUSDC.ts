@@ -1,4 +1,5 @@
 import { ethers } from "hardhat";
+import { readContractsEnvValue } from "./contracts-env";
 import {
     normalizeNetworkName,
     readEscrowJson,
@@ -13,9 +14,9 @@ async function main() {
 
     const usdcAddress = resolveUsdcAddress(networkName);
     const escrowProxyAddress =
-        process.env.ESCROW_ADDRESS_PROXY?.trim() || escrowJson.escrowProxy;
+        readContractsEnvValue("ESCROW_ADDRESS_PROXY") || escrowJson.escrowProxy;
     const tipJarProxyAddress =
-        process.env.TIPJAR_ADDRESS_PROXY?.trim() || escrowJson.tipJarProxy;
+        readContractsEnvValue("TIPJAR_ADDRESS_PROXY") || escrowJson.tipJarProxy;
 
     if (!escrowProxyAddress || !tipJarProxyAddress) {
         throw new Error(

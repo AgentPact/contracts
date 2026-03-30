@@ -1,9 +1,18 @@
 import fs from "fs";
 import path from "path";
-import dotenv from "dotenv";
 import { ethers } from "hardhat";
+import {
+    readContractsEnvValue,
+} from "./contracts-env";
 
 export type SupportedNetworkName = "base" | "base-sepolia";
+export interface BuybackConfig {
+    enabled: boolean;
+    buybackBps: number;
+    buybackToken: string;
+    poolFee: number;
+    maxSlippageBps: number;
+}
 
 export const NETWORK_DEFAULTS: Record<
     SupportedNetworkName,
@@ -28,17 +37,7 @@ export const NETWORK_DEFAULTS: Record<
     },
 };
 
-export const APP_ENV_PATH = path.join(__dirname, "../../app/.env");
-export const PLATFORM_ENV_PATH = path.join(__dirname, "../../platform/.env");
 export const ESCROW_JSON_PATH = path.join(__dirname, "./ESCROW.json");
-
-function readEnvFile(filePath: string): Record<string, string> {
-    if (!fs.existsSync(filePath)) {
-        return {};
-    }
-
-    return dotenv.parse(fs.readFileSync(filePath, "utf8"));
-}
 
 function normalizeAddress(value: string, label: string): string {
     try {
@@ -49,14 +48,61 @@ function normalizeAddress(value: string, label: string): string {
 }
 
 function resolveAddressFromEnv(keys: string[]): string | undefined {
-    for (const key of keys) {
-        const value = process.env[key]?.trim();
-        if (value) {
-            return normalizeAddress(value, key);
-        }
+    const value = readContractsEnvValue(...keys);
+    if (value) {
+        return normalizeAddress(value, keys.join(" / "));
     }
 
     return undefined;
+}
+
+function parseBooleanEnv(
+    key: string,
+    defaultValue?: boolean
+): boolean | undefined {
+    const value = readContractsEnvValue(key);
+    if (value === undefined) {
+        return defaultValue;
+    }
+    if (value === "true") {
+        return true;
+    }
+    if (value === "false") {
+        return false;
+    }
+
+    throw new Error(`Invalid ${key}: expected "true" or "false", received ${value}`);
+}
+
+function parseIntegerEnv(
+    key: string,
+    options: {
+        defaultValue?: number;
+        min?: number;
+        max?: number;
+    } = {}
+): number | undefined {
+    const raw = readContractsEnvValue(key);
+    if (raw === undefined) {
+        return options.defaultValue;
+    }
+
+    if (!/^\d+$/.test(raw)) {
+        throw new Error(`Invalid ${key}: expected an integer, received ${raw}`);
+    }
+
+    const value = Number(raw);
+    if (!Number.isSafeInteger(value)) {
+        throw new Error(`Invalid ${key}: integer is out of range`);
+    }
+    if (options.min !== undefined && value < options.min) {
+        throw new Error(`Invalid ${key}: expected >= ${options.min}, received ${value}`);
+    }
+    if (options.max !== undefined && value > options.max) {
+        throw new Error(`Invalid ${key}: expected <= ${options.max}, received ${value}`);
+    }
+
+    return value;
 }
 
 export function normalizeNetworkName(
@@ -75,22 +121,17 @@ export function isProductionNetwork(networkName?: string | null): boolean {
 }
 
 export function resolveUsdcAddress(networkName?: string): string {
-    const appEnv = readEnvFile(APP_ENV_PATH);
-    const platformEnv = readEnvFile(PLATFORM_ENV_PATH);
     const defaults = NETWORK_DEFAULTS[normalizeNetworkName(networkName)];
 
     return normalizeAddress(
-        appEnv.USDC_ADDRESS?.trim() ||
-            process.env.USDC_ADDRESS?.trim() ||
-            platformEnv.USDC_ADDRESS?.trim() ||
-            defaults.usdc,
+        readContractsEnvValue("USDC_ADDRESS") || defaults.usdc,
         "USDC_ADDRESS"
     );
 }
 
 export function resolveWethAddress(networkName?: string): string {
     return normalizeAddress(
-        process.env.WETH_ADDRESS?.trim() ||
+        readContractsEnvValue("WETH_ADDRESS") ||
             NETWORK_DEFAULTS[normalizeNetworkName(networkName)].weth,
         "WETH_ADDRESS"
     );
@@ -161,6 +202,50 @@ export function resolveSwapRouterAddress(): string | undefined {
 
 export function resolveSwapQuoterAddress(): string | undefined {
     return resolveAddressFromEnv(["SWAP_QUOTER"]);
+}
+
+export function resolveBuybackConfig(): BuybackConfig | undefined {
+    const hasAnyBuybackSetting = [
+        "BUYBACK_ENABLED",
+        "BUYBACK_BPS",
+        "BUYBACK_TOKEN",
+        "SWAP_POOL_FEE",
+        "MAX_SLIPPAGE_BPS",
+    ].some((key) => readContractsEnvValue(key) !== undefined);
+
+    if (!hasAnyBuybackSetting) {
+        return undefined;
+    }
+
+    const buybackToken = resolveAddressFromEnv(["BUYBACK_TOKEN"]);
+    if (!buybackToken) {
+        throw new Error(
+            "Missing BUYBACK_TOKEN while buyback config vars are set."
+        );
+    }
+
+    return {
+        enabled: parseBooleanEnv("BUYBACK_ENABLED", false) ?? false,
+        buybackBps:
+            parseIntegerEnv("BUYBACK_BPS", {
+                defaultValue: 5000,
+                min: 0,
+                max: 10_000,
+            }) ?? 5000,
+        buybackToken,
+        poolFee:
+            parseIntegerEnv("SWAP_POOL_FEE", {
+                defaultValue: 3000,
+                min: 0,
+                max: 16_777_215,
+            }) ?? 3000,
+        maxSlippageBps:
+            parseIntegerEnv("MAX_SLIPPAGE_BPS", {
+                defaultValue: 500,
+                min: 0,
+                max: 2_000,
+            }) ?? 500,
+    };
 }
 
 export function readEscrowJson(): {

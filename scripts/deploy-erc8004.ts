@@ -1,6 +1,7 @@
 import { ethers, upgrades } from "hardhat";
 import fs from "fs";
 import path from "path";
+import { readContractsEnvValue } from "./contracts-env";
 import {
     normalizeNetworkName,
     resolveContractOwner,
@@ -58,8 +59,8 @@ async function main() {
         "AgentPactReputationRegistry"
     );
 
-    const existingIdentityProxy = process.env.IDENTITY_ADDRESS_PROXY?.trim();
-    const existingReputationProxy = process.env.REPUTATION_ADDRESS_PROXY?.trim();
+    const existingIdentityProxy = readContractsEnvValue("IDENTITY_ADDRESS_PROXY");
+    const existingReputationProxy = readContractsEnvValue("REPUTATION_ADDRESS_PROXY");
 
     let identityProxyAddress: string;
     let identityImplAddress: string;
@@ -134,7 +135,7 @@ async function main() {
         );
     }
 
-    const tipJarProxy = process.env.TIPJAR_ADDRESS_PROXY?.trim();
+    const tipJarProxy = readContractsEnvValue("TIPJAR_ADDRESS_PROXY");
     if (tipJarProxy) {
         const reputation = (await ethers.getContractAt(
             "AgentPactReputationRegistry",

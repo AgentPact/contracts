@@ -1,9 +1,11 @@
 import { ethers, upgrades } from "hardhat";
 import fs from "fs";
 import path from "path";
+import { readContractsEnvValue } from "./contracts-env";
 import {
     normalizeNetworkName,
     readEscrowJson,
+    resolveBuybackConfig,
     resolveContractOwner,
     resolvePlatformFundAddress,
     resolveSwapQuoterAddress,
@@ -46,6 +48,7 @@ async function main() {
     const wethAddress = resolveWethAddress(networkName);
     const swapRouterAddr = resolveSwapRouterAddress();
     const swapQuoterAddr = resolveSwapQuoterAddress();
+    const buybackConfig = resolveBuybackConfig();
     const transferOwnership = shouldTransferOwnershipByDefault();
     const escrowJson = readEscrowJson();
 
@@ -59,13 +62,16 @@ async function main() {
     console.log("WETH:", wethAddress);
     console.log("Final Owner:", finalOwner);
     console.log("Transfer Ownership:", transferOwnership);
+    if (buybackConfig) {
+        console.log("Buyback Config:", buybackConfig);
+    }
 
     if (balance === 0n) {
         throw new Error("Deployer has 0 ETH - please fund the wallet first");
     }
 
     const TreasuryFactory = await ethers.getContractFactory("AgentPactTreasury");
-    const existingProxy = process.env.TREASURY_ADDRESS_PROXY?.trim();
+    const existingProxy = readContractsEnvValue("TREASURY_ADDRESS_PROXY");
 
     let treasuryProxyAddress: string;
     let treasuryImplAddress: string;
@@ -114,9 +120,9 @@ async function main() {
     );
 
     const escrowProxy =
-        process.env.ESCROW_ADDRESS_PROXY?.trim() || escrowJson.escrowProxy;
+        readContractsEnvValue("ESCROW_ADDRESS_PROXY") || escrowJson.escrowProxy;
     const tipJarProxy =
-        process.env.TIPJAR_ADDRESS_PROXY?.trim() || escrowJson.tipJarProxy;
+        readContractsEnvValue("TIPJAR_ADDRESS_PROXY") || escrowJson.tipJarProxy;
 
     if (escrowProxy) {
         const escrow = (await ethers.getContractAt(
@@ -180,6 +186,30 @@ async function main() {
         console.log("SwapQuoter:", swapQuoterAddr);
     }
 
+    if (buybackConfig) {
+        if (buybackConfig.enabled && (!swapRouterAddr || !swapQuoterAddr)) {
+            throw new Error(
+                "BUYBACK_ENABLED=true requires both SWAP_ROUTER and SWAP_QUOTER."
+            );
+        }
+
+        console.log("Configuring Treasury buyback settings...");
+        await (
+            await treasury.setBuybackConfig(
+                buybackConfig.enabled,
+                buybackConfig.buybackBps,
+                buybackConfig.buybackToken,
+                buybackConfig.poolFee,
+                buybackConfig.maxSlippageBps
+            )
+        ).wait();
+        console.log(
+            "Buyback configured:",
+            buybackConfig.buybackToken,
+            `(enabled=${buybackConfig.enabled})`
+        );
+    }
+
     await transferOwnershipIfRequested(
         treasury,
         "Treasury",
@@ -202,10 +232,17 @@ async function main() {
     console.log("\n==================================================");
     console.log("  Treasury deployment complete!");
     console.log("  Proxy:", treasuryProxyAddress);
-    console.log("  Buyback: DISABLED (default)");
-    console.log("");
-    console.log("  To enable buyback, call:");
-    console.log("  treasury.setBuybackConfig(true, 5000, <TOKEN>, 3000, 500)");
+    console.log(
+        "  Buyback:",
+        buybackConfig
+            ? `${buybackConfig.enabled ? "CONFIGURED" : "CONFIGURED_DISABLED"}`
+            : "DISABLED (default)"
+    );
+    if (!buybackConfig) {
+        console.log("");
+        console.log("  To enable buyback, call:");
+        console.log("  treasury.setBuybackConfig(true, 5000, <TOKEN>, 3000, 500)");
+    }
     if (!escrowProxy || !tipJarProxy) {
         console.log(
             "\n  Set ESCROW_ADDRESS_PROXY and TIPJAR_ADDRESS_PROXY to auto-link."

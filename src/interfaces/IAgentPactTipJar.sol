@@ -92,8 +92,8 @@ interface IAgentPactTipJar {
     /// @notice Update the platform signer address
     function setPlatformSigner(address newSigner) external;
 
-    /// @notice Update the treasury address
-    function setTreasury(address newTreasury) external;
+    /// @notice Update the platform fund address used for direct fee collection
+    function setPlatformFund(address newPlatformFund) external;
 
     /// @notice Update the USDC token address
     function setUsdcToken(address newUsdc) external;

@@ -1,4 +1,5 @@
 import { ethers } from "hardhat";
+import { readContractsEnvFlag } from "./contracts-env";
 
 function sameAddress(a: string, b: string): boolean {
     return ethers.getAddress(a) === ethers.getAddress(b);
@@ -58,5 +59,5 @@ export async function transferOwnershipIfRequested(
 }
 
 export function shouldTransferOwnershipByDefault(): boolean {
-    return process.env.TRANSFER_OWNERSHIP_TO_FINAL_OWNER === "true";
+    return readContractsEnvFlag("TRANSFER_OWNERSHIP_TO_FINAL_OWNER");
 }
