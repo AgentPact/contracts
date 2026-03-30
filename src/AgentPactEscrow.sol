@@ -101,7 +101,7 @@ contract AgentPactEscrow is
     /// @notice Cumulative provider payout volume by token for successful settlements
     mapping(address => uint256) public totalPayoutVolumeByToken;
     /// @notice Storage gap for future upgrades
-    uint256[35] private __gap;
+    uint256[36] private __gap;
 
     // ========================= Errors =========================
 
