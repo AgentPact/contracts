@@ -49,6 +49,9 @@ contract AgentPactEscrow is
     /// @notice Default platform fee rate in basis points (500 = 5%)
     uint16 public constant DEFAULT_PLATFORM_FEE_BPS = 500;
 
+    /// @notice Default platform share for penalties in basis points (5000 = 50%)
+    uint16 public constant DEFAULT_PENALTY_PLATFORM_BPS = 5000;
+
     /// @notice Maximum platform fee rate in basis points (1000 = 10%)
     uint16 public constant MAX_PLATFORM_FEE_BPS = 1000;
 
@@ -100,6 +103,10 @@ contract AgentPactEscrow is
     mapping(address => uint256) public totalRewardVolumeByToken;
     /// @notice Cumulative provider payout volume by token for successful settlements
     mapping(address => uint256) public totalPayoutVolumeByToken;
+
+    /// @notice Platform share for penalties in basis points (5000 = 50%)
+    uint16 public penaltyPlatformBps;
+
     /// @notice Storage gap for future upgrades
     uint256[36] private __gap;
 
@@ -180,6 +187,7 @@ contract AgentPactEscrow is
         platformSigner = _platformSigner;
         platformFund = _platformFund;
         platformFeeBps = DEFAULT_PLATFORM_FEE_BPS;
+        penaltyPlatformBps = DEFAULT_PENALTY_PLATFORM_BPS;
         nextEscrowId = 1;
     }
 
@@ -339,16 +347,18 @@ contract AgentPactEscrow is
         uint8 requestedRevision = r.currentRevision + 1;
 
         // Progressive deposit penalty is charged for the revision being requested.
-        // Round 1 is free; rounds 2+ consume requester deposit even if this
-        // request exhausts the revision allowance and immediately auto-settles.
+        // Round 1 is free; rounds 2+ consume requester deposit sequentially.
         uint256 penalty = 0;
         if (requestedRevision > 1) {
             penalty = _calcPenalty(r, requestedRevision);
             if (penalty > 0) {
                 r.depositConsumed += penalty;
-                // 50% to provider, 50% to platform fund
-                _transfer(r.token, r.provider, penalty / 2);
-                _transferPlatformFee(r.token, penalty - penalty / 2); // handles odd wei
+                // Distribute penalty between provider and platform
+                uint256 platformShare = (penalty * penaltyPlatformBps) / 10000;
+                uint256 providerShare = penalty - platformShare;
+
+                _transfer(r.token, r.provider, providerShare);
+                _transferPlatformFee(r.token, platformShare);
             }
         }
 
@@ -671,6 +681,12 @@ contract AgentPactEscrow is
         emit PlatformFeeUpdated(oldFeeBps, newFeeBps);
     }
 
+    /// @notice Set the platform commission configured for penalty allocations
+    function setPenaltyPlatformBps(uint16 _bps) external onlyOwner {
+        if (_bps > 10000) revert FeeTooHigh();
+        penaltyPlatformBps = _bps;
+    }
+
     /// @notice Set the Treasury contract for platform fee distribution
     function setTreasury(address _treasury) external onlyOwner {
         treasuryContract = IAgentPactTreasury(_treasury);
@@ -781,21 +797,25 @@ contract AgentPactEscrow is
     }
 
     /// @dev Calculate progressive penalty for the revision round being requested
-    ///      Round 2: 10%, Round 3: 20%, Round 4: 30%, Round 5+: 40%
+    ///      Using arithmetic progression arithmetic to spread the deposit smoothly across maxRevisions.
+    ///      For maxRevisions = 5, equivalent to Round 2: 10%, Round 3: 20%, Round 4: 30%, Round 5: 40%
     function _calcPenalty(
         EscrowRecord storage r,
         uint8 requestedRevision
     ) internal view returns (uint256) {
-        uint256 penaltyRate;
+        if (requestedRevision > r.maxRevisions) {
+            return r.requesterDeposit - r.depositConsumed;
+        }
 
-        if (requestedRevision == 2) penaltyRate = 10;
-        else if (requestedRevision == 3) penaltyRate = 20;
-        else if (requestedRevision == 4) penaltyRate = 30;
-        else penaltyRate = 40;
+        uint256 n = r.maxRevisions - 1;
+        if (n == 0) return 0;
+        
+        uint256 i = requestedRevision - 1;
+        
+        // penalty = deposit * 2 * i / (n * (n+1))
+        uint256 penalty = (uint256(r.requesterDeposit) * 2 * i) / (n * (n + 1));
 
-        uint256 penalty = (r.requesterDeposit * penaltyRate) / 100;
-
-        // Cap at remaining deposit
+        // Cap at remaining deposit to prevent rounding oversell
         uint256 remaining = r.requesterDeposit - r.depositConsumed;
         if (penalty > remaining) penalty = remaining;
 
