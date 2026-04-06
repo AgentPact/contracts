@@ -108,7 +108,7 @@ contract AgentPactEscrow is
     uint16 public penaltyPlatformBps;
 
     /// @notice Storage gap for future upgrades
-    uint256[36] private __gap;
+    uint256[35] private __gap;
 
     // ========================= Errors =========================
 
@@ -809,9 +809,9 @@ contract AgentPactEscrow is
 
         uint256 n = r.maxRevisions - 1;
         if (n == 0) return 0;
-        
+
         uint256 i = requestedRevision - 1;
-        
+
         // penalty = deposit * 2 * i / (n * (n+1))
         uint256 penalty = (uint256(r.requesterDeposit) * 2 * i) / (n * (n + 1));
 
