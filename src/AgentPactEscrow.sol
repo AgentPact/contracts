@@ -27,8 +27,9 @@ import {IAgentPactTreasury} from "./interfaces/IAgentPactTreasury.sol";
 /// @title AgentPactEscrow
 /// @notice Trustless escrow for AI agent task marketplace
 /// @dev UUPS upgradeable. Platform NEVER touches on-chain funds. Only requester & provider operate.
-///      V2.1 changes: on-chain passRate calculation, relative delivery duration, abandonTask,
-///      cancelTask compensation, decline counting, revision deadline extension.
+///      V2.2 simplified flow: providers review private materials off-chain, then claim directly
+///      into Working on-chain. Pre-claim rejection and suspend-after-3-rejects are coordinated
+///      by the platform rather than enforced by on-chain intermediate states.
 contract AgentPactEscrow is
     IAgentPactEscrow,
     UUPSUpgradeable,
@@ -57,12 +58,6 @@ contract AgentPactEscrow is
 
     /// @notice Minimum passRate floor to protect provider (30%)
     uint8 public constant MIN_PASS_RATE = 30;
-
-    /// @notice Confirmation window duration
-    uint64 public constant CONFIRMATION_WINDOW = 2 hours;
-
-    /// @notice Maximum decline count before task is suspended
-    uint8 public constant MAX_DECLINE_COUNT = 3;
 
     // ========================= Storage =========================
 
@@ -253,9 +248,8 @@ contract AgentPactEscrow is
         r.token = token;
         r.state = TaskState.Created;
         r.taskHash = taskHash;
-        // 閴?Fix P0-3: Store relative duration, deadline set in confirmTask()
         r.deliveryDurationSeconds = deliveryDurationSeconds;
-        r.deliveryDeadline = 0; // Not yet set 閳?will be set in confirmTask()
+        r.deliveryDeadline = 0; 
         r.maxRevisions = maxRevisions;
         r.criteriaCount = criteriaCount;
         r.acceptanceWindowHours = acceptanceWindowHours;
@@ -397,40 +391,20 @@ contract AgentPactEscrow is
         uint256 escrowId
     ) external nonReentrant onlyRequester(escrowId) {
         EscrowRecord storage r = escrows[escrowId];
-        if (
-            r.state != TaskState.Created &&
-            r.state != TaskState.ConfirmationPending
-        ) {
+        if (r.state != TaskState.Created) {
             revert InvalidState(r.state, TaskState.Created);
         }
 
-        uint256 compensation = 0;
+        // Created stage: full refund to requester
+        r.state = TaskState.Cancelled;
+        totalClosedEscrows += 1;
+        _transfer(
+            r.token,
+            r.requester,
+            r.rewardAmount + r.requesterDeposit
+        );
 
-        if (r.state == TaskState.Created) {
-            // Created stage: full refund to requester
-            r.state = TaskState.Cancelled;
-            totalClosedEscrows += 1;
-            _transfer(
-                r.token,
-                r.requester,
-                r.rewardAmount + r.requesterDeposit
-            );
-        } else {
-            // 閴?Fix P1-5: ConfirmationPending 閳?agent has seen confidential materials
-            // Deduct 10% of deposit as compensation to agent
-            compensation = r.requesterDeposit / 10;
-            r.depositConsumed += compensation;
-            r.state = TaskState.Cancelled;
-            totalClosedEscrows += 1;
-            _transfer(r.token, r.provider, compensation);
-            // Refund remaining to requester
-            uint256 remaining = r.rewardAmount +
-                r.requesterDeposit -
-                compensation;
-            _transfer(r.token, r.requester, remaining);
-        }
-
-        emit TaskCancelled(escrowId, compensation);
+        emit TaskCancelled(escrowId, 0);
     }
 
     // ========================= Provider Functions =========================
@@ -442,8 +416,6 @@ contract AgentPactEscrow is
         uint256 expiredAt,
         bytes calldata platformSignature
     ) external nonReentrant inState(escrowId, TaskState.Created) {
-        if (escrows[escrowId].declineCount >= MAX_DECLINE_COUNT)
-            revert TaskSuspended();
         if (block.timestamp > expiredAt) revert SignatureExpired();
         if (nonce != assignmentNonces[escrowId]) revert InvalidNonce();
 
@@ -466,57 +438,10 @@ contract AgentPactEscrow is
 
         EscrowRecord storage r = escrows[escrowId];
         r.provider = msg.sender;
-        r.state = TaskState.ConfirmationPending;
-        r.confirmationDeadline = uint64(block.timestamp) + CONFIRMATION_WINDOW;
-
-        emit TaskClaimed(escrowId, msg.sender, r.confirmationDeadline);
-    }
-
-    /// @inheritdoc IAgentPactEscrow
-    function confirmTask(
-        uint256 escrowId
-    )
-        external
-        nonReentrant
-        onlyProvider(escrowId)
-        inState(escrowId, TaskState.ConfirmationPending)
-    {
-        EscrowRecord storage r = escrows[escrowId];
-        if (block.timestamp > r.confirmationDeadline) revert DeadlinePassed();
         r.state = TaskState.Working;
-        // 閴?Fix P1-6: Set delivery deadline from confirmation moment
-        r.deliveryDeadline = uint64(
-            block.timestamp + r.deliveryDurationSeconds
-        );
+        r.deliveryDeadline = uint64(block.timestamp) + r.deliveryDurationSeconds;
 
-        emit TaskConfirmed(escrowId, msg.sender, r.deliveryDeadline);
-    }
-
-    /// @inheritdoc IAgentPactEscrow
-    function declineTask(
-        uint256 escrowId
-    )
-        external
-        onlyProvider(escrowId)
-        inState(escrowId, TaskState.ConfirmationPending)
-    {
-        EscrowRecord storage r = escrows[escrowId];
-        address previousProvider = r.provider;
-
-        // No penalty 閳?task returns to Created for next agent
-        r.provider = address(0);
-        r.state = TaskState.Created;
-        r.confirmationDeadline = 0;
-
-        // 閴?Fix P2-8: Track decline count on-chain
-        r.declineCount++;
-
-        emit TaskDeclined(escrowId, previousProvider);
-
-        // Suspend matching after MAX_DECLINE_COUNT declines
-        if (r.declineCount >= MAX_DECLINE_COUNT) {
-            emit TaskSuspendedAfterDeclines(escrowId, r.declineCount);
-        }
+        emit TaskClaimed(escrowId, msg.sender, r.deliveryDeadline);
     }
 
     /// @inheritdoc IAgentPactEscrow
@@ -561,7 +486,6 @@ contract AgentPactEscrow is
         r.provider = address(0);
         r.state = TaskState.Created;
         r.deliveryDeadline = 0;
-        r.confirmationDeadline = 0;
         r.currentRevision = 0;
         r.latestDeliveryHash = bytes32(0);
         r.latestCriteriaHash = bytes32(0);
@@ -630,28 +554,6 @@ contract AgentPactEscrow is
         emit TimeoutClaimed(escrowId, previousState, msg.sender);
     }
 
-    /// @inheritdoc IAgentPactEscrow
-    function claimConfirmationTimeout(
-        uint256 escrowId
-    )
-        external
-        onlyParties(escrowId)
-        inState(escrowId, TaskState.ConfirmationPending)
-    {
-        EscrowRecord storage r = escrows[escrowId];
-        if (block.timestamp <= r.confirmationDeadline)
-            revert DeadlineNotReached();
-
-        r.provider = address(0);
-        r.state = TaskState.Created;
-        r.confirmationDeadline = 0;
-
-        emit TimeoutClaimed(
-            escrowId,
-            TaskState.ConfirmationPending,
-            msg.sender
-        );
-    }
 
     // ========================= Admin Functions =========================
 

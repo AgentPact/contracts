@@ -7,7 +7,6 @@ pragma solidity ^0.8.24;
 interface IAgentPactEscrow {
     enum TaskState {
         Created,
-        ConfirmationPending,
         Working,
         Delivered,
         InRevision,
@@ -31,7 +30,6 @@ interface IAgentPactEscrow {
         uint64 deliveryDurationSeconds;
         uint64 deliveryDeadline;
         uint64 acceptanceDeadline;
-        uint64 confirmationDeadline;
         uint8 maxRevisions;
         uint8 currentRevision;
         uint8 criteriaCount;
@@ -55,16 +53,8 @@ interface IAgentPactEscrow {
     event TaskClaimed(
         uint256 indexed escrowId,
         address indexed provider,
-        uint64 confirmationDeadline
-    );
-
-    event TaskConfirmed(
-        uint256 indexed escrowId,
-        address indexed provider,
         uint64 deliveryDeadline
     );
-
-    event TaskDeclined(uint256 indexed escrowId, address indexed provider);
 
     event TaskSuspendedAfterDeclines(
         uint256 indexed escrowId,
@@ -152,10 +142,6 @@ interface IAgentPactEscrow {
         bytes calldata platformSignature
     ) external;
 
-    function confirmTask(uint256 escrowId) external;
-
-    function declineTask(uint256 escrowId) external;
-
     function submitDelivery(uint256 escrowId, bytes32 deliveryHash) external;
 
     function abandonTask(uint256 escrowId) external;
@@ -163,8 +149,6 @@ interface IAgentPactEscrow {
     function claimAcceptanceTimeout(uint256 escrowId) external;
 
     function claimDeliveryTimeout(uint256 escrowId) external;
-
-    function claimConfirmationTimeout(uint256 escrowId) external;
 
     function setPlatformFeeBps(uint16 newFeeBps) external;
 }
