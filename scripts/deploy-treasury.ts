@@ -16,6 +16,7 @@ import {
     assertDeployerControlsOwnerActions,
     shouldTransferOwnershipByDefault,
     transferOwnershipIfRequested,
+    waitForProxyImplementationAddress,
 } from "./deploy-helpers";
 
 const TREASURY_JSON = path.join(__dirname, "TREASURY.json");
@@ -91,7 +92,10 @@ async function main() {
         });
         await upgraded.waitForDeployment();
         treasuryProxyAddress = existingProxy;
-        treasuryImplAddress = await upgrades.erc1967.getImplementationAddress(treasuryProxyAddress);
+        treasuryImplAddress = await waitForProxyImplementationAddress(
+            treasuryProxyAddress,
+            "Treasury proxy"
+        );
         console.log("Upgraded:", treasuryProxyAddress);
     } else {
         console.log("\nDeploying Treasury...");
@@ -105,7 +109,10 @@ async function main() {
         );
         await treasury.waitForDeployment();
         treasuryProxyAddress = await treasury.getAddress();
-        treasuryImplAddress = await upgrades.erc1967.getImplementationAddress(treasuryProxyAddress);
+        treasuryImplAddress = await waitForProxyImplementationAddress(
+            treasuryProxyAddress,
+            "Treasury proxy"
+        );
         console.log("Deployed:", treasuryProxyAddress);
     }
 

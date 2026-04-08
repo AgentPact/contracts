@@ -13,6 +13,7 @@ import {
     resolveUsdcAddress,
     resolveWethAddress,
 } from "./env";
+import { waitForProxyImplementationAddress } from "./deploy-helpers";
 
 const ESCROW_JSON = path.join(__dirname, "ESCROW.json");
 const TREASURY_JSON = path.join(__dirname, "TREASURY.json");
@@ -87,8 +88,9 @@ async function main() {
     );
     await escrow.waitForDeployment();
     const escrowProxy = await escrow.getAddress();
-    const escrowImpl = await upgrades.erc1967.getImplementationAddress(
-        escrowProxy
+    const escrowImpl = await waitForProxyImplementationAddress(
+        escrowProxy,
+        "Escrow proxy"
     );
 
     console.log("Deploying TipJar...");
@@ -102,8 +104,9 @@ async function main() {
     );
     await tipJar.waitForDeployment();
     const tipJarProxy = await tipJar.getAddress();
-    const tipJarImpl = await upgrades.erc1967.getImplementationAddress(
-        tipJarProxy
+    const tipJarImpl = await waitForProxyImplementationAddress(
+        tipJarProxy,
+        "TipJar proxy"
     );
 
     console.log("Deploying Treasury...");
@@ -117,8 +120,9 @@ async function main() {
     );
     await treasury.waitForDeployment();
     const treasuryProxy = await treasury.getAddress();
-    const treasuryImpl = await upgrades.erc1967.getImplementationAddress(
-        treasuryProxy
+    const treasuryImpl = await waitForProxyImplementationAddress(
+        treasuryProxy,
+        "Treasury proxy"
     );
 
     console.log("\nRunning post-deploy wiring...");

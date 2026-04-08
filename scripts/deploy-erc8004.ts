@@ -10,6 +10,7 @@ import {
     assertDeployerControlsOwnerActions,
     shouldTransferOwnershipByDefault,
     transferOwnershipIfRequested,
+    waitForProxyImplementationAddress,
 } from "./deploy-helpers";
 
 const ERC8004_JSON = path.join(__dirname, "ERC8004.json");
@@ -83,8 +84,9 @@ async function main() {
         );
         await upgraded.waitForDeployment();
         identityProxyAddress = existingIdentityProxy;
-        identityImplAddress = await upgrades.erc1967.getImplementationAddress(
-            identityProxyAddress
+        identityImplAddress = await waitForProxyImplementationAddress(
+            identityProxyAddress,
+            "Identity proxy"
         );
     } else {
         console.log("\nDeploying Identity Registry...");
@@ -95,8 +97,9 @@ async function main() {
         );
         await identity.waitForDeployment();
         identityProxyAddress = await identity.getAddress();
-        identityImplAddress = await upgrades.erc1967.getImplementationAddress(
-            identityProxyAddress
+        identityImplAddress = await waitForProxyImplementationAddress(
+            identityProxyAddress,
+            "Identity proxy"
         );
     }
 
@@ -118,8 +121,9 @@ async function main() {
         );
         await upgraded.waitForDeployment();
         reputationProxyAddress = existingReputationProxy;
-        reputationImplAddress = await upgrades.erc1967.getImplementationAddress(
-            reputationProxyAddress
+        reputationImplAddress = await waitForProxyImplementationAddress(
+            reputationProxyAddress,
+            "Reputation proxy"
         );
     } else {
         console.log("\nDeploying Reputation Registry...");
@@ -130,8 +134,9 @@ async function main() {
         );
         await reputation.waitForDeployment();
         reputationProxyAddress = await reputation.getAddress();
-        reputationImplAddress = await upgrades.erc1967.getImplementationAddress(
-            reputationProxyAddress
+        reputationImplAddress = await waitForProxyImplementationAddress(
+            reputationProxyAddress,
+            "Reputation proxy"
         );
     }
 

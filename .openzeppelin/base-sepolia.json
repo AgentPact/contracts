@@ -2,2541 +2,35 @@
   "manifestVersion": "3.2",
   "proxies": [
     {
-      "address": "0x927602DaFE11e2679cbB0eb4d98CF6a7B1417a52",
-      "txHash": "0xe97b033516fcd9df37fed5fd517c5ee3d851ed68aef0e5fc0322cfabb25019b0",
+      "address": "0x5B6684512b72dD32634FF3CFE53008aE7685A561",
+      "txHash": "0x3c7ba781c0a9f496d7e9390deef0aebd7cd8dd6cefa4d8383d1f780845457ff7",
       "kind": "uups"
     },
     {
-      "address": "0x59B65889855Aea3e0900a8fd1a8887e7E7a3e887",
-      "txHash": "0xb1a7b4027dd3c6c78ab37f422156415fba57ef57a59c158a1fe4191f95575cf8",
+      "address": "0x2814aE2b1D40b8c7B67e5E5F9e0fEB34b1658c52",
+      "txHash": "0xfe3f0e14d079f45a4eaa8084d47dc60c557193191f297ad7399cf6354473b1dc",
       "kind": "uups"
     },
     {
-      "address": "0xB8C77709fF82D7F90CA1695a7495d0A33D2d19a5",
-      "txHash": "0x6fa616f951fd843be20b143ff7b7b86c9d5e19a5db41b695049f352dce38f3cd",
+      "address": "0x37BC9Dbf95B040FC595d9D4457f4a640E6451e48",
+      "txHash": "0xe3727d2abe849445bbb6f69306f9fa748534ad8da5ef57cde3cd9e74a79f5625",
       "kind": "uups"
     },
     {
-      "address": "0x2CC381129bB48CfCA6d7efE84b58BFCd4A83FAAe",
-      "txHash": "0xc1ee552a4ce4def18acbb129288846b7c4f20f6510e523041a926f17ab2606c1",
+      "address": "0x0285930cAD4EAbed9D2f8eF4e0cd9d3dD9e0772c",
+      "txHash": "0x94134ad4ca784cb6cbd97f2c8411f4b4af3fe998970c475f420f6c051cafbd30",
       "kind": "uups"
     },
     {
-      "address": "0xF852E114b9b17A16fD3498401A6663C1ca1a01a3",
-      "txHash": "0x99b4562ac0b16cdc2d68e606cf7be8add992b442ea11e017fe100254189ea70b",
-      "kind": "uups"
-    },
-    {
-      "address": "0xb9525D119c51bd0eb5cDdF6003eB97E036Df84c4",
-      "txHash": "0x4f232e75fcaada1d7943899f20e94a006f82773cd5ad92caeb569f69d28f4e81",
-      "kind": "uups"
-    },
-    {
-      "address": "0xe20c4C8BBE542AFa3937fb2375ecdd9402b4cfe0",
-      "txHash": "0xc145cc1d9142752001f184433a4c411116e31f498b433626858bf05c34d10ddc",
-      "kind": "uups"
-    },
-    {
-      "address": "0x25c9e2184C183eF0fCee655EdA40A372438c3f13",
-      "txHash": "0x60b7df40dc915469966006b8ecffc902083a2eddcba8e69795cd99d2d18fe2d9",
-      "kind": "uups"
-    },
-    {
-      "address": "0xb5a5CCF53EF3CF1fcBf6F5eAEA2b39FA9E8E820e",
-      "txHash": "0x1c9d1889f0010621b1314768d4569b42e3b88f11355004fa28dc01954a46b6ce",
-      "kind": "uups"
-    },
-    {
-      "address": "0x2c6412e1136c3E66350F430B9a9c7F3ac9A54483",
-      "txHash": "0x5e5b7f674ba5eaf46fe5500f048b44acfd42277b4feb493acdbeb4c59d2c1e83",
-      "kind": "uups"
-    },
-    {
-      "address": "0x25C0b7d200e14F304573e3f7EABB7aE45A2E5774",
-      "txHash": "0xdb8c0d3f9f71d880305bceaa4e325b47cc674952218d1f6017325edb389ec931",
-      "kind": "uups"
-    },
-    {
-      "address": "0x9CC467BA2f9D2C217Ce6577d1732745f98B72129",
-      "txHash": "0xe8dd5f1bf879b06afbc831b80de4792a4bd5acf0ec4cf0f296997da1ee9379af",
-      "kind": "uups"
-    },
-    {
-      "address": "0x6963a32B180EcBE2efC3605aB3Fd17402916fee7",
-      "txHash": "0x2dd085e9495800b7356803a9a4b00c35a00a2c2ca7b05dd68cc28354e0acc86e",
-      "kind": "uups"
-    },
-    {
-      "address": "0x43f018Ea7b822b9A3d748A438E530729F1791dcC",
-      "txHash": "0x096aa2d0f80358bb0804cac8be4af4253e057435987c987a990c11e847100599",
+      "address": "0xd11438C44F62AB4A6f234c9269778951813e1e1D",
+      "txHash": "0xe2476bfc6355022acbbf29464123cae1084912221503056de9b7931314e58893",
       "kind": "uups"
     }
   ],
   "impls": {
-    "f7c354400deb2fab179b1e8ea7e192acaf90257f12342d0e5312bcf12491a12b": {
-      "address": "0x64222d765ce9ac80bce47b1846D20a4B4A7d9A91",
-      "txHash": "0xf29bda78edbb5e742cd2cba48529065a9e6274f30066994861e3a1e577401324",
-      "layout": {
-        "solcVersion": "0.8.24",
-        "storage": [
-          {
-            "label": "nextEscrowId",
-            "offset": 0,
-            "slot": "0",
-            "type": "t_uint256",
-            "contract": "AgentPactEscrowV2",
-            "src": "src\\AgentPactEscrowV2.sol:55"
-          },
-          {
-            "label": "platformSigner",
-            "offset": 0,
-            "slot": "1",
-            "type": "t_address",
-            "contract": "AgentPactEscrowV2",
-            "src": "src\\AgentPactEscrowV2.sol:58"
-          },
-          {
-            "label": "platformFund",
-            "offset": 0,
-            "slot": "2",
-            "type": "t_address",
-            "contract": "AgentPactEscrowV2",
-            "src": "src\\AgentPactEscrowV2.sol:61"
-          },
-          {
-            "label": "escrows",
-            "offset": 0,
-            "slot": "3",
-            "type": "t_mapping(t_uint256,t_struct(EscrowRecord)11041_storage)",
-            "contract": "AgentPactEscrowV2",
-            "src": "src\\AgentPactEscrowV2.sol:64"
-          },
-          {
-            "label": "assignmentNonces",
-            "offset": 0,
-            "slot": "4",
-            "type": "t_mapping(t_uint256,t_uint256)",
-            "contract": "AgentPactEscrowV2",
-            "src": "src\\AgentPactEscrowV2.sol:67"
-          },
-          {
-            "label": "calculatedPassRates",
-            "offset": 0,
-            "slot": "5",
-            "type": "t_mapping(t_uint256,t_uint8)",
-            "contract": "AgentPactEscrowV2",
-            "src": "src\\AgentPactEscrowV2.sol:70"
-          },
-          {
-            "label": "allowedTokens",
-            "offset": 0,
-            "slot": "6",
-            "type": "t_mapping(t_address,t_bool)",
-            "contract": "AgentPactEscrowV2",
-            "src": "src\\AgentPactEscrowV2.sol:73"
-          },
-          {
-            "label": "__gap",
-            "offset": 0,
-            "slot": "7",
-            "type": "t_array(t_uint256)43_storage",
-            "contract": "AgentPactEscrowV2",
-            "src": "src\\AgentPactEscrowV2.sol:76"
-          }
-        ],
-        "types": {
-          "t_address": {
-            "label": "address",
-            "numberOfBytes": "20"
-          },
-          "t_bool": {
-            "label": "bool",
-            "numberOfBytes": "1"
-          },
-          "t_bytes32": {
-            "label": "bytes32",
-            "numberOfBytes": "32"
-          },
-          "t_string_storage": {
-            "label": "string",
-            "numberOfBytes": "32"
-          },
-          "t_struct(EIP712Storage)124_storage": {
-            "label": "struct EIP712Upgradeable.EIP712Storage",
-            "members": [
-              {
-                "label": "_hashedName",
-                "type": "t_bytes32",
-                "offset": 0,
-                "slot": "0"
-              },
-              {
-                "label": "_hashedVersion",
-                "type": "t_bytes32",
-                "offset": 0,
-                "slot": "1"
-              },
-              {
-                "label": "_name",
-                "type": "t_string_storage",
-                "offset": 0,
-                "slot": "2"
-              },
-              {
-                "label": "_version",
-                "type": "t_string_storage",
-                "offset": 0,
-                "slot": "3"
-              }
-            ],
-            "numberOfBytes": "128"
-          },
-          "t_struct(InitializableStorage)436_storage": {
-            "label": "struct Initializable.InitializableStorage",
-            "members": [
-              {
-                "label": "_initialized",
-                "type": "t_uint64",
-                "offset": 0,
-                "slot": "0"
-              },
-              {
-                "label": "_initializing",
-                "type": "t_bool",
-                "offset": 8,
-                "slot": "0"
-              }
-            ],
-            "numberOfBytes": "32"
-          },
-          "t_struct(OwnableStorage)13_storage": {
-            "label": "struct OwnableUpgradeable.OwnableStorage",
-            "members": [
-              {
-                "label": "_owner",
-                "type": "t_address",
-                "offset": 0,
-                "slot": "0"
-              }
-            ],
-            "numberOfBytes": "32"
-          },
-          "t_uint64": {
-            "label": "uint64",
-            "numberOfBytes": "8"
-          },
-          "t_array(t_uint256)43_storage": {
-            "label": "uint256[43]",
-            "numberOfBytes": "1376"
-          },
-          "t_enum(TaskState)11007": {
-            "label": "enum IAgentPactEscrow.TaskState",
-            "members": [
-              "Created",
-              "ConfirmationPending",
-              "Working",
-              "Delivered",
-              "InRevision",
-              "Accepted",
-              "Settled",
-              "TimedOut",
-              "Cancelled"
-            ],
-            "numberOfBytes": "1"
-          },
-          "t_mapping(t_address,t_bool)": {
-            "label": "mapping(address => bool)",
-            "numberOfBytes": "32"
-          },
-          "t_mapping(t_uint256,t_struct(EscrowRecord)11041_storage)": {
-            "label": "mapping(uint256 => struct IAgentPactEscrow.EscrowRecord)",
-            "numberOfBytes": "32"
-          },
-          "t_mapping(t_uint256,t_uint256)": {
-            "label": "mapping(uint256 => uint256)",
-            "numberOfBytes": "32"
-          },
-          "t_mapping(t_uint256,t_uint8)": {
-            "label": "mapping(uint256 => uint8)",
-            "numberOfBytes": "32"
-          },
-          "t_struct(EscrowRecord)11041_storage": {
-            "label": "struct IAgentPactEscrow.EscrowRecord",
-            "members": [
-              {
-                "label": "requester",
-                "type": "t_address",
-                "offset": 0,
-                "slot": "0"
-              },
-              {
-                "label": "provider",
-                "type": "t_address",
-                "offset": 0,
-                "slot": "1"
-              },
-              {
-                "label": "rewardAmount",
-                "type": "t_uint256",
-                "offset": 0,
-                "slot": "2"
-              },
-              {
-                "label": "requesterDeposit",
-                "type": "t_uint256",
-                "offset": 0,
-                "slot": "3"
-              },
-              {
-                "label": "depositConsumed",
-                "type": "t_uint256",
-                "offset": 0,
-                "slot": "4"
-              },
-              {
-                "label": "token",
-                "type": "t_address",
-                "offset": 0,
-                "slot": "5"
-              },
-              {
-                "label": "state",
-                "type": "t_enum(TaskState)11007",
-                "offset": 20,
-                "slot": "5"
-              },
-              {
-                "label": "taskHash",
-                "type": "t_bytes32",
-                "offset": 0,
-                "slot": "6"
-              },
-              {
-                "label": "latestDeliveryHash",
-                "type": "t_bytes32",
-                "offset": 0,
-                "slot": "7"
-              },
-              {
-                "label": "latestCriteriaHash",
-                "type": "t_bytes32",
-                "offset": 0,
-                "slot": "8"
-              },
-              {
-                "label": "deliveryDeadline",
-                "type": "t_uint64",
-                "offset": 0,
-                "slot": "9"
-              },
-              {
-                "label": "acceptanceDeadline",
-                "type": "t_uint64",
-                "offset": 8,
-                "slot": "9"
-              },
-              {
-                "label": "confirmationDeadline",
-                "type": "t_uint64",
-                "offset": 16,
-                "slot": "9"
-              },
-              {
-                "label": "maxRevisions",
-                "type": "t_uint8",
-                "offset": 24,
-                "slot": "9"
-              },
-              {
-                "label": "currentRevision",
-                "type": "t_uint8",
-                "offset": 25,
-                "slot": "9"
-              },
-              {
-                "label": "acceptanceWindowHours",
-                "type": "t_uint8",
-                "offset": 26,
-                "slot": "9"
-              }
-            ],
-            "numberOfBytes": "320"
-          },
-          "t_uint256": {
-            "label": "uint256",
-            "numberOfBytes": "32"
-          },
-          "t_uint8": {
-            "label": "uint8",
-            "numberOfBytes": "1"
-          }
-        },
-        "namespaces": {
-          "erc7201:openzeppelin.storage.EIP712": [
-            {
-              "contract": "EIP712Upgradeable",
-              "label": "_hashedName",
-              "type": "t_bytes32",
-              "src": "@openzeppelin\\contracts-upgradeable\\utils\\cryptography\\EIP712Upgradeable.sol:37",
-              "offset": 0,
-              "slot": "0"
-            },
-            {
-              "contract": "EIP712Upgradeable",
-              "label": "_hashedVersion",
-              "type": "t_bytes32",
-              "src": "@openzeppelin\\contracts-upgradeable\\utils\\cryptography\\EIP712Upgradeable.sol:38",
-              "offset": 0,
-              "slot": "1"
-            },
-            {
-              "contract": "EIP712Upgradeable",
-              "label": "_name",
-              "type": "t_string_storage",
-              "src": "@openzeppelin\\contracts-upgradeable\\utils\\cryptography\\EIP712Upgradeable.sol:40",
-              "offset": 0,
-              "slot": "2"
-            },
-            {
-              "contract": "EIP712Upgradeable",
-              "label": "_version",
-              "type": "t_string_storage",
-              "src": "@openzeppelin\\contracts-upgradeable\\utils\\cryptography\\EIP712Upgradeable.sol:41",
-              "offset": 0,
-              "slot": "3"
-            }
-          ],
-          "erc7201:openzeppelin.storage.Ownable": [
-            {
-              "contract": "OwnableUpgradeable",
-              "label": "_owner",
-              "type": "t_address",
-              "src": "@openzeppelin\\contracts-upgradeable\\access\\OwnableUpgradeable.sol:24",
-              "offset": 0,
-              "slot": "0"
-            }
-          ],
-          "erc7201:openzeppelin.storage.Initializable": [
-            {
-              "contract": "Initializable",
-              "label": "_initialized",
-              "type": "t_uint64",
-              "src": "@openzeppelin\\contracts\\proxy\\utils\\Initializable.sol:69",
-              "offset": 0,
-              "slot": "0"
-            },
-            {
-              "contract": "Initializable",
-              "label": "_initializing",
-              "type": "t_bool",
-              "src": "@openzeppelin\\contracts\\proxy\\utils\\Initializable.sol:73",
-              "offset": 8,
-              "slot": "0"
-            }
-          ]
-        }
-      }
-    },
-    "2290f893936a19bc6357e097df4529e3a349dbb2d8397386039015ea2e438514": {
-      "address": "0x0Eb896DF2D4d7c6Fafa606e4A6b8f6b1D6bF53A9",
-      "txHash": "0xc0b216ac34340ab98f1d627f8eae49d91a9695e4a01556df740fecfd0549c7b4",
-      "layout": {
-        "solcVersion": "0.8.24",
-        "storage": [
-          {
-            "label": "nextEscrowId",
-            "offset": 0,
-            "slot": "0",
-            "type": "t_uint256",
-            "contract": "AgentPactEscrowV2",
-            "src": "src\\AgentPactEscrowV2.sol:60"
-          },
-          {
-            "label": "platformSigner",
-            "offset": 0,
-            "slot": "1",
-            "type": "t_address",
-            "contract": "AgentPactEscrowV2",
-            "src": "src\\AgentPactEscrowV2.sol:63"
-          },
-          {
-            "label": "platformFund",
-            "offset": 0,
-            "slot": "2",
-            "type": "t_address",
-            "contract": "AgentPactEscrowV2",
-            "src": "src\\AgentPactEscrowV2.sol:66"
-          },
-          {
-            "label": "escrows",
-            "offset": 0,
-            "slot": "3",
-            "type": "t_mapping(t_uint256,t_struct(EscrowRecord)11486_storage)",
-            "contract": "AgentPactEscrowV2",
-            "src": "src\\AgentPactEscrowV2.sol:69"
-          },
-          {
-            "label": "assignmentNonces",
-            "offset": 0,
-            "slot": "4",
-            "type": "t_mapping(t_uint256,t_uint256)",
-            "contract": "AgentPactEscrowV2",
-            "src": "src\\AgentPactEscrowV2.sol:72"
-          },
-          {
-            "label": "escrowFundWeights",
-            "offset": 0,
-            "slot": "5",
-            "type": "t_mapping(t_uint256,t_mapping(t_uint8,t_uint8))",
-            "contract": "AgentPactEscrowV2",
-            "src": "src\\AgentPactEscrowV2.sol:76"
-          },
-          {
-            "label": "allowedTokens",
-            "offset": 0,
-            "slot": "6",
-            "type": "t_mapping(t_address,t_bool)",
-            "contract": "AgentPactEscrowV2",
-            "src": "src\\AgentPactEscrowV2.sol:79"
-          },
-          {
-            "label": "__gap",
-            "offset": 0,
-            "slot": "7",
-            "type": "t_array(t_uint256)42_storage",
-            "contract": "AgentPactEscrowV2",
-            "src": "src\\AgentPactEscrowV2.sol:82"
-          }
-        ],
-        "types": {
-          "t_address": {
-            "label": "address",
-            "numberOfBytes": "20"
-          },
-          "t_bool": {
-            "label": "bool",
-            "numberOfBytes": "1"
-          },
-          "t_bytes32": {
-            "label": "bytes32",
-            "numberOfBytes": "32"
-          },
-          "t_string_storage": {
-            "label": "string",
-            "numberOfBytes": "32"
-          },
-          "t_struct(EIP712Storage)124_storage": {
-            "label": "struct EIP712Upgradeable.EIP712Storage",
-            "members": [
-              {
-                "label": "_hashedName",
-                "type": "t_bytes32",
-                "offset": 0,
-                "slot": "0"
-              },
-              {
-                "label": "_hashedVersion",
-                "type": "t_bytes32",
-                "offset": 0,
-                "slot": "1"
-              },
-              {
-                "label": "_name",
-                "type": "t_string_storage",
-                "offset": 0,
-                "slot": "2"
-              },
-              {
-                "label": "_version",
-                "type": "t_string_storage",
-                "offset": 0,
-                "slot": "3"
-              }
-            ],
-            "numberOfBytes": "128"
-          },
-          "t_struct(InitializableStorage)436_storage": {
-            "label": "struct Initializable.InitializableStorage",
-            "members": [
-              {
-                "label": "_initialized",
-                "type": "t_uint64",
-                "offset": 0,
-                "slot": "0"
-              },
-              {
-                "label": "_initializing",
-                "type": "t_bool",
-                "offset": 8,
-                "slot": "0"
-              }
-            ],
-            "numberOfBytes": "32"
-          },
-          "t_struct(OwnableStorage)13_storage": {
-            "label": "struct OwnableUpgradeable.OwnableStorage",
-            "members": [
-              {
-                "label": "_owner",
-                "type": "t_address",
-                "offset": 0,
-                "slot": "0"
-              }
-            ],
-            "numberOfBytes": "32"
-          },
-          "t_uint64": {
-            "label": "uint64",
-            "numberOfBytes": "8"
-          },
-          "t_array(t_uint256)42_storage": {
-            "label": "uint256[42]",
-            "numberOfBytes": "1344"
-          },
-          "t_enum(TaskState)11446": {
-            "label": "enum IAgentPactEscrow.TaskState",
-            "members": [
-              "Created",
-              "ConfirmationPending",
-              "Working",
-              "Delivered",
-              "InRevision",
-              "Accepted",
-              "Settled",
-              "TimedOut",
-              "Cancelled"
-            ],
-            "numberOfBytes": "1"
-          },
-          "t_mapping(t_address,t_bool)": {
-            "label": "mapping(address => bool)",
-            "numberOfBytes": "32"
-          },
-          "t_mapping(t_uint256,t_mapping(t_uint8,t_uint8))": {
-            "label": "mapping(uint256 => mapping(uint8 => uint8))",
-            "numberOfBytes": "32"
-          },
-          "t_mapping(t_uint256,t_struct(EscrowRecord)11486_storage)": {
-            "label": "mapping(uint256 => struct IAgentPactEscrow.EscrowRecord)",
-            "numberOfBytes": "32"
-          },
-          "t_mapping(t_uint256,t_uint256)": {
-            "label": "mapping(uint256 => uint256)",
-            "numberOfBytes": "32"
-          },
-          "t_mapping(t_uint8,t_uint8)": {
-            "label": "mapping(uint8 => uint8)",
-            "numberOfBytes": "32"
-          },
-          "t_struct(EscrowRecord)11486_storage": {
-            "label": "struct IAgentPactEscrow.EscrowRecord",
-            "members": [
-              {
-                "label": "requester",
-                "type": "t_address",
-                "offset": 0,
-                "slot": "0"
-              },
-              {
-                "label": "provider",
-                "type": "t_address",
-                "offset": 0,
-                "slot": "1"
-              },
-              {
-                "label": "rewardAmount",
-                "type": "t_uint256",
-                "offset": 0,
-                "slot": "2"
-              },
-              {
-                "label": "requesterDeposit",
-                "type": "t_uint256",
-                "offset": 0,
-                "slot": "3"
-              },
-              {
-                "label": "depositConsumed",
-                "type": "t_uint256",
-                "offset": 0,
-                "slot": "4"
-              },
-              {
-                "label": "token",
-                "type": "t_address",
-                "offset": 0,
-                "slot": "5"
-              },
-              {
-                "label": "state",
-                "type": "t_enum(TaskState)11446",
-                "offset": 20,
-                "slot": "5"
-              },
-              {
-                "label": "taskHash",
-                "type": "t_bytes32",
-                "offset": 0,
-                "slot": "6"
-              },
-              {
-                "label": "latestDeliveryHash",
-                "type": "t_bytes32",
-                "offset": 0,
-                "slot": "7"
-              },
-              {
-                "label": "latestCriteriaHash",
-                "type": "t_bytes32",
-                "offset": 0,
-                "slot": "8"
-              },
-              {
-                "label": "deliveryDurationSeconds",
-                "type": "t_uint64",
-                "offset": 0,
-                "slot": "9"
-              },
-              {
-                "label": "deliveryDeadline",
-                "type": "t_uint64",
-                "offset": 8,
-                "slot": "9"
-              },
-              {
-                "label": "acceptanceDeadline",
-                "type": "t_uint64",
-                "offset": 16,
-                "slot": "9"
-              },
-              {
-                "label": "confirmationDeadline",
-                "type": "t_uint64",
-                "offset": 24,
-                "slot": "9"
-              },
-              {
-                "label": "maxRevisions",
-                "type": "t_uint8",
-                "offset": 0,
-                "slot": "10"
-              },
-              {
-                "label": "currentRevision",
-                "type": "t_uint8",
-                "offset": 1,
-                "slot": "10"
-              },
-              {
-                "label": "criteriaCount",
-                "type": "t_uint8",
-                "offset": 2,
-                "slot": "10"
-              },
-              {
-                "label": "declineCount",
-                "type": "t_uint8",
-                "offset": 3,
-                "slot": "10"
-              },
-              {
-                "label": "acceptanceWindowHours",
-                "type": "t_uint8",
-                "offset": 4,
-                "slot": "10"
-              }
-            ],
-            "numberOfBytes": "352"
-          },
-          "t_uint256": {
-            "label": "uint256",
-            "numberOfBytes": "32"
-          },
-          "t_uint8": {
-            "label": "uint8",
-            "numberOfBytes": "1"
-          }
-        },
-        "namespaces": {
-          "erc7201:openzeppelin.storage.EIP712": [
-            {
-              "contract": "EIP712Upgradeable",
-              "label": "_hashedName",
-              "type": "t_bytes32",
-              "src": "@openzeppelin\\contracts-upgradeable\\utils\\cryptography\\EIP712Upgradeable.sol:37",
-              "offset": 0,
-              "slot": "0"
-            },
-            {
-              "contract": "EIP712Upgradeable",
-              "label": "_hashedVersion",
-              "type": "t_bytes32",
-              "src": "@openzeppelin\\contracts-upgradeable\\utils\\cryptography\\EIP712Upgradeable.sol:38",
-              "offset": 0,
-              "slot": "1"
-            },
-            {
-              "contract": "EIP712Upgradeable",
-              "label": "_name",
-              "type": "t_string_storage",
-              "src": "@openzeppelin\\contracts-upgradeable\\utils\\cryptography\\EIP712Upgradeable.sol:40",
-              "offset": 0,
-              "slot": "2"
-            },
-            {
-              "contract": "EIP712Upgradeable",
-              "label": "_version",
-              "type": "t_string_storage",
-              "src": "@openzeppelin\\contracts-upgradeable\\utils\\cryptography\\EIP712Upgradeable.sol:41",
-              "offset": 0,
-              "slot": "3"
-            }
-          ],
-          "erc7201:openzeppelin.storage.Ownable": [
-            {
-              "contract": "OwnableUpgradeable",
-              "label": "_owner",
-              "type": "t_address",
-              "src": "@openzeppelin\\contracts-upgradeable\\access\\OwnableUpgradeable.sol:24",
-              "offset": 0,
-              "slot": "0"
-            }
-          ],
-          "erc7201:openzeppelin.storage.Initializable": [
-            {
-              "contract": "Initializable",
-              "label": "_initialized",
-              "type": "t_uint64",
-              "src": "@openzeppelin\\contracts\\proxy\\utils\\Initializable.sol:69",
-              "offset": 0,
-              "slot": "0"
-            },
-            {
-              "contract": "Initializable",
-              "label": "_initializing",
-              "type": "t_bool",
-              "src": "@openzeppelin\\contracts\\proxy\\utils\\Initializable.sol:73",
-              "offset": 8,
-              "slot": "0"
-            }
-          ]
-        }
-      }
-    },
-    "1879671c17076046b9bf619b469413def3c64c37d9f50758f41282e6c5edbd18": {
-      "address": "0x38EfeAacc570AD6BB92c475057c3355aEA499a83",
-      "txHash": "0xb49e1f128d2138b973143166966fc582b60e6c83d3891eb53b132d30fbb19700",
-      "layout": {
-        "solcVersion": "0.8.24",
-        "storage": [
-          {
-            "label": "usdcToken",
-            "offset": 0,
-            "slot": "0",
-            "type": "t_contract(IERC20)2095",
-            "contract": "AgentPactTipJar",
-            "src": "src\\AgentPactTipJar.sol:65"
-          },
-          {
-            "label": "platformSigner",
-            "offset": 0,
-            "slot": "1",
-            "type": "t_address",
-            "contract": "AgentPactTipJar",
-            "src": "src\\AgentPactTipJar.sol:68"
-          },
-          {
-            "label": "treasury",
-            "offset": 0,
-            "slot": "2",
-            "type": "t_address",
-            "contract": "AgentPactTipJar",
-            "src": "src\\AgentPactTipJar.sol:71"
-          },
-          {
-            "label": "platformFeeBps",
-            "offset": 20,
-            "slot": "2",
-            "type": "t_uint16",
-            "contract": "AgentPactTipJar",
-            "src": "src\\AgentPactTipJar.sol:74"
-          },
-          {
-            "label": "maxTipAmount",
-            "offset": 0,
-            "slot": "3",
-            "type": "t_uint256",
-            "contract": "AgentPactTipJar",
-            "src": "src\\AgentPactTipJar.sol:78"
-          },
-          {
-            "label": "dailyTipCap",
-            "offset": 0,
-            "slot": "4",
-            "type": "t_uint256",
-            "contract": "AgentPactTipJar",
-            "src": "src\\AgentPactTipJar.sol:82"
-          },
-          {
-            "label": "paused",
-            "offset": 0,
-            "slot": "5",
-            "type": "t_bool",
-            "contract": "AgentPactTipJar",
-            "src": "src\\AgentPactTipJar.sol:85"
-          },
-          {
-            "label": "_tipStats",
-            "offset": 0,
-            "slot": "6",
-            "type": "t_mapping(t_address,t_struct(TipStats)10747_storage)",
-            "contract": "AgentPactTipJar",
-            "src": "src\\AgentPactTipJar.sol:88"
-          },
-          {
-            "label": "_usedNonces",
-            "offset": 0,
-            "slot": "7",
-            "type": "t_mapping(t_bytes32,t_bool)",
-            "contract": "AgentPactTipJar",
-            "src": "src\\AgentPactTipJar.sol:92"
-          },
-          {
-            "label": "_dailySpent",
-            "offset": 0,
-            "slot": "8",
-            "type": "t_mapping(t_bytes32,t_uint256)",
-            "contract": "AgentPactTipJar",
-            "src": "src\\AgentPactTipJar.sol:95"
-          },
-          {
-            "label": "__gap",
-            "offset": 0,
-            "slot": "9",
-            "type": "t_array(t_uint256)40_storage",
-            "contract": "AgentPactTipJar",
-            "src": "src\\AgentPactTipJar.sol:98"
-          }
-        ],
-        "types": {
-          "t_address": {
-            "label": "address",
-            "numberOfBytes": "20"
-          },
-          "t_bool": {
-            "label": "bool",
-            "numberOfBytes": "1"
-          },
-          "t_bytes32": {
-            "label": "bytes32",
-            "numberOfBytes": "32"
-          },
-          "t_string_storage": {
-            "label": "string",
-            "numberOfBytes": "32"
-          },
-          "t_struct(EIP712Storage)124_storage": {
-            "label": "struct EIP712Upgradeable.EIP712Storage",
-            "members": [
-              {
-                "label": "_hashedName",
-                "type": "t_bytes32",
-                "offset": 0,
-                "slot": "0"
-              },
-              {
-                "label": "_hashedVersion",
-                "type": "t_bytes32",
-                "offset": 0,
-                "slot": "1"
-              },
-              {
-                "label": "_name",
-                "type": "t_string_storage",
-                "offset": 0,
-                "slot": "2"
-              },
-              {
-                "label": "_version",
-                "type": "t_string_storage",
-                "offset": 0,
-                "slot": "3"
-              }
-            ],
-            "numberOfBytes": "128"
-          },
-          "t_struct(InitializableStorage)483_storage": {
-            "label": "struct Initializable.InitializableStorage",
-            "members": [
-              {
-                "label": "_initialized",
-                "type": "t_uint64",
-                "offset": 0,
-                "slot": "0"
-              },
-              {
-                "label": "_initializing",
-                "type": "t_bool",
-                "offset": 8,
-                "slot": "0"
-              }
-            ],
-            "numberOfBytes": "32"
-          },
-          "t_struct(OwnableStorage)13_storage": {
-            "label": "struct OwnableUpgradeable.OwnableStorage",
-            "members": [
-              {
-                "label": "_owner",
-                "type": "t_address",
-                "offset": 0,
-                "slot": "0"
-              }
-            ],
-            "numberOfBytes": "32"
-          },
-          "t_uint64": {
-            "label": "uint64",
-            "numberOfBytes": "8"
-          },
-          "t_array(t_uint256)40_storage": {
-            "label": "uint256[40]",
-            "numberOfBytes": "1280"
-          },
-          "t_contract(IERC20)2095": {
-            "label": "contract IERC20",
-            "numberOfBytes": "20"
-          },
-          "t_mapping(t_address,t_struct(TipStats)10747_storage)": {
-            "label": "mapping(address => struct IAgentPactTipJar.TipStats)",
-            "numberOfBytes": "32"
-          },
-          "t_mapping(t_bytes32,t_bool)": {
-            "label": "mapping(bytes32 => bool)",
-            "numberOfBytes": "32"
-          },
-          "t_mapping(t_bytes32,t_uint256)": {
-            "label": "mapping(bytes32 => uint256)",
-            "numberOfBytes": "32"
-          },
-          "t_struct(TipStats)10747_storage": {
-            "label": "struct IAgentPactTipJar.TipStats",
-            "members": [
-              {
-                "label": "totalSent",
-                "type": "t_uint256",
-                "offset": 0,
-                "slot": "0"
-              },
-              {
-                "label": "totalReceived",
-                "type": "t_uint256",
-                "offset": 0,
-                "slot": "1"
-              },
-              {
-                "label": "totalFeesPaid",
-                "type": "t_uint256",
-                "offset": 0,
-                "slot": "2"
-              },
-              {
-                "label": "tipsSentCount",
-                "type": "t_uint64",
-                "offset": 0,
-                "slot": "3"
-              },
-              {
-                "label": "tipsReceivedCount",
-                "type": "t_uint64",
-                "offset": 8,
-                "slot": "3"
-              }
-            ],
-            "numberOfBytes": "128"
-          },
-          "t_uint16": {
-            "label": "uint16",
-            "numberOfBytes": "2"
-          },
-          "t_uint256": {
-            "label": "uint256",
-            "numberOfBytes": "32"
-          }
-        },
-        "namespaces": {
-          "erc7201:openzeppelin.storage.EIP712": [
-            {
-              "contract": "EIP712Upgradeable",
-              "label": "_hashedName",
-              "type": "t_bytes32",
-              "src": "@openzeppelin\\contracts-upgradeable\\utils\\cryptography\\EIP712Upgradeable.sol:37",
-              "offset": 0,
-              "slot": "0"
-            },
-            {
-              "contract": "EIP712Upgradeable",
-              "label": "_hashedVersion",
-              "type": "t_bytes32",
-              "src": "@openzeppelin\\contracts-upgradeable\\utils\\cryptography\\EIP712Upgradeable.sol:38",
-              "offset": 0,
-              "slot": "1"
-            },
-            {
-              "contract": "EIP712Upgradeable",
-              "label": "_name",
-              "type": "t_string_storage",
-              "src": "@openzeppelin\\contracts-upgradeable\\utils\\cryptography\\EIP712Upgradeable.sol:40",
-              "offset": 0,
-              "slot": "2"
-            },
-            {
-              "contract": "EIP712Upgradeable",
-              "label": "_version",
-              "type": "t_string_storage",
-              "src": "@openzeppelin\\contracts-upgradeable\\utils\\cryptography\\EIP712Upgradeable.sol:41",
-              "offset": 0,
-              "slot": "3"
-            }
-          ],
-          "erc7201:openzeppelin.storage.Ownable": [
-            {
-              "contract": "OwnableUpgradeable",
-              "label": "_owner",
-              "type": "t_address",
-              "src": "@openzeppelin\\contracts-upgradeable\\access\\OwnableUpgradeable.sol:24",
-              "offset": 0,
-              "slot": "0"
-            }
-          ],
-          "erc7201:openzeppelin.storage.Initializable": [
-            {
-              "contract": "Initializable",
-              "label": "_initialized",
-              "type": "t_uint64",
-              "src": "@openzeppelin\\contracts\\proxy\\utils\\Initializable.sol:69",
-              "offset": 0,
-              "slot": "0"
-            },
-            {
-              "contract": "Initializable",
-              "label": "_initializing",
-              "type": "t_bool",
-              "src": "@openzeppelin\\contracts\\proxy\\utils\\Initializable.sol:73",
-              "offset": 8,
-              "slot": "0"
-            }
-          ]
-        }
-      }
-    },
-    "c7fb631552d6546c5d3d94ed608ceed0fa5f6e56a9fb39c12a9fc5f616e7773b": {
-      "address": "0x763AD9DaCB4c4Dd625081F33E13CAc894908830a",
-      "txHash": "0x2be101c211e1f7f88d2b1c1b35a8b3dbe3a898bde597ee29ee80ea2e48139ca2",
-      "layout": {
-        "solcVersion": "0.8.24",
-        "storage": [
-          {
-            "label": "_nextTokenId",
-            "offset": 0,
-            "slot": "0",
-            "type": "t_uint256",
-            "contract": "AgentPactIdentityRegistry",
-            "src": "src\\AgentPactIdentityRegistry.sol:24"
-          },
-          {
-            "label": "primaryAgentId",
-            "offset": 0,
-            "slot": "1",
-            "type": "t_mapping(t_address,t_uint256)",
-            "contract": "AgentPactIdentityRegistry",
-            "src": "src\\AgentPactIdentityRegistry.sol:27"
-          },
-          {
-            "label": "hasPrimaryAgent",
-            "offset": 0,
-            "slot": "2",
-            "type": "t_mapping(t_address,t_bool)",
-            "contract": "AgentPactIdentityRegistry",
-            "src": "src\\AgentPactIdentityRegistry.sol:29"
-          }
-        ],
-        "types": {
-          "t_address": {
-            "label": "address",
-            "numberOfBytes": "20"
-          },
-          "t_bool": {
-            "label": "bool",
-            "numberOfBytes": "1"
-          },
-          "t_mapping(t_address,t_bool)": {
-            "label": "mapping(address => bool)",
-            "numberOfBytes": "32"
-          },
-          "t_mapping(t_address,t_mapping(t_address,t_bool))": {
-            "label": "mapping(address => mapping(address => bool))",
-            "numberOfBytes": "32"
-          },
-          "t_mapping(t_address,t_uint256)": {
-            "label": "mapping(address => uint256)",
-            "numberOfBytes": "32"
-          },
-          "t_mapping(t_uint256,t_address)": {
-            "label": "mapping(uint256 => address)",
-            "numberOfBytes": "32"
-          },
-          "t_mapping(t_uint256,t_string_storage)": {
-            "label": "mapping(uint256 => string)",
-            "numberOfBytes": "32"
-          },
-          "t_string_storage": {
-            "label": "string",
-            "numberOfBytes": "32"
-          },
-          "t_struct(ERC721Storage)127_storage": {
-            "label": "struct ERC721Upgradeable.ERC721Storage",
-            "members": [
-              {
-                "label": "_name",
-                "type": "t_string_storage",
-                "offset": 0,
-                "slot": "0"
-              },
-              {
-                "label": "_symbol",
-                "type": "t_string_storage",
-                "offset": 0,
-                "slot": "1"
-              },
-              {
-                "label": "_owners",
-                "type": "t_mapping(t_uint256,t_address)",
-                "offset": 0,
-                "slot": "2"
-              },
-              {
-                "label": "_balances",
-                "type": "t_mapping(t_address,t_uint256)",
-                "offset": 0,
-                "slot": "3"
-              },
-              {
-                "label": "_tokenApprovals",
-                "type": "t_mapping(t_uint256,t_address)",
-                "offset": 0,
-                "slot": "4"
-              },
-              {
-                "label": "_operatorApprovals",
-                "type": "t_mapping(t_address,t_mapping(t_address,t_bool))",
-                "offset": 0,
-                "slot": "5"
-              }
-            ],
-            "numberOfBytes": "192"
-          },
-          "t_struct(ERC721URIStorageStorage)434_storage": {
-            "label": "struct ERC721URIStorageUpgradeable.ERC721URIStorageStorage",
-            "members": [
-              {
-                "label": "_tokenURIs",
-                "type": "t_mapping(t_uint256,t_string_storage)",
-                "offset": 0,
-                "slot": "0"
-              }
-            ],
-            "numberOfBytes": "32"
-          },
-          "t_struct(InitializableStorage)942_storage": {
-            "label": "struct Initializable.InitializableStorage",
-            "members": [
-              {
-                "label": "_initialized",
-                "type": "t_uint64",
-                "offset": 0,
-                "slot": "0"
-              },
-              {
-                "label": "_initializing",
-                "type": "t_bool",
-                "offset": 8,
-                "slot": "0"
-              }
-            ],
-            "numberOfBytes": "32"
-          },
-          "t_struct(OwnableStorage)13_storage": {
-            "label": "struct OwnableUpgradeable.OwnableStorage",
-            "members": [
-              {
-                "label": "_owner",
-                "type": "t_address",
-                "offset": 0,
-                "slot": "0"
-              }
-            ],
-            "numberOfBytes": "32"
-          },
-          "t_uint256": {
-            "label": "uint256",
-            "numberOfBytes": "32"
-          },
-          "t_uint64": {
-            "label": "uint64",
-            "numberOfBytes": "8"
-          }
-        },
-        "namespaces": {
-          "erc7201:openzeppelin.storage.Ownable": [
-            {
-              "contract": "OwnableUpgradeable",
-              "label": "_owner",
-              "type": "t_address",
-              "src": "@openzeppelin\\contracts-upgradeable\\access\\OwnableUpgradeable.sol:24",
-              "offset": 0,
-              "slot": "0"
-            }
-          ],
-          "erc7201:openzeppelin.storage.ERC721URIStorage": [
-            {
-              "contract": "ERC721URIStorageUpgradeable",
-              "label": "_tokenURIs",
-              "type": "t_mapping(t_uint256,t_string_storage)",
-              "src": "@openzeppelin\\contracts-upgradeable\\token\\ERC721\\extensions\\ERC721URIStorageUpgradeable.sol:23",
-              "offset": 0,
-              "slot": "0"
-            }
-          ],
-          "erc7201:openzeppelin.storage.ERC721": [
-            {
-              "contract": "ERC721Upgradeable",
-              "label": "_name",
-              "type": "t_string_storage",
-              "src": "@openzeppelin\\contracts-upgradeable\\token\\ERC721\\ERC721Upgradeable.sol:27",
-              "offset": 0,
-              "slot": "0"
-            },
-            {
-              "contract": "ERC721Upgradeable",
-              "label": "_symbol",
-              "type": "t_string_storage",
-              "src": "@openzeppelin\\contracts-upgradeable\\token\\ERC721\\ERC721Upgradeable.sol:30",
-              "offset": 0,
-              "slot": "1"
-            },
-            {
-              "contract": "ERC721Upgradeable",
-              "label": "_owners",
-              "type": "t_mapping(t_uint256,t_address)",
-              "src": "@openzeppelin\\contracts-upgradeable\\token\\ERC721\\ERC721Upgradeable.sol:32",
-              "offset": 0,
-              "slot": "2"
-            },
-            {
-              "contract": "ERC721Upgradeable",
-              "label": "_balances",
-              "type": "t_mapping(t_address,t_uint256)",
-              "src": "@openzeppelin\\contracts-upgradeable\\token\\ERC721\\ERC721Upgradeable.sol:34",
-              "offset": 0,
-              "slot": "3"
-            },
-            {
-              "contract": "ERC721Upgradeable",
-              "label": "_tokenApprovals",
-              "type": "t_mapping(t_uint256,t_address)",
-              "src": "@openzeppelin\\contracts-upgradeable\\token\\ERC721\\ERC721Upgradeable.sol:36",
-              "offset": 0,
-              "slot": "4"
-            },
-            {
-              "contract": "ERC721Upgradeable",
-              "label": "_operatorApprovals",
-              "type": "t_mapping(t_address,t_mapping(t_address,t_bool))",
-              "src": "@openzeppelin\\contracts-upgradeable\\token\\ERC721\\ERC721Upgradeable.sol:38",
-              "offset": 0,
-              "slot": "5"
-            }
-          ],
-          "erc7201:openzeppelin.storage.Initializable": [
-            {
-              "contract": "Initializable",
-              "label": "_initialized",
-              "type": "t_uint64",
-              "src": "@openzeppelin\\contracts\\proxy\\utils\\Initializable.sol:69",
-              "offset": 0,
-              "slot": "0"
-            },
-            {
-              "contract": "Initializable",
-              "label": "_initializing",
-              "type": "t_bool",
-              "src": "@openzeppelin\\contracts\\proxy\\utils\\Initializable.sol:73",
-              "offset": 8,
-              "slot": "0"
-            }
-          ]
-        }
-      }
-    },
-    "22792b8677102d0caf9ab46cb1f5ce458782eca2e5c129f752fb1c703facb707": {
-      "address": "0x09175DFD7DA7C06A84A545e09408cBD29f4F589A",
-      "txHash": "0x6c1d83a92fc993e5adee1582679b6827d76dffb156a61d5f21cea0b167e86745",
-      "layout": {
-        "solcVersion": "0.8.24",
-        "storage": [
-          {
-            "label": "identityRegistry",
-            "offset": 0,
-            "slot": "0",
-            "type": "t_contract(IIdentityRegistry)13357",
-            "contract": "AgentPactReputationRegistry",
-            "src": "src\\AgentPactReputationRegistry.sol:23"
-          },
-          {
-            "label": "authorizedWriters",
-            "offset": 0,
-            "slot": "1",
-            "type": "t_mapping(t_address,t_bool)",
-            "contract": "AgentPactReputationRegistry",
-            "src": "src\\AgentPactReputationRegistry.sol:26"
-          }
-        ],
-        "types": {
-          "t_address": {
-            "label": "address",
-            "numberOfBytes": "20"
-          },
-          "t_bool": {
-            "label": "bool",
-            "numberOfBytes": "1"
-          },
-          "t_struct(InitializableStorage)942_storage": {
-            "label": "struct Initializable.InitializableStorage",
-            "members": [
-              {
-                "label": "_initialized",
-                "type": "t_uint64",
-                "offset": 0,
-                "slot": "0"
-              },
-              {
-                "label": "_initializing",
-                "type": "t_bool",
-                "offset": 8,
-                "slot": "0"
-              }
-            ],
-            "numberOfBytes": "32"
-          },
-          "t_struct(OwnableStorage)13_storage": {
-            "label": "struct OwnableUpgradeable.OwnableStorage",
-            "members": [
-              {
-                "label": "_owner",
-                "type": "t_address",
-                "offset": 0,
-                "slot": "0"
-              }
-            ],
-            "numberOfBytes": "32"
-          },
-          "t_uint64": {
-            "label": "uint64",
-            "numberOfBytes": "8"
-          },
-          "t_contract(IIdentityRegistry)13357": {
-            "label": "contract IIdentityRegistry",
-            "numberOfBytes": "20"
-          },
-          "t_mapping(t_address,t_bool)": {
-            "label": "mapping(address => bool)",
-            "numberOfBytes": "32"
-          }
-        },
-        "namespaces": {
-          "erc7201:openzeppelin.storage.Ownable": [
-            {
-              "contract": "OwnableUpgradeable",
-              "label": "_owner",
-              "type": "t_address",
-              "src": "@openzeppelin\\contracts-upgradeable\\access\\OwnableUpgradeable.sol:24",
-              "offset": 0,
-              "slot": "0"
-            }
-          ],
-          "erc7201:openzeppelin.storage.Initializable": [
-            {
-              "contract": "Initializable",
-              "label": "_initialized",
-              "type": "t_uint64",
-              "src": "@openzeppelin\\contracts\\proxy\\utils\\Initializable.sol:69",
-              "offset": 0,
-              "slot": "0"
-            },
-            {
-              "contract": "Initializable",
-              "label": "_initializing",
-              "type": "t_bool",
-              "src": "@openzeppelin\\contracts\\proxy\\utils\\Initializable.sol:73",
-              "offset": 8,
-              "slot": "0"
-            }
-          ]
-        }
-      }
-    },
-    "946c4897525d3fb20360504a9620744392b0936afdca92f4c8d3e942b56923e9": {
-      "address": "0x42f0346911751A09A3a95CE678203E6F83Ac1f16",
-      "txHash": "0xd8f532c3aa642109d99ea1d05618ee0a91c76b54c0377036f2d552106f4ceb36",
-      "layout": {
-        "solcVersion": "0.8.24",
-        "storage": [
-          {
-            "label": "nextEscrowId",
-            "offset": 0,
-            "slot": "0",
-            "type": "t_uint256",
-            "contract": "AgentPactEscrowV2",
-            "src": "src\\AgentPactEscrowV2.sol:63"
-          },
-          {
-            "label": "platformSigner",
-            "offset": 0,
-            "slot": "1",
-            "type": "t_address",
-            "contract": "AgentPactEscrowV2",
-            "src": "src\\AgentPactEscrowV2.sol:66"
-          },
-          {
-            "label": "platformFund",
-            "offset": 0,
-            "slot": "2",
-            "type": "t_address",
-            "contract": "AgentPactEscrowV2",
-            "src": "src\\AgentPactEscrowV2.sol:69"
-          },
-          {
-            "label": "escrows",
-            "offset": 0,
-            "slot": "3",
-            "type": "t_mapping(t_uint256,t_struct(EscrowRecord)14352_storage)",
-            "contract": "AgentPactEscrowV2",
-            "src": "src\\AgentPactEscrowV2.sol:72"
-          },
-          {
-            "label": "assignmentNonces",
-            "offset": 0,
-            "slot": "4",
-            "type": "t_mapping(t_uint256,t_uint256)",
-            "contract": "AgentPactEscrowV2",
-            "src": "src\\AgentPactEscrowV2.sol:75"
-          },
-          {
-            "label": "escrowFundWeights",
-            "offset": 0,
-            "slot": "5",
-            "type": "t_mapping(t_uint256,t_mapping(t_uint8,t_uint8))",
-            "contract": "AgentPactEscrowV2",
-            "src": "src\\AgentPactEscrowV2.sol:79"
-          },
-          {
-            "label": "allowedTokens",
-            "offset": 0,
-            "slot": "6",
-            "type": "t_mapping(t_address,t_bool)",
-            "contract": "AgentPactEscrowV2",
-            "src": "src\\AgentPactEscrowV2.sol:82"
-          },
-          {
-            "label": "reputationRegistry",
-            "offset": 0,
-            "slot": "7",
-            "type": "t_contract(IAgentPactReputationRegistry)14586",
-            "contract": "AgentPactEscrowV2",
-            "src": "src\\AgentPactEscrowV2.sol:85"
-          },
-          {
-            "label": "__gap",
-            "offset": 0,
-            "slot": "8",
-            "type": "t_array(t_uint256)41_storage",
-            "contract": "AgentPactEscrowV2",
-            "src": "src\\AgentPactEscrowV2.sol:88"
-          }
-        ],
-        "types": {
-          "t_address": {
-            "label": "address",
-            "numberOfBytes": "20"
-          },
-          "t_bool": {
-            "label": "bool",
-            "numberOfBytes": "1"
-          },
-          "t_bytes32": {
-            "label": "bytes32",
-            "numberOfBytes": "32"
-          },
-          "t_string_storage": {
-            "label": "string",
-            "numberOfBytes": "32"
-          },
-          "t_struct(EIP712Storage)540_storage": {
-            "label": "struct EIP712Upgradeable.EIP712Storage",
-            "members": [
-              {
-                "label": "_hashedName",
-                "type": "t_bytes32",
-                "offset": 0,
-                "slot": "0"
-              },
-              {
-                "label": "_hashedVersion",
-                "type": "t_bytes32",
-                "offset": 0,
-                "slot": "1"
-              },
-              {
-                "label": "_name",
-                "type": "t_string_storage",
-                "offset": 0,
-                "slot": "2"
-              },
-              {
-                "label": "_version",
-                "type": "t_string_storage",
-                "offset": 0,
-                "slot": "3"
-              }
-            ],
-            "numberOfBytes": "128"
-          },
-          "t_struct(InitializableStorage)942_storage": {
-            "label": "struct Initializable.InitializableStorage",
-            "members": [
-              {
-                "label": "_initialized",
-                "type": "t_uint64",
-                "offset": 0,
-                "slot": "0"
-              },
-              {
-                "label": "_initializing",
-                "type": "t_bool",
-                "offset": 8,
-                "slot": "0"
-              }
-            ],
-            "numberOfBytes": "32"
-          },
-          "t_struct(OwnableStorage)13_storage": {
-            "label": "struct OwnableUpgradeable.OwnableStorage",
-            "members": [
-              {
-                "label": "_owner",
-                "type": "t_address",
-                "offset": 0,
-                "slot": "0"
-              }
-            ],
-            "numberOfBytes": "32"
-          },
-          "t_uint64": {
-            "label": "uint64",
-            "numberOfBytes": "8"
-          },
-          "t_array(t_uint256)41_storage": {
-            "label": "uint256[41]",
-            "numberOfBytes": "1312"
-          },
-          "t_contract(IAgentPactReputationRegistry)14586": {
-            "label": "contract IAgentPactReputationRegistry",
-            "numberOfBytes": "20"
-          },
-          "t_enum(TaskState)14312": {
-            "label": "enum IAgentPactEscrow.TaskState",
-            "members": [
-              "Created",
-              "ConfirmationPending",
-              "Working",
-              "Delivered",
-              "InRevision",
-              "Accepted",
-              "Settled",
-              "TimedOut",
-              "Cancelled"
-            ],
-            "numberOfBytes": "1"
-          },
-          "t_mapping(t_address,t_bool)": {
-            "label": "mapping(address => bool)",
-            "numberOfBytes": "32"
-          },
-          "t_mapping(t_uint256,t_mapping(t_uint8,t_uint8))": {
-            "label": "mapping(uint256 => mapping(uint8 => uint8))",
-            "numberOfBytes": "32"
-          },
-          "t_mapping(t_uint256,t_struct(EscrowRecord)14352_storage)": {
-            "label": "mapping(uint256 => struct IAgentPactEscrow.EscrowRecord)",
-            "numberOfBytes": "32"
-          },
-          "t_mapping(t_uint256,t_uint256)": {
-            "label": "mapping(uint256 => uint256)",
-            "numberOfBytes": "32"
-          },
-          "t_mapping(t_uint8,t_uint8)": {
-            "label": "mapping(uint8 => uint8)",
-            "numberOfBytes": "32"
-          },
-          "t_struct(EscrowRecord)14352_storage": {
-            "label": "struct IAgentPactEscrow.EscrowRecord",
-            "members": [
-              {
-                "label": "requester",
-                "type": "t_address",
-                "offset": 0,
-                "slot": "0"
-              },
-              {
-                "label": "provider",
-                "type": "t_address",
-                "offset": 0,
-                "slot": "1"
-              },
-              {
-                "label": "rewardAmount",
-                "type": "t_uint256",
-                "offset": 0,
-                "slot": "2"
-              },
-              {
-                "label": "requesterDeposit",
-                "type": "t_uint256",
-                "offset": 0,
-                "slot": "3"
-              },
-              {
-                "label": "depositConsumed",
-                "type": "t_uint256",
-                "offset": 0,
-                "slot": "4"
-              },
-              {
-                "label": "token",
-                "type": "t_address",
-                "offset": 0,
-                "slot": "5"
-              },
-              {
-                "label": "state",
-                "type": "t_enum(TaskState)14312",
-                "offset": 20,
-                "slot": "5"
-              },
-              {
-                "label": "taskHash",
-                "type": "t_bytes32",
-                "offset": 0,
-                "slot": "6"
-              },
-              {
-                "label": "latestDeliveryHash",
-                "type": "t_bytes32",
-                "offset": 0,
-                "slot": "7"
-              },
-              {
-                "label": "latestCriteriaHash",
-                "type": "t_bytes32",
-                "offset": 0,
-                "slot": "8"
-              },
-              {
-                "label": "deliveryDurationSeconds",
-                "type": "t_uint64",
-                "offset": 0,
-                "slot": "9"
-              },
-              {
-                "label": "deliveryDeadline",
-                "type": "t_uint64",
-                "offset": 8,
-                "slot": "9"
-              },
-              {
-                "label": "acceptanceDeadline",
-                "type": "t_uint64",
-                "offset": 16,
-                "slot": "9"
-              },
-              {
-                "label": "confirmationDeadline",
-                "type": "t_uint64",
-                "offset": 24,
-                "slot": "9"
-              },
-              {
-                "label": "maxRevisions",
-                "type": "t_uint8",
-                "offset": 0,
-                "slot": "10"
-              },
-              {
-                "label": "currentRevision",
-                "type": "t_uint8",
-                "offset": 1,
-                "slot": "10"
-              },
-              {
-                "label": "criteriaCount",
-                "type": "t_uint8",
-                "offset": 2,
-                "slot": "10"
-              },
-              {
-                "label": "declineCount",
-                "type": "t_uint8",
-                "offset": 3,
-                "slot": "10"
-              },
-              {
-                "label": "acceptanceWindowHours",
-                "type": "t_uint8",
-                "offset": 4,
-                "slot": "10"
-              }
-            ],
-            "numberOfBytes": "352"
-          },
-          "t_uint256": {
-            "label": "uint256",
-            "numberOfBytes": "32"
-          },
-          "t_uint8": {
-            "label": "uint8",
-            "numberOfBytes": "1"
-          }
-        },
-        "namespaces": {
-          "erc7201:openzeppelin.storage.EIP712": [
-            {
-              "contract": "EIP712Upgradeable",
-              "label": "_hashedName",
-              "type": "t_bytes32",
-              "src": "@openzeppelin\\contracts-upgradeable\\utils\\cryptography\\EIP712Upgradeable.sol:37",
-              "offset": 0,
-              "slot": "0"
-            },
-            {
-              "contract": "EIP712Upgradeable",
-              "label": "_hashedVersion",
-              "type": "t_bytes32",
-              "src": "@openzeppelin\\contracts-upgradeable\\utils\\cryptography\\EIP712Upgradeable.sol:38",
-              "offset": 0,
-              "slot": "1"
-            },
-            {
-              "contract": "EIP712Upgradeable",
-              "label": "_name",
-              "type": "t_string_storage",
-              "src": "@openzeppelin\\contracts-upgradeable\\utils\\cryptography\\EIP712Upgradeable.sol:40",
-              "offset": 0,
-              "slot": "2"
-            },
-            {
-              "contract": "EIP712Upgradeable",
-              "label": "_version",
-              "type": "t_string_storage",
-              "src": "@openzeppelin\\contracts-upgradeable\\utils\\cryptography\\EIP712Upgradeable.sol:41",
-              "offset": 0,
-              "slot": "3"
-            }
-          ],
-          "erc7201:openzeppelin.storage.Ownable": [
-            {
-              "contract": "OwnableUpgradeable",
-              "label": "_owner",
-              "type": "t_address",
-              "src": "@openzeppelin\\contracts-upgradeable\\access\\OwnableUpgradeable.sol:24",
-              "offset": 0,
-              "slot": "0"
-            }
-          ],
-          "erc7201:openzeppelin.storage.Initializable": [
-            {
-              "contract": "Initializable",
-              "label": "_initialized",
-              "type": "t_uint64",
-              "src": "@openzeppelin\\contracts\\proxy\\utils\\Initializable.sol:69",
-              "offset": 0,
-              "slot": "0"
-            },
-            {
-              "contract": "Initializable",
-              "label": "_initializing",
-              "type": "t_bool",
-              "src": "@openzeppelin\\contracts\\proxy\\utils\\Initializable.sol:73",
-              "offset": 8,
-              "slot": "0"
-            }
-          ]
-        }
-      }
-    },
-    "43b816ccc056ab50cccb0a2eeea625f22095e5051d436217605b3177d08a75a1": {
-      "address": "0xaFff53d9960D1f28ee8B77F79B6E11B91004eE4c",
-      "txHash": "0x4a1ea799f352dfe82af480536012aa6d1bf795a14340b9c48e03bce78595ed34",
-      "layout": {
-        "solcVersion": "0.8.24",
-        "storage": [
-          {
-            "label": "usdcToken",
-            "offset": 0,
-            "slot": "0",
-            "type": "t_contract(IERC20)3438",
-            "contract": "AgentPactTipJar",
-            "src": "src\\AgentPactTipJar.sol:68"
-          },
-          {
-            "label": "platformSigner",
-            "offset": 0,
-            "slot": "1",
-            "type": "t_address",
-            "contract": "AgentPactTipJar",
-            "src": "src\\AgentPactTipJar.sol:71"
-          },
-          {
-            "label": "treasury",
-            "offset": 0,
-            "slot": "2",
-            "type": "t_address",
-            "contract": "AgentPactTipJar",
-            "src": "src\\AgentPactTipJar.sol:74"
-          },
-          {
-            "label": "platformFeeBps",
-            "offset": 20,
-            "slot": "2",
-            "type": "t_uint16",
-            "contract": "AgentPactTipJar",
-            "src": "src\\AgentPactTipJar.sol:77"
-          },
-          {
-            "label": "maxTipAmount",
-            "offset": 0,
-            "slot": "3",
-            "type": "t_uint256",
-            "contract": "AgentPactTipJar",
-            "src": "src\\AgentPactTipJar.sol:81"
-          },
-          {
-            "label": "dailyTipCap",
-            "offset": 0,
-            "slot": "4",
-            "type": "t_uint256",
-            "contract": "AgentPactTipJar",
-            "src": "src\\AgentPactTipJar.sol:85"
-          },
-          {
-            "label": "paused",
-            "offset": 0,
-            "slot": "5",
-            "type": "t_bool",
-            "contract": "AgentPactTipJar",
-            "src": "src\\AgentPactTipJar.sol:88"
-          },
-          {
-            "label": "_tipStats",
-            "offset": 0,
-            "slot": "6",
-            "type": "t_mapping(t_address,t_struct(TipStats)15172_storage)",
-            "contract": "AgentPactTipJar",
-            "src": "src\\AgentPactTipJar.sol:91"
-          },
-          {
-            "label": "_usedNonces",
-            "offset": 0,
-            "slot": "7",
-            "type": "t_mapping(t_bytes32,t_bool)",
-            "contract": "AgentPactTipJar",
-            "src": "src\\AgentPactTipJar.sol:95"
-          },
-          {
-            "label": "_dailySpent",
-            "offset": 0,
-            "slot": "8",
-            "type": "t_mapping(t_bytes32,t_uint256)",
-            "contract": "AgentPactTipJar",
-            "src": "src\\AgentPactTipJar.sol:98"
-          },
-          {
-            "label": "reputationRegistry",
-            "offset": 0,
-            "slot": "9",
-            "type": "t_contract(IAgentPactReputationRegistry)15157",
-            "contract": "AgentPactTipJar",
-            "src": "src\\AgentPactTipJar.sol:101"
-          },
-          {
-            "label": "__gap",
-            "offset": 0,
-            "slot": "10",
-            "type": "t_array(t_uint256)39_storage",
-            "contract": "AgentPactTipJar",
-            "src": "src\\AgentPactTipJar.sol:104"
-          }
-        ],
-        "types": {
-          "t_address": {
-            "label": "address",
-            "numberOfBytes": "20"
-          },
-          "t_bool": {
-            "label": "bool",
-            "numberOfBytes": "1"
-          },
-          "t_bytes32": {
-            "label": "bytes32",
-            "numberOfBytes": "32"
-          },
-          "t_string_storage": {
-            "label": "string",
-            "numberOfBytes": "32"
-          },
-          "t_struct(EIP712Storage)540_storage": {
-            "label": "struct EIP712Upgradeable.EIP712Storage",
-            "members": [
-              {
-                "label": "_hashedName",
-                "type": "t_bytes32",
-                "offset": 0,
-                "slot": "0"
-              },
-              {
-                "label": "_hashedVersion",
-                "type": "t_bytes32",
-                "offset": 0,
-                "slot": "1"
-              },
-              {
-                "label": "_name",
-                "type": "t_string_storage",
-                "offset": 0,
-                "slot": "2"
-              },
-              {
-                "label": "_version",
-                "type": "t_string_storage",
-                "offset": 0,
-                "slot": "3"
-              }
-            ],
-            "numberOfBytes": "128"
-          },
-          "t_struct(InitializableStorage)942_storage": {
-            "label": "struct Initializable.InitializableStorage",
-            "members": [
-              {
-                "label": "_initialized",
-                "type": "t_uint64",
-                "offset": 0,
-                "slot": "0"
-              },
-              {
-                "label": "_initializing",
-                "type": "t_bool",
-                "offset": 8,
-                "slot": "0"
-              }
-            ],
-            "numberOfBytes": "32"
-          },
-          "t_struct(OwnableStorage)13_storage": {
-            "label": "struct OwnableUpgradeable.OwnableStorage",
-            "members": [
-              {
-                "label": "_owner",
-                "type": "t_address",
-                "offset": 0,
-                "slot": "0"
-              }
-            ],
-            "numberOfBytes": "32"
-          },
-          "t_uint64": {
-            "label": "uint64",
-            "numberOfBytes": "8"
-          },
-          "t_array(t_uint256)39_storage": {
-            "label": "uint256[39]",
-            "numberOfBytes": "1248"
-          },
-          "t_contract(IAgentPactReputationRegistry)15157": {
-            "label": "contract IAgentPactReputationRegistry",
-            "numberOfBytes": "20"
-          },
-          "t_contract(IERC20)3438": {
-            "label": "contract IERC20",
-            "numberOfBytes": "20"
-          },
-          "t_mapping(t_address,t_struct(TipStats)15172_storage)": {
-            "label": "mapping(address => struct IAgentPactTipJar.TipStats)",
-            "numberOfBytes": "32"
-          },
-          "t_mapping(t_bytes32,t_bool)": {
-            "label": "mapping(bytes32 => bool)",
-            "numberOfBytes": "32"
-          },
-          "t_mapping(t_bytes32,t_uint256)": {
-            "label": "mapping(bytes32 => uint256)",
-            "numberOfBytes": "32"
-          },
-          "t_struct(TipStats)15172_storage": {
-            "label": "struct IAgentPactTipJar.TipStats",
-            "members": [
-              {
-                "label": "totalSent",
-                "type": "t_uint256",
-                "offset": 0,
-                "slot": "0"
-              },
-              {
-                "label": "totalReceived",
-                "type": "t_uint256",
-                "offset": 0,
-                "slot": "1"
-              },
-              {
-                "label": "totalFeesPaid",
-                "type": "t_uint256",
-                "offset": 0,
-                "slot": "2"
-              },
-              {
-                "label": "tipsSentCount",
-                "type": "t_uint64",
-                "offset": 0,
-                "slot": "3"
-              },
-              {
-                "label": "tipsReceivedCount",
-                "type": "t_uint64",
-                "offset": 8,
-                "slot": "3"
-              }
-            ],
-            "numberOfBytes": "128"
-          },
-          "t_uint16": {
-            "label": "uint16",
-            "numberOfBytes": "2"
-          },
-          "t_uint256": {
-            "label": "uint256",
-            "numberOfBytes": "32"
-          }
-        },
-        "namespaces": {
-          "erc7201:openzeppelin.storage.EIP712": [
-            {
-              "contract": "EIP712Upgradeable",
-              "label": "_hashedName",
-              "type": "t_bytes32",
-              "src": "@openzeppelin\\contracts-upgradeable\\utils\\cryptography\\EIP712Upgradeable.sol:37",
-              "offset": 0,
-              "slot": "0"
-            },
-            {
-              "contract": "EIP712Upgradeable",
-              "label": "_hashedVersion",
-              "type": "t_bytes32",
-              "src": "@openzeppelin\\contracts-upgradeable\\utils\\cryptography\\EIP712Upgradeable.sol:38",
-              "offset": 0,
-              "slot": "1"
-            },
-            {
-              "contract": "EIP712Upgradeable",
-              "label": "_name",
-              "type": "t_string_storage",
-              "src": "@openzeppelin\\contracts-upgradeable\\utils\\cryptography\\EIP712Upgradeable.sol:40",
-              "offset": 0,
-              "slot": "2"
-            },
-            {
-              "contract": "EIP712Upgradeable",
-              "label": "_version",
-              "type": "t_string_storage",
-              "src": "@openzeppelin\\contracts-upgradeable\\utils\\cryptography\\EIP712Upgradeable.sol:41",
-              "offset": 0,
-              "slot": "3"
-            }
-          ],
-          "erc7201:openzeppelin.storage.Ownable": [
-            {
-              "contract": "OwnableUpgradeable",
-              "label": "_owner",
-              "type": "t_address",
-              "src": "@openzeppelin\\contracts-upgradeable\\access\\OwnableUpgradeable.sol:24",
-              "offset": 0,
-              "slot": "0"
-            }
-          ],
-          "erc7201:openzeppelin.storage.Initializable": [
-            {
-              "contract": "Initializable",
-              "label": "_initialized",
-              "type": "t_uint64",
-              "src": "@openzeppelin\\contracts\\proxy\\utils\\Initializable.sol:69",
-              "offset": 0,
-              "slot": "0"
-            },
-            {
-              "contract": "Initializable",
-              "label": "_initializing",
-              "type": "t_bool",
-              "src": "@openzeppelin\\contracts\\proxy\\utils\\Initializable.sol:73",
-              "offset": 8,
-              "slot": "0"
-            }
-          ]
-        }
-      }
-    },
-    "3e322de464efdbf7aabc6a90709951cfb3d7b380c99410509a549d88a78c9dbd": {
-      "address": "0x77923D58b8Ae419d626040F842cAb082d30306A0",
-      "txHash": "0x6b628918de93c959b6fbcad8aa7201e907e6d168d4c0bda9e1ccfd2c5d73afd5",
-      "layout": {
-        "solcVersion": "0.8.24",
-        "storage": [
-          {
-            "label": "usdcToken",
-            "offset": 0,
-            "slot": "0",
-            "type": "t_contract(IERC20)1443",
-            "contract": "AgentPactTipJar",
-            "src": "src\\AgentPactTipJar.sol:69"
-          },
-          {
-            "label": "platformSigner",
-            "offset": 0,
-            "slot": "1",
-            "type": "t_address",
-            "contract": "AgentPactTipJar",
-            "src": "src\\AgentPactTipJar.sol:72"
-          },
-          {
-            "label": "treasury",
-            "offset": 0,
-            "slot": "2",
-            "type": "t_address",
-            "contract": "AgentPactTipJar",
-            "src": "src\\AgentPactTipJar.sol:75"
-          },
-          {
-            "label": "platformFeeBps",
-            "offset": 20,
-            "slot": "2",
-            "type": "t_uint16",
-            "contract": "AgentPactTipJar",
-            "src": "src\\AgentPactTipJar.sol:78"
-          },
-          {
-            "label": "maxTipAmount",
-            "offset": 0,
-            "slot": "3",
-            "type": "t_uint256",
-            "contract": "AgentPactTipJar",
-            "src": "src\\AgentPactTipJar.sol:82"
-          },
-          {
-            "label": "dailyTipCap",
-            "offset": 0,
-            "slot": "4",
-            "type": "t_uint256",
-            "contract": "AgentPactTipJar",
-            "src": "src\\AgentPactTipJar.sol:86"
-          },
-          {
-            "label": "paused",
-            "offset": 0,
-            "slot": "5",
-            "type": "t_bool",
-            "contract": "AgentPactTipJar",
-            "src": "src\\AgentPactTipJar.sol:89"
-          },
-          {
-            "label": "_tipStats",
-            "offset": 0,
-            "slot": "6",
-            "type": "t_mapping(t_address,t_struct(TipStats)12713_storage)",
-            "contract": "AgentPactTipJar",
-            "src": "src\\AgentPactTipJar.sol:92"
-          },
-          {
-            "label": "_usedNonces",
-            "offset": 0,
-            "slot": "7",
-            "type": "t_mapping(t_bytes32,t_bool)",
-            "contract": "AgentPactTipJar",
-            "src": "src\\AgentPactTipJar.sol:96"
-          },
-          {
-            "label": "_dailySpent",
-            "offset": 0,
-            "slot": "8",
-            "type": "t_mapping(t_bytes32,t_uint256)",
-            "contract": "AgentPactTipJar",
-            "src": "src\\AgentPactTipJar.sol:99"
-          },
-          {
-            "label": "reputationRegistry",
-            "offset": 0,
-            "slot": "9",
-            "type": "t_contract(IAgentPactReputationRegistry)12698",
-            "contract": "AgentPactTipJar",
-            "src": "src\\AgentPactTipJar.sol:102"
-          },
-          {
-            "label": "treasuryContract",
-            "offset": 0,
-            "slot": "10",
-            "type": "t_contract(IAgentPactTreasury)12938",
-            "contract": "AgentPactTipJar",
-            "src": "src\\AgentPactTipJar.sol:105"
-          },
-          {
-            "label": "__gap",
-            "offset": 0,
-            "slot": "11",
-            "type": "t_array(t_uint256)38_storage",
-            "contract": "AgentPactTipJar",
-            "src": "src\\AgentPactTipJar.sol:108"
-          }
-        ],
-        "types": {
-          "t_address": {
-            "label": "address",
-            "numberOfBytes": "20"
-          },
-          "t_bool": {
-            "label": "bool",
-            "numberOfBytes": "1"
-          },
-          "t_bytes32": {
-            "label": "bytes32",
-            "numberOfBytes": "32"
-          },
-          "t_string_storage": {
-            "label": "string",
-            "numberOfBytes": "32"
-          },
-          "t_struct(EIP712Storage)124_storage": {
-            "label": "struct EIP712Upgradeable.EIP712Storage",
-            "members": [
-              {
-                "label": "_hashedName",
-                "type": "t_bytes32",
-                "offset": 0,
-                "slot": "0"
-              },
-              {
-                "label": "_hashedVersion",
-                "type": "t_bytes32",
-                "offset": 0,
-                "slot": "1"
-              },
-              {
-                "label": "_name",
-                "type": "t_string_storage",
-                "offset": 0,
-                "slot": "2"
-              },
-              {
-                "label": "_version",
-                "type": "t_string_storage",
-                "offset": 0,
-                "slot": "3"
-              }
-            ],
-            "numberOfBytes": "128"
-          },
-          "t_struct(InitializableStorage)436_storage": {
-            "label": "struct Initializable.InitializableStorage",
-            "members": [
-              {
-                "label": "_initialized",
-                "type": "t_uint64",
-                "offset": 0,
-                "slot": "0"
-              },
-              {
-                "label": "_initializing",
-                "type": "t_bool",
-                "offset": 8,
-                "slot": "0"
-              }
-            ],
-            "numberOfBytes": "32"
-          },
-          "t_struct(OwnableStorage)13_storage": {
-            "label": "struct OwnableUpgradeable.OwnableStorage",
-            "members": [
-              {
-                "label": "_owner",
-                "type": "t_address",
-                "offset": 0,
-                "slot": "0"
-              }
-            ],
-            "numberOfBytes": "32"
-          },
-          "t_uint64": {
-            "label": "uint64",
-            "numberOfBytes": "8"
-          },
-          "t_array(t_uint256)38_storage": {
-            "label": "uint256[38]",
-            "numberOfBytes": "1216"
-          },
-          "t_contract(IAgentPactReputationRegistry)12698": {
-            "label": "contract IAgentPactReputationRegistry",
-            "numberOfBytes": "20"
-          },
-          "t_contract(IAgentPactTreasury)12938": {
-            "label": "contract IAgentPactTreasury",
-            "numberOfBytes": "20"
-          },
-          "t_contract(IERC20)1443": {
-            "label": "contract IERC20",
-            "numberOfBytes": "20"
-          },
-          "t_mapping(t_address,t_struct(TipStats)12713_storage)": {
-            "label": "mapping(address => struct IAgentPactTipJar.TipStats)",
-            "numberOfBytes": "32"
-          },
-          "t_mapping(t_bytes32,t_bool)": {
-            "label": "mapping(bytes32 => bool)",
-            "numberOfBytes": "32"
-          },
-          "t_mapping(t_bytes32,t_uint256)": {
-            "label": "mapping(bytes32 => uint256)",
-            "numberOfBytes": "32"
-          },
-          "t_struct(TipStats)12713_storage": {
-            "label": "struct IAgentPactTipJar.TipStats",
-            "members": [
-              {
-                "label": "totalSent",
-                "type": "t_uint256",
-                "offset": 0,
-                "slot": "0"
-              },
-              {
-                "label": "totalReceived",
-                "type": "t_uint256",
-                "offset": 0,
-                "slot": "1"
-              },
-              {
-                "label": "totalFeesPaid",
-                "type": "t_uint256",
-                "offset": 0,
-                "slot": "2"
-              },
-              {
-                "label": "tipsSentCount",
-                "type": "t_uint64",
-                "offset": 0,
-                "slot": "3"
-              },
-              {
-                "label": "tipsReceivedCount",
-                "type": "t_uint64",
-                "offset": 8,
-                "slot": "3"
-              }
-            ],
-            "numberOfBytes": "128"
-          },
-          "t_uint16": {
-            "label": "uint16",
-            "numberOfBytes": "2"
-          },
-          "t_uint256": {
-            "label": "uint256",
-            "numberOfBytes": "32"
-          }
-        },
-        "namespaces": {
-          "erc7201:openzeppelin.storage.EIP712": [
-            {
-              "contract": "EIP712Upgradeable",
-              "label": "_hashedName",
-              "type": "t_bytes32",
-              "src": "@openzeppelin\\contracts-upgradeable\\utils\\cryptography\\EIP712Upgradeable.sol:37",
-              "offset": 0,
-              "slot": "0"
-            },
-            {
-              "contract": "EIP712Upgradeable",
-              "label": "_hashedVersion",
-              "type": "t_bytes32",
-              "src": "@openzeppelin\\contracts-upgradeable\\utils\\cryptography\\EIP712Upgradeable.sol:38",
-              "offset": 0,
-              "slot": "1"
-            },
-            {
-              "contract": "EIP712Upgradeable",
-              "label": "_name",
-              "type": "t_string_storage",
-              "src": "@openzeppelin\\contracts-upgradeable\\utils\\cryptography\\EIP712Upgradeable.sol:40",
-              "offset": 0,
-              "slot": "2"
-            },
-            {
-              "contract": "EIP712Upgradeable",
-              "label": "_version",
-              "type": "t_string_storage",
-              "src": "@openzeppelin\\contracts-upgradeable\\utils\\cryptography\\EIP712Upgradeable.sol:41",
-              "offset": 0,
-              "slot": "3"
-            }
-          ],
-          "erc7201:openzeppelin.storage.Ownable": [
-            {
-              "contract": "OwnableUpgradeable",
-              "label": "_owner",
-              "type": "t_address",
-              "src": "@openzeppelin\\contracts-upgradeable\\access\\OwnableUpgradeable.sol:24",
-              "offset": 0,
-              "slot": "0"
-            }
-          ],
-          "erc7201:openzeppelin.storage.Initializable": [
-            {
-              "contract": "Initializable",
-              "label": "_initialized",
-              "type": "t_uint64",
-              "src": "@openzeppelin\\contracts\\proxy\\utils\\Initializable.sol:69",
-              "offset": 0,
-              "slot": "0"
-            },
-            {
-              "contract": "Initializable",
-              "label": "_initializing",
-              "type": "t_bool",
-              "src": "@openzeppelin\\contracts\\proxy\\utils\\Initializable.sol:73",
-              "offset": 8,
-              "slot": "0"
-            }
-          ]
-        }
-      }
-    },
-    "8d0d760a485de84136511ceecca7a57c7986a6dc53bb3dcfaf9e1f70a88b89f4": {
-      "address": "0x16Ce3b48Bc422DDa6150E226d2bf3386A820571A",
-      "txHash": "0x4d0b6682cb67f15df34f5cab8c78d25694a672be27a91ff0be934f0fcb41e24f",
+    "4ec560ef1ba3efb66df089a25925e1d9038123c0269c44a377b90a8f2074392e": {
+      "address": "0x3e3E02B7Aa3fa04d6c18E096266e8fE8B787B48c",
+      "txHash": "0xbbffc6556df7f9aaedb2b3c040c8f9edb0ce90dd1a3b31895c9837a59358cb9a",
       "layout": {
         "solcVersion": "0.8.24",
         "storage": [
@@ -2546,7 +40,7 @@
             "slot": "0",
             "type": "t_uint256",
             "contract": "AgentPactEscrow",
-            "src": "src\\AgentPactEscrow.sol:64"
+            "src": "src\\AgentPactEscrow.sol:65"
           },
           {
             "label": "platformSigner",
@@ -2554,7 +48,7 @@
             "slot": "1",
             "type": "t_address",
             "contract": "AgentPactEscrow",
-            "src": "src\\AgentPactEscrow.sol:67"
+            "src": "src\\AgentPactEscrow.sol:68"
           },
           {
             "label": "platformFund",
@@ -2562,15 +56,15 @@
             "slot": "2",
             "type": "t_address",
             "contract": "AgentPactEscrow",
-            "src": "src\\AgentPactEscrow.sol:70"
+            "src": "src\\AgentPactEscrow.sol:71"
           },
           {
             "label": "escrows",
             "offset": 0,
             "slot": "3",
-            "type": "t_mapping(t_uint256,t_struct(EscrowRecord)11686_storage)",
+            "type": "t_mapping(t_uint256,t_struct(EscrowRecord)11533_storage)",
             "contract": "AgentPactEscrow",
-            "src": "src\\AgentPactEscrow.sol:73"
+            "src": "src\\AgentPactEscrow.sol:74"
           },
           {
             "label": "assignmentNonces",
@@ -2578,7 +72,7 @@
             "slot": "4",
             "type": "t_mapping(t_uint256,t_uint256)",
             "contract": "AgentPactEscrow",
-            "src": "src\\AgentPactEscrow.sol:76"
+            "src": "src\\AgentPactEscrow.sol:77"
           },
           {
             "label": "escrowFundWeights",
@@ -2586,7 +80,7 @@
             "slot": "5",
             "type": "t_mapping(t_uint256,t_mapping(t_uint8,t_uint8))",
             "contract": "AgentPactEscrow",
-            "src": "src\\AgentPactEscrow.sol:80"
+            "src": "src\\AgentPactEscrow.sol:81"
           },
           {
             "label": "allowedTokens",
@@ -2594,23 +88,31 @@
             "slot": "6",
             "type": "t_mapping(t_address,t_bool)",
             "contract": "AgentPactEscrow",
-            "src": "src\\AgentPactEscrow.sol:83"
+            "src": "src\\AgentPactEscrow.sol:84"
           },
           {
             "label": "reputationRegistry",
             "offset": 0,
             "slot": "7",
-            "type": "t_contract(IAgentPactReputationRegistry)11930",
+            "type": "t_contract(IAgentPactReputationRegistry)11759",
             "contract": "AgentPactEscrow",
-            "src": "src\\AgentPactEscrow.sol:86"
+            "src": "src\\AgentPactEscrow.sol:87"
           },
           {
             "label": "treasuryContract",
             "offset": 0,
             "slot": "8",
-            "type": "t_contract(IAgentPactTreasury)12018",
+            "type": "t_contract(IAgentPactTreasury)11847",
             "contract": "AgentPactEscrow",
-            "src": "src\\AgentPactEscrow.sol:89"
+            "src": "src\\AgentPactEscrow.sol:90"
+          },
+          {
+            "label": "platformFeeBps",
+            "offset": 20,
+            "slot": "8",
+            "type": "t_uint16",
+            "contract": "AgentPactEscrow",
+            "src": "src\\AgentPactEscrow.sol:92"
           },
           {
             "label": "totalClosedEscrows",
@@ -2618,1605 +120,31 @@
             "slot": "9",
             "type": "t_uint256",
             "contract": "AgentPactEscrow",
-            "src": "src\\AgentPactEscrow.sol:91"
+            "src": "src\\AgentPactEscrow.sol:94"
           },
           {
             "label": "totalSuccessfulEscrows",
             "offset": 0,
             "slot": "10",
-            "type": "t_uint256",
-            "contract": "AgentPactEscrow",
-            "src": "src\\AgentPactEscrow.sol:93"
-          },
-          {
-            "label": "totalRewardVolumeByToken",
-            "offset": 0,
-            "slot": "11",
-            "type": "t_mapping(t_address,t_uint256)",
-            "contract": "AgentPactEscrow",
-            "src": "src\\AgentPactEscrow.sol:95"
-          },
-          {
-            "label": "totalPayoutVolumeByToken",
-            "offset": 0,
-            "slot": "12",
-            "type": "t_mapping(t_address,t_uint256)",
-            "contract": "AgentPactEscrow",
-            "src": "src\\AgentPactEscrow.sol:97"
-          },
-          {
-            "label": "__gap",
-            "offset": 0,
-            "slot": "13",
-            "type": "t_array(t_uint256)36_storage",
-            "contract": "AgentPactEscrow",
-            "src": "src\\AgentPactEscrow.sol:99"
-          }
-        ],
-        "types": {
-          "t_address": {
-            "label": "address",
-            "numberOfBytes": "20"
-          },
-          "t_bool": {
-            "label": "bool",
-            "numberOfBytes": "1"
-          },
-          "t_bytes32": {
-            "label": "bytes32",
-            "numberOfBytes": "32"
-          },
-          "t_string_storage": {
-            "label": "string",
-            "numberOfBytes": "32"
-          },
-          "t_struct(EIP712Storage)124_storage": {
-            "label": "struct EIP712Upgradeable.EIP712Storage",
-            "members": [
-              {
-                "label": "_hashedName",
-                "type": "t_bytes32",
-                "offset": 0,
-                "slot": "0"
-              },
-              {
-                "label": "_hashedVersion",
-                "type": "t_bytes32",
-                "offset": 0,
-                "slot": "1"
-              },
-              {
-                "label": "_name",
-                "type": "t_string_storage",
-                "offset": 0,
-                "slot": "2"
-              },
-              {
-                "label": "_version",
-                "type": "t_string_storage",
-                "offset": 0,
-                "slot": "3"
-              }
-            ],
-            "numberOfBytes": "128"
-          },
-          "t_struct(InitializableStorage)436_storage": {
-            "label": "struct Initializable.InitializableStorage",
-            "members": [
-              {
-                "label": "_initialized",
-                "type": "t_uint64",
-                "offset": 0,
-                "slot": "0"
-              },
-              {
-                "label": "_initializing",
-                "type": "t_bool",
-                "offset": 8,
-                "slot": "0"
-              }
-            ],
-            "numberOfBytes": "32"
-          },
-          "t_struct(OwnableStorage)13_storage": {
-            "label": "struct OwnableUpgradeable.OwnableStorage",
-            "members": [
-              {
-                "label": "_owner",
-                "type": "t_address",
-                "offset": 0,
-                "slot": "0"
-              }
-            ],
-            "numberOfBytes": "32"
-          },
-          "t_uint64": {
-            "label": "uint64",
-            "numberOfBytes": "8"
-          },
-          "t_array(t_uint256)36_storage": {
-            "label": "uint256[36]",
-            "numberOfBytes": "1152"
-          },
-          "t_contract(IAgentPactReputationRegistry)11930": {
-            "label": "contract IAgentPactReputationRegistry",
-            "numberOfBytes": "20"
-          },
-          "t_contract(IAgentPactTreasury)12018": {
-            "label": "contract IAgentPactTreasury",
-            "numberOfBytes": "20"
-          },
-          "t_enum(TaskState)11646": {
-            "label": "enum IAgentPactEscrow.TaskState",
-            "members": [
-              "Created",
-              "ConfirmationPending",
-              "Working",
-              "Delivered",
-              "InRevision",
-              "Accepted",
-              "Settled",
-              "TimedOut",
-              "Cancelled"
-            ],
-            "numberOfBytes": "1"
-          },
-          "t_mapping(t_address,t_bool)": {
-            "label": "mapping(address => bool)",
-            "numberOfBytes": "32"
-          },
-          "t_mapping(t_address,t_uint256)": {
-            "label": "mapping(address => uint256)",
-            "numberOfBytes": "32"
-          },
-          "t_mapping(t_uint256,t_mapping(t_uint8,t_uint8))": {
-            "label": "mapping(uint256 => mapping(uint8 => uint8))",
-            "numberOfBytes": "32"
-          },
-          "t_mapping(t_uint256,t_struct(EscrowRecord)11686_storage)": {
-            "label": "mapping(uint256 => struct IAgentPactEscrow.EscrowRecord)",
-            "numberOfBytes": "32"
-          },
-          "t_mapping(t_uint256,t_uint256)": {
-            "label": "mapping(uint256 => uint256)",
-            "numberOfBytes": "32"
-          },
-          "t_mapping(t_uint8,t_uint8)": {
-            "label": "mapping(uint8 => uint8)",
-            "numberOfBytes": "32"
-          },
-          "t_struct(EscrowRecord)11686_storage": {
-            "label": "struct IAgentPactEscrow.EscrowRecord",
-            "members": [
-              {
-                "label": "requester",
-                "type": "t_address",
-                "offset": 0,
-                "slot": "0"
-              },
-              {
-                "label": "provider",
-                "type": "t_address",
-                "offset": 0,
-                "slot": "1"
-              },
-              {
-                "label": "rewardAmount",
-                "type": "t_uint256",
-                "offset": 0,
-                "slot": "2"
-              },
-              {
-                "label": "requesterDeposit",
-                "type": "t_uint256",
-                "offset": 0,
-                "slot": "3"
-              },
-              {
-                "label": "depositConsumed",
-                "type": "t_uint256",
-                "offset": 0,
-                "slot": "4"
-              },
-              {
-                "label": "token",
-                "type": "t_address",
-                "offset": 0,
-                "slot": "5"
-              },
-              {
-                "label": "state",
-                "type": "t_enum(TaskState)11646",
-                "offset": 20,
-                "slot": "5"
-              },
-              {
-                "label": "taskHash",
-                "type": "t_bytes32",
-                "offset": 0,
-                "slot": "6"
-              },
-              {
-                "label": "latestDeliveryHash",
-                "type": "t_bytes32",
-                "offset": 0,
-                "slot": "7"
-              },
-              {
-                "label": "latestCriteriaHash",
-                "type": "t_bytes32",
-                "offset": 0,
-                "slot": "8"
-              },
-              {
-                "label": "deliveryDurationSeconds",
-                "type": "t_uint64",
-                "offset": 0,
-                "slot": "9"
-              },
-              {
-                "label": "deliveryDeadline",
-                "type": "t_uint64",
-                "offset": 8,
-                "slot": "9"
-              },
-              {
-                "label": "acceptanceDeadline",
-                "type": "t_uint64",
-                "offset": 16,
-                "slot": "9"
-              },
-              {
-                "label": "confirmationDeadline",
-                "type": "t_uint64",
-                "offset": 24,
-                "slot": "9"
-              },
-              {
-                "label": "maxRevisions",
-                "type": "t_uint8",
-                "offset": 0,
-                "slot": "10"
-              },
-              {
-                "label": "currentRevision",
-                "type": "t_uint8",
-                "offset": 1,
-                "slot": "10"
-              },
-              {
-                "label": "criteriaCount",
-                "type": "t_uint8",
-                "offset": 2,
-                "slot": "10"
-              },
-              {
-                "label": "declineCount",
-                "type": "t_uint8",
-                "offset": 3,
-                "slot": "10"
-              },
-              {
-                "label": "acceptanceWindowHours",
-                "type": "t_uint8",
-                "offset": 4,
-                "slot": "10"
-              }
-            ],
-            "numberOfBytes": "352"
-          },
-          "t_uint256": {
-            "label": "uint256",
-            "numberOfBytes": "32"
-          },
-          "t_uint8": {
-            "label": "uint8",
-            "numberOfBytes": "1"
-          }
-        },
-        "namespaces": {
-          "erc7201:openzeppelin.storage.EIP712": [
-            {
-              "contract": "EIP712Upgradeable",
-              "label": "_hashedName",
-              "type": "t_bytes32",
-              "src": "@openzeppelin\\contracts-upgradeable\\utils\\cryptography\\EIP712Upgradeable.sol:37",
-              "offset": 0,
-              "slot": "0"
-            },
-            {
-              "contract": "EIP712Upgradeable",
-              "label": "_hashedVersion",
-              "type": "t_bytes32",
-              "src": "@openzeppelin\\contracts-upgradeable\\utils\\cryptography\\EIP712Upgradeable.sol:38",
-              "offset": 0,
-              "slot": "1"
-            },
-            {
-              "contract": "EIP712Upgradeable",
-              "label": "_name",
-              "type": "t_string_storage",
-              "src": "@openzeppelin\\contracts-upgradeable\\utils\\cryptography\\EIP712Upgradeable.sol:40",
-              "offset": 0,
-              "slot": "2"
-            },
-            {
-              "contract": "EIP712Upgradeable",
-              "label": "_version",
-              "type": "t_string_storage",
-              "src": "@openzeppelin\\contracts-upgradeable\\utils\\cryptography\\EIP712Upgradeable.sol:41",
-              "offset": 0,
-              "slot": "3"
-            }
-          ],
-          "erc7201:openzeppelin.storage.Ownable": [
-            {
-              "contract": "OwnableUpgradeable",
-              "label": "_owner",
-              "type": "t_address",
-              "src": "@openzeppelin\\contracts-upgradeable\\access\\OwnableUpgradeable.sol:24",
-              "offset": 0,
-              "slot": "0"
-            }
-          ],
-          "erc7201:openzeppelin.storage.Initializable": [
-            {
-              "contract": "Initializable",
-              "label": "_initialized",
-              "type": "t_uint64",
-              "src": "@openzeppelin\\contracts\\proxy\\utils\\Initializable.sol:69",
-              "offset": 0,
-              "slot": "0"
-            },
-            {
-              "contract": "Initializable",
-              "label": "_initializing",
-              "type": "t_bool",
-              "src": "@openzeppelin\\contracts\\proxy\\utils\\Initializable.sol:73",
-              "offset": 8,
-              "slot": "0"
-            }
-          ]
-        }
-      }
-    },
-    "bed7c1a2122162d62cb2f5de7cb0c27a5c1e92000889993214e307d2d3788bdb": {
-      "address": "0x0BAecB4f4bbE3D8998341b9e98f762B9a87f9a6a",
-      "txHash": "0xc7cdb9b9887a0b230777b57b1f4834b8faa59d368242e861ee91fbdef524a5eb",
-      "layout": {
-        "solcVersion": "0.8.24",
-        "storage": [
-          {
-            "label": "usdcToken",
-            "offset": 0,
-            "slot": "0",
-            "type": "t_contract(IERC20)3438",
-            "contract": "AgentPactTipJar",
-            "src": "src\\AgentPactTipJar.sol:69"
-          },
-          {
-            "label": "platformSigner",
-            "offset": 0,
-            "slot": "1",
-            "type": "t_address",
-            "contract": "AgentPactTipJar",
-            "src": "src\\AgentPactTipJar.sol:72"
-          },
-          {
-            "label": "treasury",
-            "offset": 0,
-            "slot": "2",
-            "type": "t_address",
-            "contract": "AgentPactTipJar",
-            "src": "src\\AgentPactTipJar.sol:75"
-          },
-          {
-            "label": "platformFeeBps",
-            "offset": 20,
-            "slot": "2",
-            "type": "t_uint16",
-            "contract": "AgentPactTipJar",
-            "src": "src\\AgentPactTipJar.sol:78"
-          },
-          {
-            "label": "maxTipAmount",
-            "offset": 0,
-            "slot": "3",
-            "type": "t_uint256",
-            "contract": "AgentPactTipJar",
-            "src": "src\\AgentPactTipJar.sol:82"
-          },
-          {
-            "label": "dailyTipCap",
-            "offset": 0,
-            "slot": "4",
-            "type": "t_uint256",
-            "contract": "AgentPactTipJar",
-            "src": "src\\AgentPactTipJar.sol:86"
-          },
-          {
-            "label": "paused",
-            "offset": 0,
-            "slot": "5",
-            "type": "t_bool",
-            "contract": "AgentPactTipJar",
-            "src": "src\\AgentPactTipJar.sol:89"
-          },
-          {
-            "label": "_tipStats",
-            "offset": 0,
-            "slot": "6",
-            "type": "t_mapping(t_address,t_struct(TipStats)16212_storage)",
-            "contract": "AgentPactTipJar",
-            "src": "src\\AgentPactTipJar.sol:92"
-          },
-          {
-            "label": "_usedNonces",
-            "offset": 0,
-            "slot": "7",
-            "type": "t_mapping(t_bytes32,t_bool)",
-            "contract": "AgentPactTipJar",
-            "src": "src\\AgentPactTipJar.sol:96"
-          },
-          {
-            "label": "_dailySpent",
-            "offset": 0,
-            "slot": "8",
-            "type": "t_mapping(t_bytes32,t_uint256)",
-            "contract": "AgentPactTipJar",
-            "src": "src\\AgentPactTipJar.sol:99"
-          },
-          {
-            "label": "reputationRegistry",
-            "offset": 0,
-            "slot": "9",
-            "type": "t_contract(IAgentPactReputationRegistry)16197",
-            "contract": "AgentPactTipJar",
-            "src": "src\\AgentPactTipJar.sol:102"
-          },
-          {
-            "label": "treasuryContract",
-            "offset": 0,
-            "slot": "10",
-            "type": "t_contract(IAgentPactTreasury)16437",
-            "contract": "AgentPactTipJar",
-            "src": "src\\AgentPactTipJar.sol:105"
-          },
-          {
-            "label": "__gap",
-            "offset": 0,
-            "slot": "11",
-            "type": "t_array(t_uint256)38_storage",
-            "contract": "AgentPactTipJar",
-            "src": "src\\AgentPactTipJar.sol:108"
-          }
-        ],
-        "types": {
-          "t_address": {
-            "label": "address",
-            "numberOfBytes": "20"
-          },
-          "t_bool": {
-            "label": "bool",
-            "numberOfBytes": "1"
-          },
-          "t_bytes32": {
-            "label": "bytes32",
-            "numberOfBytes": "32"
-          },
-          "t_string_storage": {
-            "label": "string",
-            "numberOfBytes": "32"
-          },
-          "t_struct(EIP712Storage)540_storage": {
-            "label": "struct EIP712Upgradeable.EIP712Storage",
-            "members": [
-              {
-                "label": "_hashedName",
-                "type": "t_bytes32",
-                "offset": 0,
-                "slot": "0"
-              },
-              {
-                "label": "_hashedVersion",
-                "type": "t_bytes32",
-                "offset": 0,
-                "slot": "1"
-              },
-              {
-                "label": "_name",
-                "type": "t_string_storage",
-                "offset": 0,
-                "slot": "2"
-              },
-              {
-                "label": "_version",
-                "type": "t_string_storage",
-                "offset": 0,
-                "slot": "3"
-              }
-            ],
-            "numberOfBytes": "128"
-          },
-          "t_struct(InitializableStorage)942_storage": {
-            "label": "struct Initializable.InitializableStorage",
-            "members": [
-              {
-                "label": "_initialized",
-                "type": "t_uint64",
-                "offset": 0,
-                "slot": "0"
-              },
-              {
-                "label": "_initializing",
-                "type": "t_bool",
-                "offset": 8,
-                "slot": "0"
-              }
-            ],
-            "numberOfBytes": "32"
-          },
-          "t_struct(OwnableStorage)13_storage": {
-            "label": "struct OwnableUpgradeable.OwnableStorage",
-            "members": [
-              {
-                "label": "_owner",
-                "type": "t_address",
-                "offset": 0,
-                "slot": "0"
-              }
-            ],
-            "numberOfBytes": "32"
-          },
-          "t_uint64": {
-            "label": "uint64",
-            "numberOfBytes": "8"
-          },
-          "t_array(t_uint256)38_storage": {
-            "label": "uint256[38]",
-            "numberOfBytes": "1216"
-          },
-          "t_contract(IAgentPactReputationRegistry)16197": {
-            "label": "contract IAgentPactReputationRegistry",
-            "numberOfBytes": "20"
-          },
-          "t_contract(IAgentPactTreasury)16437": {
-            "label": "contract IAgentPactTreasury",
-            "numberOfBytes": "20"
-          },
-          "t_contract(IERC20)3438": {
-            "label": "contract IERC20",
-            "numberOfBytes": "20"
-          },
-          "t_mapping(t_address,t_struct(TipStats)16212_storage)": {
-            "label": "mapping(address => struct IAgentPactTipJar.TipStats)",
-            "numberOfBytes": "32"
-          },
-          "t_mapping(t_bytes32,t_bool)": {
-            "label": "mapping(bytes32 => bool)",
-            "numberOfBytes": "32"
-          },
-          "t_mapping(t_bytes32,t_uint256)": {
-            "label": "mapping(bytes32 => uint256)",
-            "numberOfBytes": "32"
-          },
-          "t_struct(TipStats)16212_storage": {
-            "label": "struct IAgentPactTipJar.TipStats",
-            "members": [
-              {
-                "label": "totalSent",
-                "type": "t_uint256",
-                "offset": 0,
-                "slot": "0"
-              },
-              {
-                "label": "totalReceived",
-                "type": "t_uint256",
-                "offset": 0,
-                "slot": "1"
-              },
-              {
-                "label": "totalFeesPaid",
-                "type": "t_uint256",
-                "offset": 0,
-                "slot": "2"
-              },
-              {
-                "label": "tipsSentCount",
-                "type": "t_uint64",
-                "offset": 0,
-                "slot": "3"
-              },
-              {
-                "label": "tipsReceivedCount",
-                "type": "t_uint64",
-                "offset": 8,
-                "slot": "3"
-              }
-            ],
-            "numberOfBytes": "128"
-          },
-          "t_uint16": {
-            "label": "uint16",
-            "numberOfBytes": "2"
-          },
-          "t_uint256": {
-            "label": "uint256",
-            "numberOfBytes": "32"
-          }
-        },
-        "namespaces": {
-          "erc7201:openzeppelin.storage.EIP712": [
-            {
-              "contract": "EIP712Upgradeable",
-              "label": "_hashedName",
-              "type": "t_bytes32",
-              "src": "@openzeppelin\\contracts-upgradeable\\utils\\cryptography\\EIP712Upgradeable.sol:37",
-              "offset": 0,
-              "slot": "0"
-            },
-            {
-              "contract": "EIP712Upgradeable",
-              "label": "_hashedVersion",
-              "type": "t_bytes32",
-              "src": "@openzeppelin\\contracts-upgradeable\\utils\\cryptography\\EIP712Upgradeable.sol:38",
-              "offset": 0,
-              "slot": "1"
-            },
-            {
-              "contract": "EIP712Upgradeable",
-              "label": "_name",
-              "type": "t_string_storage",
-              "src": "@openzeppelin\\contracts-upgradeable\\utils\\cryptography\\EIP712Upgradeable.sol:40",
-              "offset": 0,
-              "slot": "2"
-            },
-            {
-              "contract": "EIP712Upgradeable",
-              "label": "_version",
-              "type": "t_string_storage",
-              "src": "@openzeppelin\\contracts-upgradeable\\utils\\cryptography\\EIP712Upgradeable.sol:41",
-              "offset": 0,
-              "slot": "3"
-            }
-          ],
-          "erc7201:openzeppelin.storage.Ownable": [
-            {
-              "contract": "OwnableUpgradeable",
-              "label": "_owner",
-              "type": "t_address",
-              "src": "@openzeppelin\\contracts-upgradeable\\access\\OwnableUpgradeable.sol:24",
-              "offset": 0,
-              "slot": "0"
-            }
-          ],
-          "erc7201:openzeppelin.storage.Initializable": [
-            {
-              "contract": "Initializable",
-              "label": "_initialized",
-              "type": "t_uint64",
-              "src": "@openzeppelin\\contracts\\proxy\\utils\\Initializable.sol:69",
-              "offset": 0,
-              "slot": "0"
-            },
-            {
-              "contract": "Initializable",
-              "label": "_initializing",
-              "type": "t_bool",
-              "src": "@openzeppelin\\contracts\\proxy\\utils\\Initializable.sol:73",
-              "offset": 8,
-              "slot": "0"
-            }
-          ]
-        }
-      }
-    },
-    "a3cb50427f39c4e5a8472d0b281e83f002046d8c585d0ceb572e15d90fa10da5": {
-      "address": "0x1b6DC4370e92102cFFdF65b180192a1cC25D5F38",
-      "txHash": "0x586d444b914aa996b9ad689c3a2b74dbb9c6d86285aee0500ffc9bfc7725fc71",
-      "layout": {
-        "solcVersion": "0.8.24",
-        "storage": [
-          {
-            "label": "nextEscrowId",
-            "offset": 0,
-            "slot": "0",
-            "type": "t_uint256",
-            "contract": "AgentPactEscrow",
-            "src": "src\\AgentPactEscrow.sol:67"
-          },
-          {
-            "label": "platformSigner",
-            "offset": 0,
-            "slot": "1",
-            "type": "t_address",
-            "contract": "AgentPactEscrow",
-            "src": "src\\AgentPactEscrow.sol:70"
-          },
-          {
-            "label": "platformFund",
-            "offset": 0,
-            "slot": "2",
-            "type": "t_address",
-            "contract": "AgentPactEscrow",
-            "src": "src\\AgentPactEscrow.sol:73"
-          },
-          {
-            "label": "escrows",
-            "offset": 0,
-            "slot": "3",
-            "type": "t_mapping(t_uint256,t_struct(EscrowRecord)11769_storage)",
-            "contract": "AgentPactEscrow",
-            "src": "src\\AgentPactEscrow.sol:76"
-          },
-          {
-            "label": "assignmentNonces",
-            "offset": 0,
-            "slot": "4",
-            "type": "t_mapping(t_uint256,t_uint256)",
-            "contract": "AgentPactEscrow",
-            "src": "src\\AgentPactEscrow.sol:79"
-          },
-          {
-            "label": "escrowFundWeights",
-            "offset": 0,
-            "slot": "5",
-            "type": "t_mapping(t_uint256,t_mapping(t_uint8,t_uint8))",
-            "contract": "AgentPactEscrow",
-            "src": "src\\AgentPactEscrow.sol:83"
-          },
-          {
-            "label": "allowedTokens",
-            "offset": 0,
-            "slot": "6",
-            "type": "t_mapping(t_address,t_bool)",
-            "contract": "AgentPactEscrow",
-            "src": "src\\AgentPactEscrow.sol:86"
-          },
-          {
-            "label": "reputationRegistry",
-            "offset": 0,
-            "slot": "7",
-            "type": "t_contract(IAgentPactReputationRegistry)12024",
-            "contract": "AgentPactEscrow",
-            "src": "src\\AgentPactEscrow.sol:89"
-          },
-          {
-            "label": "treasuryContract",
-            "offset": 0,
-            "slot": "8",
-            "type": "t_contract(IAgentPactTreasury)12112",
-            "contract": "AgentPactEscrow",
-            "src": "src\\AgentPactEscrow.sol:92"
-          },
-          {
-            "label": "platformFeeBps",
-            "offset": 20,
-            "slot": "8",
-            "type": "t_uint16",
-            "contract": "AgentPactEscrow",
-            "src": "src\\AgentPactEscrow.sol:94"
-          },
-          {
-            "label": "totalClosedEscrows",
-            "offset": 0,
-            "slot": "9",
             "type": "t_uint256",
             "contract": "AgentPactEscrow",
             "src": "src\\AgentPactEscrow.sol:96"
           },
           {
-            "label": "totalSuccessfulEscrows",
+            "label": "totalRewardVolumeByToken",
             "offset": 0,
-            "slot": "10",
-            "type": "t_uint256",
+            "slot": "11",
+            "type": "t_mapping(t_address,t_uint256)",
             "contract": "AgentPactEscrow",
             "src": "src\\AgentPactEscrow.sol:98"
           },
           {
-            "label": "totalRewardVolumeByToken",
+            "label": "totalPayoutVolumeByToken",
             "offset": 0,
-            "slot": "11",
+            "slot": "12",
             "type": "t_mapping(t_address,t_uint256)",
             "contract": "AgentPactEscrow",
             "src": "src\\AgentPactEscrow.sol:100"
-          },
-          {
-            "label": "totalPayoutVolumeByToken",
-            "offset": 0,
-            "slot": "12",
-            "type": "t_mapping(t_address,t_uint256)",
-            "contract": "AgentPactEscrow",
-            "src": "src\\AgentPactEscrow.sol:102"
-          },
-          {
-            "label": "__gap",
-            "offset": 0,
-            "slot": "13",
-            "type": "t_array(t_uint256)36_storage",
-            "contract": "AgentPactEscrow",
-            "src": "src\\AgentPactEscrow.sol:104"
-          }
-        ],
-        "types": {
-          "t_address": {
-            "label": "address",
-            "numberOfBytes": "20"
-          },
-          "t_bool": {
-            "label": "bool",
-            "numberOfBytes": "1"
-          },
-          "t_bytes32": {
-            "label": "bytes32",
-            "numberOfBytes": "32"
-          },
-          "t_string_storage": {
-            "label": "string",
-            "numberOfBytes": "32"
-          },
-          "t_struct(EIP712Storage)124_storage": {
-            "label": "struct EIP712Upgradeable.EIP712Storage",
-            "members": [
-              {
-                "label": "_hashedName",
-                "type": "t_bytes32",
-                "offset": 0,
-                "slot": "0"
-              },
-              {
-                "label": "_hashedVersion",
-                "type": "t_bytes32",
-                "offset": 0,
-                "slot": "1"
-              },
-              {
-                "label": "_name",
-                "type": "t_string_storage",
-                "offset": 0,
-                "slot": "2"
-              },
-              {
-                "label": "_version",
-                "type": "t_string_storage",
-                "offset": 0,
-                "slot": "3"
-              }
-            ],
-            "numberOfBytes": "128"
-          },
-          "t_struct(InitializableStorage)436_storage": {
-            "label": "struct Initializable.InitializableStorage",
-            "members": [
-              {
-                "label": "_initialized",
-                "type": "t_uint64",
-                "offset": 0,
-                "slot": "0"
-              },
-              {
-                "label": "_initializing",
-                "type": "t_bool",
-                "offset": 8,
-                "slot": "0"
-              }
-            ],
-            "numberOfBytes": "32"
-          },
-          "t_struct(OwnableStorage)13_storage": {
-            "label": "struct OwnableUpgradeable.OwnableStorage",
-            "members": [
-              {
-                "label": "_owner",
-                "type": "t_address",
-                "offset": 0,
-                "slot": "0"
-              }
-            ],
-            "numberOfBytes": "32"
-          },
-          "t_uint64": {
-            "label": "uint64",
-            "numberOfBytes": "8"
-          },
-          "t_array(t_uint256)36_storage": {
-            "label": "uint256[36]",
-            "numberOfBytes": "1152"
-          },
-          "t_contract(IAgentPactReputationRegistry)12024": {
-            "label": "contract IAgentPactReputationRegistry",
-            "numberOfBytes": "20"
-          },
-          "t_contract(IAgentPactTreasury)12112": {
-            "label": "contract IAgentPactTreasury",
-            "numberOfBytes": "20"
-          },
-          "t_enum(TaskState)11729": {
-            "label": "enum IAgentPactEscrow.TaskState",
-            "members": [
-              "Created",
-              "ConfirmationPending",
-              "Working",
-              "Delivered",
-              "InRevision",
-              "Accepted",
-              "Settled",
-              "TimedOut",
-              "Cancelled"
-            ],
-            "numberOfBytes": "1"
-          },
-          "t_mapping(t_address,t_bool)": {
-            "label": "mapping(address => bool)",
-            "numberOfBytes": "32"
-          },
-          "t_mapping(t_address,t_uint256)": {
-            "label": "mapping(address => uint256)",
-            "numberOfBytes": "32"
-          },
-          "t_mapping(t_uint256,t_mapping(t_uint8,t_uint8))": {
-            "label": "mapping(uint256 => mapping(uint8 => uint8))",
-            "numberOfBytes": "32"
-          },
-          "t_mapping(t_uint256,t_struct(EscrowRecord)11769_storage)": {
-            "label": "mapping(uint256 => struct IAgentPactEscrow.EscrowRecord)",
-            "numberOfBytes": "32"
-          },
-          "t_mapping(t_uint256,t_uint256)": {
-            "label": "mapping(uint256 => uint256)",
-            "numberOfBytes": "32"
-          },
-          "t_mapping(t_uint8,t_uint8)": {
-            "label": "mapping(uint8 => uint8)",
-            "numberOfBytes": "32"
-          },
-          "t_struct(EscrowRecord)11769_storage": {
-            "label": "struct IAgentPactEscrow.EscrowRecord",
-            "members": [
-              {
-                "label": "requester",
-                "type": "t_address",
-                "offset": 0,
-                "slot": "0"
-              },
-              {
-                "label": "provider",
-                "type": "t_address",
-                "offset": 0,
-                "slot": "1"
-              },
-              {
-                "label": "rewardAmount",
-                "type": "t_uint256",
-                "offset": 0,
-                "slot": "2"
-              },
-              {
-                "label": "requesterDeposit",
-                "type": "t_uint256",
-                "offset": 0,
-                "slot": "3"
-              },
-              {
-                "label": "depositConsumed",
-                "type": "t_uint256",
-                "offset": 0,
-                "slot": "4"
-              },
-              {
-                "label": "token",
-                "type": "t_address",
-                "offset": 0,
-                "slot": "5"
-              },
-              {
-                "label": "state",
-                "type": "t_enum(TaskState)11729",
-                "offset": 20,
-                "slot": "5"
-              },
-              {
-                "label": "taskHash",
-                "type": "t_bytes32",
-                "offset": 0,
-                "slot": "6"
-              },
-              {
-                "label": "latestDeliveryHash",
-                "type": "t_bytes32",
-                "offset": 0,
-                "slot": "7"
-              },
-              {
-                "label": "latestCriteriaHash",
-                "type": "t_bytes32",
-                "offset": 0,
-                "slot": "8"
-              },
-              {
-                "label": "deliveryDurationSeconds",
-                "type": "t_uint64",
-                "offset": 0,
-                "slot": "9"
-              },
-              {
-                "label": "deliveryDeadline",
-                "type": "t_uint64",
-                "offset": 8,
-                "slot": "9"
-              },
-              {
-                "label": "acceptanceDeadline",
-                "type": "t_uint64",
-                "offset": 16,
-                "slot": "9"
-              },
-              {
-                "label": "confirmationDeadline",
-                "type": "t_uint64",
-                "offset": 24,
-                "slot": "9"
-              },
-              {
-                "label": "maxRevisions",
-                "type": "t_uint8",
-                "offset": 0,
-                "slot": "10"
-              },
-              {
-                "label": "currentRevision",
-                "type": "t_uint8",
-                "offset": 1,
-                "slot": "10"
-              },
-              {
-                "label": "criteriaCount",
-                "type": "t_uint8",
-                "offset": 2,
-                "slot": "10"
-              },
-              {
-                "label": "declineCount",
-                "type": "t_uint8",
-                "offset": 3,
-                "slot": "10"
-              },
-              {
-                "label": "acceptanceWindowHours",
-                "type": "t_uint8",
-                "offset": 4,
-                "slot": "10"
-              }
-            ],
-            "numberOfBytes": "352"
-          },
-          "t_uint16": {
-            "label": "uint16",
-            "numberOfBytes": "2"
-          },
-          "t_uint256": {
-            "label": "uint256",
-            "numberOfBytes": "32"
-          },
-          "t_uint8": {
-            "label": "uint8",
-            "numberOfBytes": "1"
-          }
-        },
-        "namespaces": {
-          "erc7201:openzeppelin.storage.EIP712": [
-            {
-              "contract": "EIP712Upgradeable",
-              "label": "_hashedName",
-              "type": "t_bytes32",
-              "src": "@openzeppelin\\contracts-upgradeable\\utils\\cryptography\\EIP712Upgradeable.sol:37",
-              "offset": 0,
-              "slot": "0"
-            },
-            {
-              "contract": "EIP712Upgradeable",
-              "label": "_hashedVersion",
-              "type": "t_bytes32",
-              "src": "@openzeppelin\\contracts-upgradeable\\utils\\cryptography\\EIP712Upgradeable.sol:38",
-              "offset": 0,
-              "slot": "1"
-            },
-            {
-              "contract": "EIP712Upgradeable",
-              "label": "_name",
-              "type": "t_string_storage",
-              "src": "@openzeppelin\\contracts-upgradeable\\utils\\cryptography\\EIP712Upgradeable.sol:40",
-              "offset": 0,
-              "slot": "2"
-            },
-            {
-              "contract": "EIP712Upgradeable",
-              "label": "_version",
-              "type": "t_string_storage",
-              "src": "@openzeppelin\\contracts-upgradeable\\utils\\cryptography\\EIP712Upgradeable.sol:41",
-              "offset": 0,
-              "slot": "3"
-            }
-          ],
-          "erc7201:openzeppelin.storage.Ownable": [
-            {
-              "contract": "OwnableUpgradeable",
-              "label": "_owner",
-              "type": "t_address",
-              "src": "@openzeppelin\\contracts-upgradeable\\access\\OwnableUpgradeable.sol:24",
-              "offset": 0,
-              "slot": "0"
-            }
-          ],
-          "erc7201:openzeppelin.storage.Initializable": [
-            {
-              "contract": "Initializable",
-              "label": "_initialized",
-              "type": "t_uint64",
-              "src": "@openzeppelin\\contracts\\proxy\\utils\\Initializable.sol:69",
-              "offset": 0,
-              "slot": "0"
-            },
-            {
-              "contract": "Initializable",
-              "label": "_initializing",
-              "type": "t_bool",
-              "src": "@openzeppelin\\contracts\\proxy\\utils\\Initializable.sol:73",
-              "offset": 8,
-              "slot": "0"
-            }
-          ]
-        }
-      }
-    },
-    "9b1c7bd21d1c36b6bf824cb055020299976c1ca8739ed2efce52d65b12f5993c": {
-      "address": "0x9530F7E1F1C362965Fe3A6a1200f9da1E0E9D5f6",
-      "txHash": "0x4e29d7699c92c53e488fe572472f2bf419f9156e803e8c74aeb245836bf3a214",
-      "layout": {
-        "solcVersion": "0.8.24",
-        "storage": [
-          {
-            "label": "usdcToken",
-            "offset": 0,
-            "slot": "0",
-            "type": "t_contract(IERC20)1443",
-            "contract": "AgentPactTipJar",
-            "src": "src\\AgentPactTipJar.sol:69"
-          },
-          {
-            "label": "platformSigner",
-            "offset": 0,
-            "slot": "1",
-            "type": "t_address",
-            "contract": "AgentPactTipJar",
-            "src": "src\\AgentPactTipJar.sol:72"
-          },
-          {
-            "label": "treasury",
-            "offset": 0,
-            "slot": "2",
-            "type": "t_address",
-            "contract": "AgentPactTipJar",
-            "src": "src\\AgentPactTipJar.sol:75"
-          },
-          {
-            "label": "platformFeeBps",
-            "offset": 20,
-            "slot": "2",
-            "type": "t_uint16",
-            "contract": "AgentPactTipJar",
-            "src": "src\\AgentPactTipJar.sol:78"
-          },
-          {
-            "label": "maxTipAmount",
-            "offset": 0,
-            "slot": "3",
-            "type": "t_uint256",
-            "contract": "AgentPactTipJar",
-            "src": "src\\AgentPactTipJar.sol:82"
-          },
-          {
-            "label": "dailyTipCap",
-            "offset": 0,
-            "slot": "4",
-            "type": "t_uint256",
-            "contract": "AgentPactTipJar",
-            "src": "src\\AgentPactTipJar.sol:86"
-          },
-          {
-            "label": "paused",
-            "offset": 0,
-            "slot": "5",
-            "type": "t_bool",
-            "contract": "AgentPactTipJar",
-            "src": "src\\AgentPactTipJar.sol:89"
-          },
-          {
-            "label": "_tipStats",
-            "offset": 0,
-            "slot": "6",
-            "type": "t_mapping(t_address,t_struct(TipStats)10193_storage)",
-            "contract": "AgentPactTipJar",
-            "src": "src\\AgentPactTipJar.sol:92"
-          },
-          {
-            "label": "_usedNonces",
-            "offset": 0,
-            "slot": "7",
-            "type": "t_mapping(t_bytes32,t_bool)",
-            "contract": "AgentPactTipJar",
-            "src": "src\\AgentPactTipJar.sol:96"
-          },
-          {
-            "label": "_dailySpent",
-            "offset": 0,
-            "slot": "8",
-            "type": "t_mapping(t_bytes32,t_uint256)",
-            "contract": "AgentPactTipJar",
-            "src": "src\\AgentPactTipJar.sol:99"
-          },
-          {
-            "label": "reputationRegistry",
-            "offset": 0,
-            "slot": "9",
-            "type": "t_contract(IAgentPactReputationRegistry)10178",
-            "contract": "AgentPactTipJar",
-            "src": "src\\AgentPactTipJar.sol:102"
-          },
-          {
-            "label": "treasuryContract",
-            "offset": 0,
-            "slot": "10",
-            "type": "t_contract(IAgentPactTreasury)10418",
-            "contract": "AgentPactTipJar",
-            "src": "src\\AgentPactTipJar.sol:105"
-          },
-          {
-            "label": "__gap",
-            "offset": 0,
-            "slot": "11",
-            "type": "t_array(t_uint256)38_storage",
-            "contract": "AgentPactTipJar",
-            "src": "src\\AgentPactTipJar.sol:108"
-          }
-        ],
-        "types": {
-          "t_address": {
-            "label": "address",
-            "numberOfBytes": "20"
-          },
-          "t_bool": {
-            "label": "bool",
-            "numberOfBytes": "1"
-          },
-          "t_bytes32": {
-            "label": "bytes32",
-            "numberOfBytes": "32"
-          },
-          "t_string_storage": {
-            "label": "string",
-            "numberOfBytes": "32"
-          },
-          "t_struct(EIP712Storage)124_storage": {
-            "label": "struct EIP712Upgradeable.EIP712Storage",
-            "members": [
-              {
-                "label": "_hashedName",
-                "type": "t_bytes32",
-                "offset": 0,
-                "slot": "0"
-              },
-              {
-                "label": "_hashedVersion",
-                "type": "t_bytes32",
-                "offset": 0,
-                "slot": "1"
-              },
-              {
-                "label": "_name",
-                "type": "t_string_storage",
-                "offset": 0,
-                "slot": "2"
-              },
-              {
-                "label": "_version",
-                "type": "t_string_storage",
-                "offset": 0,
-                "slot": "3"
-              }
-            ],
-            "numberOfBytes": "128"
-          },
-          "t_struct(InitializableStorage)436_storage": {
-            "label": "struct Initializable.InitializableStorage",
-            "members": [
-              {
-                "label": "_initialized",
-                "type": "t_uint64",
-                "offset": 0,
-                "slot": "0"
-              },
-              {
-                "label": "_initializing",
-                "type": "t_bool",
-                "offset": 8,
-                "slot": "0"
-              }
-            ],
-            "numberOfBytes": "32"
-          },
-          "t_struct(OwnableStorage)13_storage": {
-            "label": "struct OwnableUpgradeable.OwnableStorage",
-            "members": [
-              {
-                "label": "_owner",
-                "type": "t_address",
-                "offset": 0,
-                "slot": "0"
-              }
-            ],
-            "numberOfBytes": "32"
-          },
-          "t_uint64": {
-            "label": "uint64",
-            "numberOfBytes": "8"
-          },
-          "t_array(t_uint256)38_storage": {
-            "label": "uint256[38]",
-            "numberOfBytes": "1216"
-          },
-          "t_contract(IAgentPactReputationRegistry)10178": {
-            "label": "contract IAgentPactReputationRegistry",
-            "numberOfBytes": "20"
-          },
-          "t_contract(IAgentPactTreasury)10418": {
-            "label": "contract IAgentPactTreasury",
-            "numberOfBytes": "20"
-          },
-          "t_contract(IERC20)1443": {
-            "label": "contract IERC20",
-            "numberOfBytes": "20"
-          },
-          "t_mapping(t_address,t_struct(TipStats)10193_storage)": {
-            "label": "mapping(address => struct IAgentPactTipJar.TipStats)",
-            "numberOfBytes": "32"
-          },
-          "t_mapping(t_bytes32,t_bool)": {
-            "label": "mapping(bytes32 => bool)",
-            "numberOfBytes": "32"
-          },
-          "t_mapping(t_bytes32,t_uint256)": {
-            "label": "mapping(bytes32 => uint256)",
-            "numberOfBytes": "32"
-          },
-          "t_struct(TipStats)10193_storage": {
-            "label": "struct IAgentPactTipJar.TipStats",
-            "members": [
-              {
-                "label": "totalSent",
-                "type": "t_uint256",
-                "offset": 0,
-                "slot": "0"
-              },
-              {
-                "label": "totalReceived",
-                "type": "t_uint256",
-                "offset": 0,
-                "slot": "1"
-              },
-              {
-                "label": "totalFeesPaid",
-                "type": "t_uint256",
-                "offset": 0,
-                "slot": "2"
-              },
-              {
-                "label": "tipsSentCount",
-                "type": "t_uint64",
-                "offset": 0,
-                "slot": "3"
-              },
-              {
-                "label": "tipsReceivedCount",
-                "type": "t_uint64",
-                "offset": 8,
-                "slot": "3"
-              }
-            ],
-            "numberOfBytes": "128"
-          },
-          "t_uint16": {
-            "label": "uint16",
-            "numberOfBytes": "2"
-          },
-          "t_uint256": {
-            "label": "uint256",
-            "numberOfBytes": "32"
-          }
-        },
-        "namespaces": {
-          "erc7201:openzeppelin.storage.EIP712": [
-            {
-              "contract": "EIP712Upgradeable",
-              "label": "_hashedName",
-              "type": "t_bytes32",
-              "src": "@openzeppelin\\contracts-upgradeable\\utils\\cryptography\\EIP712Upgradeable.sol:37",
-              "offset": 0,
-              "slot": "0"
-            },
-            {
-              "contract": "EIP712Upgradeable",
-              "label": "_hashedVersion",
-              "type": "t_bytes32",
-              "src": "@openzeppelin\\contracts-upgradeable\\utils\\cryptography\\EIP712Upgradeable.sol:38",
-              "offset": 0,
-              "slot": "1"
-            },
-            {
-              "contract": "EIP712Upgradeable",
-              "label": "_name",
-              "type": "t_string_storage",
-              "src": "@openzeppelin\\contracts-upgradeable\\utils\\cryptography\\EIP712Upgradeable.sol:40",
-              "offset": 0,
-              "slot": "2"
-            },
-            {
-              "contract": "EIP712Upgradeable",
-              "label": "_version",
-              "type": "t_string_storage",
-              "src": "@openzeppelin\\contracts-upgradeable\\utils\\cryptography\\EIP712Upgradeable.sol:41",
-              "offset": 0,
-              "slot": "3"
-            }
-          ],
-          "erc7201:openzeppelin.storage.Ownable": [
-            {
-              "contract": "OwnableUpgradeable",
-              "label": "_owner",
-              "type": "t_address",
-              "src": "@openzeppelin\\contracts-upgradeable\\access\\OwnableUpgradeable.sol:24",
-              "offset": 0,
-              "slot": "0"
-            }
-          ],
-          "erc7201:openzeppelin.storage.Initializable": [
-            {
-              "contract": "Initializable",
-              "label": "_initialized",
-              "type": "t_uint64",
-              "src": "@openzeppelin\\contracts\\proxy\\utils\\Initializable.sol:69",
-              "offset": 0,
-              "slot": "0"
-            },
-            {
-              "contract": "Initializable",
-              "label": "_initializing",
-              "type": "t_bool",
-              "src": "@openzeppelin\\contracts\\proxy\\utils\\Initializable.sol:73",
-              "offset": 8,
-              "slot": "0"
-            }
-          ]
-        }
-      }
-    },
-    "1c4faa3d316c3e69f81094e70cd52fbe27ad0a6dd7f78f01102e7790abe49eb7": {
-      "address": "0x57C6dEeDe0B39aA07c4221B73287F847C2f4F59E",
-      "txHash": "0x53f70af9fe62fe35af9058cd1152655b1b98b1afe4b89170e6dac419ad89b7bd",
-      "layout": {
-        "solcVersion": "0.8.24",
-        "storage": [
-          {
-            "label": "nextEscrowId",
-            "offset": 0,
-            "slot": "0",
-            "type": "t_uint256",
-            "contract": "AgentPactEscrow",
-            "src": "src\\AgentPactEscrow.sol:70"
-          },
-          {
-            "label": "platformSigner",
-            "offset": 0,
-            "slot": "1",
-            "type": "t_address",
-            "contract": "AgentPactEscrow",
-            "src": "src\\AgentPactEscrow.sol:73"
-          },
-          {
-            "label": "platformFund",
-            "offset": 0,
-            "slot": "2",
-            "type": "t_address",
-            "contract": "AgentPactEscrow",
-            "src": "src\\AgentPactEscrow.sol:76"
-          },
-          {
-            "label": "escrows",
-            "offset": 0,
-            "slot": "3",
-            "type": "t_mapping(t_uint256,t_struct(EscrowRecord)11820_storage)",
-            "contract": "AgentPactEscrow",
-            "src": "src\\AgentPactEscrow.sol:79"
-          },
-          {
-            "label": "assignmentNonces",
-            "offset": 0,
-            "slot": "4",
-            "type": "t_mapping(t_uint256,t_uint256)",
-            "contract": "AgentPactEscrow",
-            "src": "src\\AgentPactEscrow.sol:82"
-          },
-          {
-            "label": "escrowFundWeights",
-            "offset": 0,
-            "slot": "5",
-            "type": "t_mapping(t_uint256,t_mapping(t_uint8,t_uint8))",
-            "contract": "AgentPactEscrow",
-            "src": "src\\AgentPactEscrow.sol:86"
-          },
-          {
-            "label": "allowedTokens",
-            "offset": 0,
-            "slot": "6",
-            "type": "t_mapping(t_address,t_bool)",
-            "contract": "AgentPactEscrow",
-            "src": "src\\AgentPactEscrow.sol:89"
-          },
-          {
-            "label": "reputationRegistry",
-            "offset": 0,
-            "slot": "7",
-            "type": "t_contract(IAgentPactReputationRegistry)12075",
-            "contract": "AgentPactEscrow",
-            "src": "src\\AgentPactEscrow.sol:92"
-          },
-          {
-            "label": "treasuryContract",
-            "offset": 0,
-            "slot": "8",
-            "type": "t_contract(IAgentPactTreasury)12163",
-            "contract": "AgentPactEscrow",
-            "src": "src\\AgentPactEscrow.sol:95"
-          },
-          {
-            "label": "platformFeeBps",
-            "offset": 20,
-            "slot": "8",
-            "type": "t_uint16",
-            "contract": "AgentPactEscrow",
-            "src": "src\\AgentPactEscrow.sol:97"
-          },
-          {
-            "label": "totalClosedEscrows",
-            "offset": 0,
-            "slot": "9",
-            "type": "t_uint256",
-            "contract": "AgentPactEscrow",
-            "src": "src\\AgentPactEscrow.sol:99"
-          },
-          {
-            "label": "totalSuccessfulEscrows",
-            "offset": 0,
-            "slot": "10",
-            "type": "t_uint256",
-            "contract": "AgentPactEscrow",
-            "src": "src\\AgentPactEscrow.sol:101"
-          },
-          {
-            "label": "totalRewardVolumeByToken",
-            "offset": 0,
-            "slot": "11",
-            "type": "t_mapping(t_address,t_uint256)",
-            "contract": "AgentPactEscrow",
-            "src": "src\\AgentPactEscrow.sol:103"
-          },
-          {
-            "label": "totalPayoutVolumeByToken",
-            "offset": 0,
-            "slot": "12",
-            "type": "t_mapping(t_address,t_uint256)",
-            "contract": "AgentPactEscrow",
-            "src": "src\\AgentPactEscrow.sol:105"
           },
           {
             "label": "penaltyPlatformBps",
@@ -4224,7 +152,7 @@
             "slot": "13",
             "type": "t_uint16",
             "contract": "AgentPactEscrow",
-            "src": "src\\AgentPactEscrow.sol:108"
+            "src": "src\\AgentPactEscrow.sol:103"
           },
           {
             "label": "__gap",
@@ -4232,7 +160,7 @@
             "slot": "14",
             "type": "t_array(t_uint256)35_storage",
             "contract": "AgentPactEscrow",
-            "src": "src\\AgentPactEscrow.sol:111"
+            "src": "src\\AgentPactEscrow.sol:106"
           }
         ],
         "types": {
@@ -4320,19 +248,18 @@
             "label": "uint256[35]",
             "numberOfBytes": "1120"
           },
-          "t_contract(IAgentPactReputationRegistry)12075": {
+          "t_contract(IAgentPactReputationRegistry)11759": {
             "label": "contract IAgentPactReputationRegistry",
             "numberOfBytes": "20"
           },
-          "t_contract(IAgentPactTreasury)12163": {
+          "t_contract(IAgentPactTreasury)11847": {
             "label": "contract IAgentPactTreasury",
             "numberOfBytes": "20"
           },
-          "t_enum(TaskState)11780": {
+          "t_enum(TaskState)11495": {
             "label": "enum IAgentPactEscrow.TaskState",
             "members": [
               "Created",
-              "ConfirmationPending",
               "Working",
               "Delivered",
               "InRevision",
@@ -4355,7 +282,7 @@
             "label": "mapping(uint256 => mapping(uint8 => uint8))",
             "numberOfBytes": "32"
           },
-          "t_mapping(t_uint256,t_struct(EscrowRecord)11820_storage)": {
+          "t_mapping(t_uint256,t_struct(EscrowRecord)11533_storage)": {
             "label": "mapping(uint256 => struct IAgentPactEscrow.EscrowRecord)",
             "numberOfBytes": "32"
           },
@@ -4367,7 +294,7 @@
             "label": "mapping(uint8 => uint8)",
             "numberOfBytes": "32"
           },
-          "t_struct(EscrowRecord)11820_storage": {
+          "t_struct(EscrowRecord)11533_storage": {
             "label": "struct IAgentPactEscrow.EscrowRecord",
             "members": [
               {
@@ -4408,7 +335,7 @@
               },
               {
                 "label": "state",
-                "type": "t_enum(TaskState)11780",
+                "type": "t_enum(TaskState)11495",
                 "offset": 20,
                 "slot": "5"
               },
@@ -4449,43 +376,827 @@
                 "slot": "9"
               },
               {
-                "label": "confirmationDeadline",
-                "type": "t_uint64",
+                "label": "maxRevisions",
+                "type": "t_uint8",
                 "offset": 24,
+                "slot": "9"
+              },
+              {
+                "label": "currentRevision",
+                "type": "t_uint8",
+                "offset": 25,
+                "slot": "9"
+              },
+              {
+                "label": "criteriaCount",
+                "type": "t_uint8",
+                "offset": 26,
+                "slot": "9"
+              },
+              {
+                "label": "declineCount",
+                "type": "t_uint8",
+                "offset": 27,
+                "slot": "9"
+              },
+              {
+                "label": "acceptanceWindowHours",
+                "type": "t_uint8",
+                "offset": 28,
+                "slot": "9"
+              }
+            ],
+            "numberOfBytes": "320"
+          },
+          "t_uint16": {
+            "label": "uint16",
+            "numberOfBytes": "2"
+          },
+          "t_uint256": {
+            "label": "uint256",
+            "numberOfBytes": "32"
+          },
+          "t_uint8": {
+            "label": "uint8",
+            "numberOfBytes": "1"
+          }
+        },
+        "namespaces": {
+          "erc7201:openzeppelin.storage.EIP712": [
+            {
+              "contract": "EIP712Upgradeable",
+              "label": "_hashedName",
+              "type": "t_bytes32",
+              "src": "@openzeppelin\\contracts-upgradeable\\utils\\cryptography\\EIP712Upgradeable.sol:37",
+              "offset": 0,
+              "slot": "0"
+            },
+            {
+              "contract": "EIP712Upgradeable",
+              "label": "_hashedVersion",
+              "type": "t_bytes32",
+              "src": "@openzeppelin\\contracts-upgradeable\\utils\\cryptography\\EIP712Upgradeable.sol:38",
+              "offset": 0,
+              "slot": "1"
+            },
+            {
+              "contract": "EIP712Upgradeable",
+              "label": "_name",
+              "type": "t_string_storage",
+              "src": "@openzeppelin\\contracts-upgradeable\\utils\\cryptography\\EIP712Upgradeable.sol:40",
+              "offset": 0,
+              "slot": "2"
+            },
+            {
+              "contract": "EIP712Upgradeable",
+              "label": "_version",
+              "type": "t_string_storage",
+              "src": "@openzeppelin\\contracts-upgradeable\\utils\\cryptography\\EIP712Upgradeable.sol:41",
+              "offset": 0,
+              "slot": "3"
+            }
+          ],
+          "erc7201:openzeppelin.storage.Ownable": [
+            {
+              "contract": "OwnableUpgradeable",
+              "label": "_owner",
+              "type": "t_address",
+              "src": "@openzeppelin\\contracts-upgradeable\\access\\OwnableUpgradeable.sol:24",
+              "offset": 0,
+              "slot": "0"
+            }
+          ],
+          "erc7201:openzeppelin.storage.Initializable": [
+            {
+              "contract": "Initializable",
+              "label": "_initialized",
+              "type": "t_uint64",
+              "src": "@openzeppelin\\contracts\\proxy\\utils\\Initializable.sol:69",
+              "offset": 0,
+              "slot": "0"
+            },
+            {
+              "contract": "Initializable",
+              "label": "_initializing",
+              "type": "t_bool",
+              "src": "@openzeppelin\\contracts\\proxy\\utils\\Initializable.sol:73",
+              "offset": 8,
+              "slot": "0"
+            }
+          ]
+        }
+      }
+    },
+    "9b1c7bd21d1c36b6bf824cb055020299976c1ca8739ed2efce52d65b12f5993c": {
+      "address": "0x3c9A05B21A8A54903D7fC48Ab6aF2E5FabA71A67",
+      "txHash": "0xd3ea9e51558be55226ad73314697bc3ce0f5ee294c3efdc4529e37c3e0f4d73b",
+      "layout": {
+        "solcVersion": "0.8.24",
+        "storage": [
+          {
+            "label": "usdcToken",
+            "offset": 0,
+            "slot": "0",
+            "type": "t_contract(IERC20)3438",
+            "contract": "AgentPactTipJar",
+            "src": "src\\AgentPactTipJar.sol:69"
+          },
+          {
+            "label": "platformSigner",
+            "offset": 0,
+            "slot": "1",
+            "type": "t_address",
+            "contract": "AgentPactTipJar",
+            "src": "src\\AgentPactTipJar.sol:72"
+          },
+          {
+            "label": "treasury",
+            "offset": 0,
+            "slot": "2",
+            "type": "t_address",
+            "contract": "AgentPactTipJar",
+            "src": "src\\AgentPactTipJar.sol:75"
+          },
+          {
+            "label": "platformFeeBps",
+            "offset": 20,
+            "slot": "2",
+            "type": "t_uint16",
+            "contract": "AgentPactTipJar",
+            "src": "src\\AgentPactTipJar.sol:78"
+          },
+          {
+            "label": "maxTipAmount",
+            "offset": 0,
+            "slot": "3",
+            "type": "t_uint256",
+            "contract": "AgentPactTipJar",
+            "src": "src\\AgentPactTipJar.sol:82"
+          },
+          {
+            "label": "dailyTipCap",
+            "offset": 0,
+            "slot": "4",
+            "type": "t_uint256",
+            "contract": "AgentPactTipJar",
+            "src": "src\\AgentPactTipJar.sol:86"
+          },
+          {
+            "label": "paused",
+            "offset": 0,
+            "slot": "5",
+            "type": "t_bool",
+            "contract": "AgentPactTipJar",
+            "src": "src\\AgentPactTipJar.sol:89"
+          },
+          {
+            "label": "_tipStats",
+            "offset": 0,
+            "slot": "6",
+            "type": "t_mapping(t_address,t_struct(TipStats)16356_storage)",
+            "contract": "AgentPactTipJar",
+            "src": "src\\AgentPactTipJar.sol:92"
+          },
+          {
+            "label": "_usedNonces",
+            "offset": 0,
+            "slot": "7",
+            "type": "t_mapping(t_bytes32,t_bool)",
+            "contract": "AgentPactTipJar",
+            "src": "src\\AgentPactTipJar.sol:96"
+          },
+          {
+            "label": "_dailySpent",
+            "offset": 0,
+            "slot": "8",
+            "type": "t_mapping(t_bytes32,t_uint256)",
+            "contract": "AgentPactTipJar",
+            "src": "src\\AgentPactTipJar.sol:99"
+          },
+          {
+            "label": "reputationRegistry",
+            "offset": 0,
+            "slot": "9",
+            "type": "t_contract(IAgentPactReputationRegistry)16341",
+            "contract": "AgentPactTipJar",
+            "src": "src\\AgentPactTipJar.sol:102"
+          },
+          {
+            "label": "treasuryContract",
+            "offset": 0,
+            "slot": "10",
+            "type": "t_contract(IAgentPactTreasury)16581",
+            "contract": "AgentPactTipJar",
+            "src": "src\\AgentPactTipJar.sol:105"
+          },
+          {
+            "label": "__gap",
+            "offset": 0,
+            "slot": "11",
+            "type": "t_array(t_uint256)38_storage",
+            "contract": "AgentPactTipJar",
+            "src": "src\\AgentPactTipJar.sol:108"
+          }
+        ],
+        "types": {
+          "t_address": {
+            "label": "address",
+            "numberOfBytes": "20"
+          },
+          "t_bool": {
+            "label": "bool",
+            "numberOfBytes": "1"
+          },
+          "t_bytes32": {
+            "label": "bytes32",
+            "numberOfBytes": "32"
+          },
+          "t_string_storage": {
+            "label": "string",
+            "numberOfBytes": "32"
+          },
+          "t_struct(EIP712Storage)540_storage": {
+            "label": "struct EIP712Upgradeable.EIP712Storage",
+            "members": [
+              {
+                "label": "_hashedName",
+                "type": "t_bytes32",
+                "offset": 0,
+                "slot": "0"
+              },
+              {
+                "label": "_hashedVersion",
+                "type": "t_bytes32",
+                "offset": 0,
+                "slot": "1"
+              },
+              {
+                "label": "_name",
+                "type": "t_string_storage",
+                "offset": 0,
+                "slot": "2"
+              },
+              {
+                "label": "_version",
+                "type": "t_string_storage",
+                "offset": 0,
+                "slot": "3"
+              }
+            ],
+            "numberOfBytes": "128"
+          },
+          "t_struct(InitializableStorage)942_storage": {
+            "label": "struct Initializable.InitializableStorage",
+            "members": [
+              {
+                "label": "_initialized",
+                "type": "t_uint64",
+                "offset": 0,
+                "slot": "0"
+              },
+              {
+                "label": "_initializing",
+                "type": "t_bool",
+                "offset": 8,
+                "slot": "0"
+              }
+            ],
+            "numberOfBytes": "32"
+          },
+          "t_struct(OwnableStorage)13_storage": {
+            "label": "struct OwnableUpgradeable.OwnableStorage",
+            "members": [
+              {
+                "label": "_owner",
+                "type": "t_address",
+                "offset": 0,
+                "slot": "0"
+              }
+            ],
+            "numberOfBytes": "32"
+          },
+          "t_uint64": {
+            "label": "uint64",
+            "numberOfBytes": "8"
+          },
+          "t_array(t_uint256)38_storage": {
+            "label": "uint256[38]",
+            "numberOfBytes": "1216"
+          },
+          "t_contract(IAgentPactReputationRegistry)16341": {
+            "label": "contract IAgentPactReputationRegistry",
+            "numberOfBytes": "20"
+          },
+          "t_contract(IAgentPactTreasury)16581": {
+            "label": "contract IAgentPactTreasury",
+            "numberOfBytes": "20"
+          },
+          "t_contract(IERC20)3438": {
+            "label": "contract IERC20",
+            "numberOfBytes": "20"
+          },
+          "t_mapping(t_address,t_struct(TipStats)16356_storage)": {
+            "label": "mapping(address => struct IAgentPactTipJar.TipStats)",
+            "numberOfBytes": "32"
+          },
+          "t_mapping(t_bytes32,t_bool)": {
+            "label": "mapping(bytes32 => bool)",
+            "numberOfBytes": "32"
+          },
+          "t_mapping(t_bytes32,t_uint256)": {
+            "label": "mapping(bytes32 => uint256)",
+            "numberOfBytes": "32"
+          },
+          "t_struct(TipStats)16356_storage": {
+            "label": "struct IAgentPactTipJar.TipStats",
+            "members": [
+              {
+                "label": "totalSent",
+                "type": "t_uint256",
+                "offset": 0,
+                "slot": "0"
+              },
+              {
+                "label": "totalReceived",
+                "type": "t_uint256",
+                "offset": 0,
+                "slot": "1"
+              },
+              {
+                "label": "totalFeesPaid",
+                "type": "t_uint256",
+                "offset": 0,
+                "slot": "2"
+              },
+              {
+                "label": "tipsSentCount",
+                "type": "t_uint64",
+                "offset": 0,
+                "slot": "3"
+              },
+              {
+                "label": "tipsReceivedCount",
+                "type": "t_uint64",
+                "offset": 8,
+                "slot": "3"
+              }
+            ],
+            "numberOfBytes": "128"
+          },
+          "t_uint16": {
+            "label": "uint16",
+            "numberOfBytes": "2"
+          },
+          "t_uint256": {
+            "label": "uint256",
+            "numberOfBytes": "32"
+          }
+        },
+        "namespaces": {
+          "erc7201:openzeppelin.storage.EIP712": [
+            {
+              "contract": "EIP712Upgradeable",
+              "label": "_hashedName",
+              "type": "t_bytes32",
+              "src": "@openzeppelin\\contracts-upgradeable\\utils\\cryptography\\EIP712Upgradeable.sol:37",
+              "offset": 0,
+              "slot": "0"
+            },
+            {
+              "contract": "EIP712Upgradeable",
+              "label": "_hashedVersion",
+              "type": "t_bytes32",
+              "src": "@openzeppelin\\contracts-upgradeable\\utils\\cryptography\\EIP712Upgradeable.sol:38",
+              "offset": 0,
+              "slot": "1"
+            },
+            {
+              "contract": "EIP712Upgradeable",
+              "label": "_name",
+              "type": "t_string_storage",
+              "src": "@openzeppelin\\contracts-upgradeable\\utils\\cryptography\\EIP712Upgradeable.sol:40",
+              "offset": 0,
+              "slot": "2"
+            },
+            {
+              "contract": "EIP712Upgradeable",
+              "label": "_version",
+              "type": "t_string_storage",
+              "src": "@openzeppelin\\contracts-upgradeable\\utils\\cryptography\\EIP712Upgradeable.sol:41",
+              "offset": 0,
+              "slot": "3"
+            }
+          ],
+          "erc7201:openzeppelin.storage.Ownable": [
+            {
+              "contract": "OwnableUpgradeable",
+              "label": "_owner",
+              "type": "t_address",
+              "src": "@openzeppelin\\contracts-upgradeable\\access\\OwnableUpgradeable.sol:24",
+              "offset": 0,
+              "slot": "0"
+            }
+          ],
+          "erc7201:openzeppelin.storage.Initializable": [
+            {
+              "contract": "Initializable",
+              "label": "_initialized",
+              "type": "t_uint64",
+              "src": "@openzeppelin\\contracts\\proxy\\utils\\Initializable.sol:69",
+              "offset": 0,
+              "slot": "0"
+            },
+            {
+              "contract": "Initializable",
+              "label": "_initializing",
+              "type": "t_bool",
+              "src": "@openzeppelin\\contracts\\proxy\\utils\\Initializable.sol:73",
+              "offset": 8,
+              "slot": "0"
+            }
+          ]
+        }
+      }
+    },
+    "c2e777ba6ebaa3c7c4d5017e307089c28472a487191339fcfc0a409543c91b5e": {
+      "address": "0x0b48D2BFAB6C9Fd299b15F384632394BB137514B",
+      "txHash": "0x70df1be3e240d8327e9b8e6ff24b9526b281790ce1b16611a8e7d324b0b81ae7",
+      "layout": {
+        "solcVersion": "0.8.24",
+        "storage": [
+          {
+            "label": "nextEscrowId",
+            "offset": 0,
+            "slot": "0",
+            "type": "t_uint256",
+            "contract": "AgentPactEscrow",
+            "src": "src\\AgentPactEscrow.sol:65"
+          },
+          {
+            "label": "platformSigner",
+            "offset": 0,
+            "slot": "1",
+            "type": "t_address",
+            "contract": "AgentPactEscrow",
+            "src": "src\\AgentPactEscrow.sol:68"
+          },
+          {
+            "label": "platformFund",
+            "offset": 0,
+            "slot": "2",
+            "type": "t_address",
+            "contract": "AgentPactEscrow",
+            "src": "src\\AgentPactEscrow.sol:71"
+          },
+          {
+            "label": "escrows",
+            "offset": 0,
+            "slot": "3",
+            "type": "t_mapping(t_uint256,t_struct(EscrowRecord)16115_storage)",
+            "contract": "AgentPactEscrow",
+            "src": "src\\AgentPactEscrow.sol:74"
+          },
+          {
+            "label": "assignmentNonces",
+            "offset": 0,
+            "slot": "4",
+            "type": "t_mapping(t_uint256,t_uint256)",
+            "contract": "AgentPactEscrow",
+            "src": "src\\AgentPactEscrow.sol:77"
+          },
+          {
+            "label": "escrowFundWeights",
+            "offset": 0,
+            "slot": "5",
+            "type": "t_mapping(t_uint256,t_mapping(t_uint8,t_uint8))",
+            "contract": "AgentPactEscrow",
+            "src": "src\\AgentPactEscrow.sol:81"
+          },
+          {
+            "label": "allowedTokens",
+            "offset": 0,
+            "slot": "6",
+            "type": "t_mapping(t_address,t_bool)",
+            "contract": "AgentPactEscrow",
+            "src": "src\\AgentPactEscrow.sol:84"
+          },
+          {
+            "label": "reputationRegistry",
+            "offset": 0,
+            "slot": "7",
+            "type": "t_contract(IAgentPactReputationRegistry)16341",
+            "contract": "AgentPactEscrow",
+            "src": "src\\AgentPactEscrow.sol:87"
+          },
+          {
+            "label": "treasuryContract",
+            "offset": 0,
+            "slot": "8",
+            "type": "t_contract(IAgentPactTreasury)16581",
+            "contract": "AgentPactEscrow",
+            "src": "src\\AgentPactEscrow.sol:90"
+          },
+          {
+            "label": "platformFeeBps",
+            "offset": 20,
+            "slot": "8",
+            "type": "t_uint16",
+            "contract": "AgentPactEscrow",
+            "src": "src\\AgentPactEscrow.sol:92"
+          },
+          {
+            "label": "totalClosedEscrows",
+            "offset": 0,
+            "slot": "9",
+            "type": "t_uint256",
+            "contract": "AgentPactEscrow",
+            "src": "src\\AgentPactEscrow.sol:94"
+          },
+          {
+            "label": "totalSuccessfulEscrows",
+            "offset": 0,
+            "slot": "10",
+            "type": "t_uint256",
+            "contract": "AgentPactEscrow",
+            "src": "src\\AgentPactEscrow.sol:96"
+          },
+          {
+            "label": "totalRewardVolumeByToken",
+            "offset": 0,
+            "slot": "11",
+            "type": "t_mapping(t_address,t_uint256)",
+            "contract": "AgentPactEscrow",
+            "src": "src\\AgentPactEscrow.sol:98"
+          },
+          {
+            "label": "totalPayoutVolumeByToken",
+            "offset": 0,
+            "slot": "12",
+            "type": "t_mapping(t_address,t_uint256)",
+            "contract": "AgentPactEscrow",
+            "src": "src\\AgentPactEscrow.sol:100"
+          },
+          {
+            "label": "penaltyPlatformBps",
+            "offset": 0,
+            "slot": "13",
+            "type": "t_uint16",
+            "contract": "AgentPactEscrow",
+            "src": "src\\AgentPactEscrow.sol:103"
+          },
+          {
+            "label": "__gap",
+            "offset": 0,
+            "slot": "14",
+            "type": "t_array(t_uint256)35_storage",
+            "contract": "AgentPactEscrow",
+            "src": "src\\AgentPactEscrow.sol:106"
+          }
+        ],
+        "types": {
+          "t_address": {
+            "label": "address",
+            "numberOfBytes": "20"
+          },
+          "t_bool": {
+            "label": "bool",
+            "numberOfBytes": "1"
+          },
+          "t_bytes32": {
+            "label": "bytes32",
+            "numberOfBytes": "32"
+          },
+          "t_string_storage": {
+            "label": "string",
+            "numberOfBytes": "32"
+          },
+          "t_struct(EIP712Storage)540_storage": {
+            "label": "struct EIP712Upgradeable.EIP712Storage",
+            "members": [
+              {
+                "label": "_hashedName",
+                "type": "t_bytes32",
+                "offset": 0,
+                "slot": "0"
+              },
+              {
+                "label": "_hashedVersion",
+                "type": "t_bytes32",
+                "offset": 0,
+                "slot": "1"
+              },
+              {
+                "label": "_name",
+                "type": "t_string_storage",
+                "offset": 0,
+                "slot": "2"
+              },
+              {
+                "label": "_version",
+                "type": "t_string_storage",
+                "offset": 0,
+                "slot": "3"
+              }
+            ],
+            "numberOfBytes": "128"
+          },
+          "t_struct(InitializableStorage)942_storage": {
+            "label": "struct Initializable.InitializableStorage",
+            "members": [
+              {
+                "label": "_initialized",
+                "type": "t_uint64",
+                "offset": 0,
+                "slot": "0"
+              },
+              {
+                "label": "_initializing",
+                "type": "t_bool",
+                "offset": 8,
+                "slot": "0"
+              }
+            ],
+            "numberOfBytes": "32"
+          },
+          "t_struct(OwnableStorage)13_storage": {
+            "label": "struct OwnableUpgradeable.OwnableStorage",
+            "members": [
+              {
+                "label": "_owner",
+                "type": "t_address",
+                "offset": 0,
+                "slot": "0"
+              }
+            ],
+            "numberOfBytes": "32"
+          },
+          "t_uint64": {
+            "label": "uint64",
+            "numberOfBytes": "8"
+          },
+          "t_array(t_uint256)35_storage": {
+            "label": "uint256[35]",
+            "numberOfBytes": "1120"
+          },
+          "t_contract(IAgentPactReputationRegistry)16341": {
+            "label": "contract IAgentPactReputationRegistry",
+            "numberOfBytes": "20"
+          },
+          "t_contract(IAgentPactTreasury)16581": {
+            "label": "contract IAgentPactTreasury",
+            "numberOfBytes": "20"
+          },
+          "t_enum(TaskState)16077": {
+            "label": "enum IAgentPactEscrow.TaskState",
+            "members": [
+              "Created",
+              "Working",
+              "Delivered",
+              "InRevision",
+              "Accepted",
+              "Settled",
+              "TimedOut",
+              "Cancelled"
+            ],
+            "numberOfBytes": "1"
+          },
+          "t_mapping(t_address,t_bool)": {
+            "label": "mapping(address => bool)",
+            "numberOfBytes": "32"
+          },
+          "t_mapping(t_address,t_uint256)": {
+            "label": "mapping(address => uint256)",
+            "numberOfBytes": "32"
+          },
+          "t_mapping(t_uint256,t_mapping(t_uint8,t_uint8))": {
+            "label": "mapping(uint256 => mapping(uint8 => uint8))",
+            "numberOfBytes": "32"
+          },
+          "t_mapping(t_uint256,t_struct(EscrowRecord)16115_storage)": {
+            "label": "mapping(uint256 => struct IAgentPactEscrow.EscrowRecord)",
+            "numberOfBytes": "32"
+          },
+          "t_mapping(t_uint256,t_uint256)": {
+            "label": "mapping(uint256 => uint256)",
+            "numberOfBytes": "32"
+          },
+          "t_mapping(t_uint8,t_uint8)": {
+            "label": "mapping(uint8 => uint8)",
+            "numberOfBytes": "32"
+          },
+          "t_struct(EscrowRecord)16115_storage": {
+            "label": "struct IAgentPactEscrow.EscrowRecord",
+            "members": [
+              {
+                "label": "requester",
+                "type": "t_address",
+                "offset": 0,
+                "slot": "0"
+              },
+              {
+                "label": "provider",
+                "type": "t_address",
+                "offset": 0,
+                "slot": "1"
+              },
+              {
+                "label": "rewardAmount",
+                "type": "t_uint256",
+                "offset": 0,
+                "slot": "2"
+              },
+              {
+                "label": "requesterDeposit",
+                "type": "t_uint256",
+                "offset": 0,
+                "slot": "3"
+              },
+              {
+                "label": "depositConsumed",
+                "type": "t_uint256",
+                "offset": 0,
+                "slot": "4"
+              },
+              {
+                "label": "token",
+                "type": "t_address",
+                "offset": 0,
+                "slot": "5"
+              },
+              {
+                "label": "state",
+                "type": "t_enum(TaskState)16077",
+                "offset": 20,
+                "slot": "5"
+              },
+              {
+                "label": "taskHash",
+                "type": "t_bytes32",
+                "offset": 0,
+                "slot": "6"
+              },
+              {
+                "label": "latestDeliveryHash",
+                "type": "t_bytes32",
+                "offset": 0,
+                "slot": "7"
+              },
+              {
+                "label": "latestCriteriaHash",
+                "type": "t_bytes32",
+                "offset": 0,
+                "slot": "8"
+              },
+              {
+                "label": "deliveryDurationSeconds",
+                "type": "t_uint64",
+                "offset": 0,
+                "slot": "9"
+              },
+              {
+                "label": "deliveryDeadline",
+                "type": "t_uint64",
+                "offset": 8,
+                "slot": "9"
+              },
+              {
+                "label": "acceptanceDeadline",
+                "type": "t_uint64",
+                "offset": 16,
                 "slot": "9"
               },
               {
                 "label": "maxRevisions",
                 "type": "t_uint8",
-                "offset": 0,
-                "slot": "10"
+                "offset": 24,
+                "slot": "9"
               },
               {
                 "label": "currentRevision",
                 "type": "t_uint8",
-                "offset": 1,
-                "slot": "10"
+                "offset": 25,
+                "slot": "9"
               },
               {
                 "label": "criteriaCount",
                 "type": "t_uint8",
-                "offset": 2,
-                "slot": "10"
+                "offset": 26,
+                "slot": "9"
               },
               {
                 "label": "declineCount",
                 "type": "t_uint8",
-                "offset": 3,
-                "slot": "10"
+                "offset": 27,
+                "slot": "9"
               },
               {
                 "label": "acceptanceWindowHours",
                 "type": "t_uint8",
-                "offset": 4,
-                "slot": "10"
+                "offset": 28,
+                "slot": "9"
               }
             ],
-            "numberOfBytes": "352"
+            "numberOfBytes": "320"
           },
           "t_uint16": {
             "label": "uint16",

@@ -16,6 +16,7 @@ import {
     assertDeployerControlsOwnerActions,
     shouldTransferOwnershipByDefault,
     transferOwnershipIfRequested,
+    waitForProxyImplementationAddress,
 } from "./deploy-helpers";
 
 const ESCROW_JSON = path.join(__dirname, "ESCROW.json");
@@ -103,7 +104,10 @@ async function main() {
             deployer.address
         );
 
-        const oldImpl = await upgrades.erc1967.getImplementationAddress(existingProxy);
+        const oldImpl = await waitForProxyImplementationAddress(
+            existingProxy,
+            "Escrow proxy"
+        );
         console.log("Old Implementation:", oldImpl);
 
         console.log("\nDeploying new implementation and upgrading proxy...");
@@ -114,7 +118,10 @@ async function main() {
         await upgraded.waitForDeployment();
 
         proxyAddress = existingProxy;
-        implAddress = await upgrades.erc1967.getImplementationAddress(proxyAddress);
+        implAddress = await waitForProxyImplementationAddress(
+            proxyAddress,
+            "Escrow proxy"
+        );
 
         console.log("\nEscrow upgrade successful");
         console.log("Proxy:", proxyAddress);
@@ -135,7 +142,10 @@ async function main() {
         await escrow.waitForDeployment();
 
         proxyAddress = await escrow.getAddress();
-        implAddress = await upgrades.erc1967.getImplementationAddress(proxyAddress);
+        implAddress = await waitForProxyImplementationAddress(
+            proxyAddress,
+            "Escrow proxy"
+        );
 
         console.log("\nEscrow fresh deploy successful");
         console.log("Proxy:", proxyAddress);
@@ -159,7 +169,10 @@ async function main() {
             deployer.address
         );
 
-        const oldTipJarImpl = await upgrades.erc1967.getImplementationAddress(existingTipJarProxy);
+        const oldTipJarImpl = await waitForProxyImplementationAddress(
+            existingTipJarProxy,
+            "TipJar proxy"
+        );
         console.log("Old TipJar Implementation:", oldTipJarImpl);
 
         console.log("\nDeploying new TipJar implementation and upgrading proxy...");
@@ -170,7 +183,10 @@ async function main() {
         await upgradedTipJar.waitForDeployment();
 
         tipJarProxyAddress = existingTipJarProxy;
-        tipJarImplAddress = await upgrades.erc1967.getImplementationAddress(tipJarProxyAddress);
+        tipJarImplAddress = await waitForProxyImplementationAddress(
+            tipJarProxyAddress,
+            "TipJar proxy"
+        );
 
         console.log("\nTipJar upgrade successful");
         console.log("Proxy:", tipJarProxyAddress);
@@ -192,7 +208,10 @@ async function main() {
         await tipJar.waitForDeployment();
 
         tipJarProxyAddress = await tipJar.getAddress();
-        tipJarImplAddress = await upgrades.erc1967.getImplementationAddress(tipJarProxyAddress);
+        tipJarImplAddress = await waitForProxyImplementationAddress(
+            tipJarProxyAddress,
+            "TipJar proxy"
+        );
 
         console.log("\nTipJar fresh deploy successful");
         console.log("Proxy:", tipJarProxyAddress);

@@ -108,6 +108,7 @@ contract AgentPactEscrow is
     // ========================= Errors =========================
 
     error InvalidState(TaskState current, TaskState expected);
+    error EscrowNotFound(uint256 escrowId);
     error OnlyRequester();
     error OnlyProvider();
     error OnlyParties();
@@ -134,16 +135,19 @@ contract AgentPactEscrow is
     // ========================= Modifiers =========================
 
     modifier onlyRequester(uint256 escrowId) {
+        _requireEscrowExists(escrowId);
         if (msg.sender != escrows[escrowId].requester) revert OnlyRequester();
         _;
     }
 
     modifier onlyProvider(uint256 escrowId) {
+        _requireEscrowExists(escrowId);
         if (msg.sender != escrows[escrowId].provider) revert OnlyProvider();
         _;
     }
 
     modifier onlyParties(uint256 escrowId) {
+        _requireEscrowExists(escrowId);
         EscrowRecord storage r = escrows[escrowId];
         if (msg.sender != r.requester && msg.sender != r.provider)
             revert OnlyParties();
@@ -151,6 +155,7 @@ contract AgentPactEscrow is
     }
 
     modifier inState(uint256 escrowId, TaskState expected) {
+        _requireEscrowExists(escrowId);
         if (escrows[escrowId].state != expected)
             revert InvalidState(escrows[escrowId].state, expected);
         _;
@@ -647,6 +652,12 @@ contract AgentPactEscrow is
         }
         // Safe cast: passed is at most 100 (sum of all weights)
         return uint8(passed);
+    }
+
+    function _requireEscrowExists(uint256 escrowId) internal view {
+        if (escrowId == 0 || escrowId >= nextEscrowId) {
+            revert EscrowNotFound(escrowId);
+        }
     }
 
     /// @dev Auto-settle when revision limit is reached

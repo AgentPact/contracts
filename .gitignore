@@ -28,6 +28,12 @@ compile_out.txt
 build_error.txt
 compile_error.txt
 test_output.txt
+abi.json
+deploy_err.log
+deploy_output.txt
+fix_import.js
+fix_import_out.txt
+
 
 ESCROW.json
 typechain-types/
