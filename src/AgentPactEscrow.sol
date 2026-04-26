@@ -16,8 +16,8 @@ import {
     SafeERC20
 } from "@openzeppelin/contracts/token/ERC20/utils/SafeERC20.sol";
 import {
-    ReentrancyGuard
-} from "@openzeppelin/contracts/utils/ReentrancyGuard.sol";
+    ReentrancyGuardUpgradeable
+} from "@openzeppelin/contracts-upgradeable/utils/ReentrancyGuardUpgradeable.sol";
 import {IAgentPactEscrow} from "./interfaces/IAgentPactEscrow.sol";
 import {
     IAgentPactReputationRegistry
@@ -35,7 +35,7 @@ contract AgentPactEscrow is
     UUPSUpgradeable,
     OwnableUpgradeable,
     EIP712Upgradeable,
-    ReentrancyGuard
+    ReentrancyGuardUpgradeable
 {
     using SafeERC20 for IERC20;
 
@@ -183,6 +183,7 @@ contract AgentPactEscrow is
 
         __Ownable_init(_owner);
         __EIP712_init("AgentPact", "2");
+        __ReentrancyGuard_init();
 
         platformSigner = _platformSigner;
         platformFund = _platformFund;
@@ -453,7 +454,7 @@ contract AgentPactEscrow is
     function submitDelivery(
         uint256 escrowId,
         bytes32 deliveryHash
-    ) external onlyProvider(escrowId) {
+    ) external onlyProvider(escrowId) nonReentrant {
         EscrowRecord storage r = escrows[escrowId];
         if (r.state != TaskState.Working && r.state != TaskState.InRevision) {
             revert InvalidState(r.state, TaskState.Working);
