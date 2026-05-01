@@ -16,8 +16,8 @@ import {
     SafeERC20
 } from "@openzeppelin/contracts/token/ERC20/utils/SafeERC20.sol";
 import {
-    ReentrancyGuardUpgradeable
-} from "@openzeppelin/contracts-upgradeable/utils/ReentrancyGuardUpgradeable.sol";
+    ReentrancyGuard
+} from "@openzeppelin/contracts/utils/ReentrancyGuard.sol";
 import {IAgentPactEscrow} from "./interfaces/IAgentPactEscrow.sol";
 import {
     IAgentPactReputationRegistry
@@ -35,7 +35,7 @@ contract AgentPactEscrow is
     UUPSUpgradeable,
     OwnableUpgradeable,
     EIP712Upgradeable,
-    ReentrancyGuardUpgradeable
+    ReentrancyGuard
 {
     using SafeERC20 for IERC20;
 
@@ -44,7 +44,7 @@ contract AgentPactEscrow is
     /// @notice EIP-712 typehash for task assignment signature
     bytes32 public constant ASSIGNMENT_TYPEHASH =
         keccak256(
-            "TaskAssignment(uint256 escrowId,address agent,uint256 nonce,uint256 expiredAt)"
+            "TaskAssignment(uint256 escrowId,address agent,address payout,uint256 nonce,uint256 expiredAt)"
         );
 
     /// @notice Default platform fee rate in basis points (500 = 5%)
@@ -183,7 +183,6 @@ contract AgentPactEscrow is
 
         __Ownable_init(_owner);
         __EIP712_init("AgentPact", "2");
-        __ReentrancyGuard_init();
 
         platformSigner = _platformSigner;
         platformFund = _platformFund;
@@ -205,13 +204,11 @@ contract AgentPactEscrow is
         address token,
         uint256 totalAmount
     ) external payable nonReentrant returns (uint256 escrowId) {
-        // 閴?Opt-1: Minimum 1 hour delivery duration
         if (deliveryDurationSeconds < 3600) revert InvalidDuration();
         if (maxRevisions < 1 || maxRevisions > 10) revert InvalidMaxRevisions();
         if (acceptanceWindowHours < 12 || acceptanceWindowHours > 168)
             revert InvalidAcceptanceWindow();
 
-        // 閴?Fix P0-2: Validate fund weights on-chain
         if (criteriaCount < 3 || criteriaCount > 10)
             revert InvalidCriteriaCount();
         if (fundWeights.length != criteriaCount) revert WeightCountMismatch();
@@ -223,13 +220,10 @@ contract AgentPactEscrow is
         }
         if (totalWeight != 100) revert WeightsSumNot100();
 
-        // Determine payment mode by token address
         if (token == address(0)) {
-            // ETH mode: use msg.value as total
             if (msg.value == 0) revert ZeroAmount();
             totalAmount = msg.value;
         } else {
-            // ERC20 mode: must not attach ETH, token must be whitelisted
             require(msg.value == 0, "ETH not accepted for ERC20 escrows");
             if (totalAmount == 0) revert ZeroAmount();
             if (!allowedTokens[token]) revert TokenNotAllowed();
@@ -240,7 +234,6 @@ contract AgentPactEscrow is
             );
         }
 
-        // Calculate deposit based on maxRevisions
         uint256 depositRate = _depositRate(maxRevisions);
         uint256 rewardAmount = (totalAmount * 100) / (100 + depositRate);
         uint256 requesterDeposit = totalAmount - rewardAmount;
@@ -255,12 +248,11 @@ contract AgentPactEscrow is
         r.state = TaskState.Created;
         r.taskHash = taskHash;
         r.deliveryDurationSeconds = deliveryDurationSeconds;
-        r.deliveryDeadline = 0; 
+        r.deliveryDeadline = 0;
         r.maxRevisions = maxRevisions;
         r.criteriaCount = criteriaCount;
         r.acceptanceWindowHours = acceptanceWindowHours;
 
-        // 閴?Fix P0-2: Store fund weights on-chain for passRate calculation
         for (uint8 i = 0; i < criteriaCount; i++) {
             escrowFundWeights[escrowId][i] = fundWeights[i];
         }
@@ -292,8 +284,10 @@ contract AgentPactEscrow is
 
         uint256 fee = (r.rewardAmount * platformFeeBps) / 10_000;
         uint256 providerPayout = r.rewardAmount - fee;
+        address payoutRecipient = r.payoutAddress != address(0)
+            ? r.payoutAddress
+            : r.provider;
 
-        // Return remaining deposit to requester
         uint256 remainingDeposit = r.requesterDeposit - r.depositConsumed;
 
         r.state = TaskState.Accepted;
@@ -301,25 +295,22 @@ contract AgentPactEscrow is
         totalSuccessfulEscrows += 1;
         totalRewardVolumeByToken[r.token] += r.rewardAmount;
         totalPayoutVolumeByToken[r.token] += providerPayout;
-        _transfer(r.token, r.provider, providerPayout);
+        _transfer(r.token, payoutRecipient, providerPayout);
         _transferPlatformFee(r.token, fee);
         if (remainingDeposit > 0) {
             _transfer(r.token, r.requester, remainingDeposit);
         }
 
-        // --- ERC-8004 Hook ---
         if (address(reputationRegistry) != address(0)) {
-            // Maximum positive score for accepted delivery
             int256 baseScore = 5;
-            // Optional: convert payout to a string parameter or IPFS hash here if needed.
             try
                 reputationRegistry.recordAttestation(
                     r.provider,
                     "ESCROW_ACCEPTED",
                     baseScore,
-                    "ipfs://contract-auto-generated" // Placeholder for detailed breakdown
+                    "ipfs://contract-auto-generated"
                 )
-            {} catch {} // gracefully fail to avoid blocking funds
+            {} catch {}
         }
 
         emit DeliveryAccepted(escrowId, providerPayout, fee);
@@ -338,7 +329,6 @@ contract AgentPactEscrow is
     {
         EscrowRecord storage r = escrows[escrowId];
 
-        // 閴?Fix P0-1: Validate criteriaResults length matches on-chain criteriaCount
         require(
             criteriaResults.length == r.criteriaCount,
             "Criteria count mismatch"
@@ -346,28 +336,24 @@ contract AgentPactEscrow is
 
         uint8 requestedRevision = r.currentRevision + 1;
 
-        // Progressive deposit penalty is charged for the revision being requested.
-        // Round 1 is free; rounds 2+ consume requester deposit sequentially.
         uint256 penalty = 0;
         if (requestedRevision > 1) {
             penalty = _calcPenalty(r, requestedRevision);
             if (penalty > 0) {
                 r.depositConsumed += penalty;
-                // Distribute penalty between provider and platform
                 uint256 platformShare = (penalty * penaltyPlatformBps) / 10000;
                 uint256 providerShare = penalty - platformShare;
+                address payoutRecipient = r.payoutAddress != address(0)
+                    ? r.payoutAddress
+                    : r.provider;
 
-                _transfer(r.token, r.provider, providerShare);
+                _transfer(r.token, payoutRecipient, providerShare);
                 _transferPlatformFee(r.token, platformShare);
             }
         }
 
         r.currentRevision = requestedRevision;
-
-        // 閴?Fix P0-1: Compute passRate on-chain from criteriaResults + fundWeights
         uint8 passRate = _calcPassRate(escrowId, criteriaResults);
-
-        // Store criteria hash for off-chain reference (use abi.encode to avoid packed collision)
         r.latestCriteriaHash = keccak256(abi.encode(criteriaResults));
 
         emit RevisionRequested(
@@ -379,13 +365,11 @@ contract AgentPactEscrow is
             passRate
         );
 
-        // Auto-settle only after all granted revision rounds have already been used
         if (r.currentRevision > r.maxRevisions) {
             r.currentRevision = r.maxRevisions;
             _autoSettle(escrowId, passRate);
         } else {
             r.state = TaskState.InRevision;
-            // 閴?Fix P1-7: Extend delivery deadline by 50% of original duration on each revision
             r.deliveryDeadline = uint64(
                 block.timestamp + r.deliveryDurationSeconds / 2
             );
@@ -401,14 +385,9 @@ contract AgentPactEscrow is
             revert InvalidState(r.state, TaskState.Created);
         }
 
-        // Created stage: full refund to requester
         r.state = TaskState.Cancelled;
         totalClosedEscrows += 1;
-        _transfer(
-            r.token,
-            r.requester,
-            r.rewardAmount + r.requesterDeposit
-        );
+        _transfer(r.token, r.requester, r.rewardAmount + r.requesterDeposit);
 
         emit TaskCancelled(escrowId, 0);
     }
@@ -418,6 +397,7 @@ contract AgentPactEscrow is
     /// @inheritdoc IAgentPactEscrow
     function claimTask(
         uint256 escrowId,
+        address payoutAddress,
         uint256 nonce,
         uint256 expiredAt,
         bytes calldata platformSignature
@@ -431,6 +411,7 @@ contract AgentPactEscrow is
                 ASSIGNMENT_TYPEHASH,
                 escrowId,
                 msg.sender,
+                payoutAddress,
                 nonce,
                 expiredAt
             )
@@ -444,8 +425,11 @@ contract AgentPactEscrow is
 
         EscrowRecord storage r = escrows[escrowId];
         r.provider = msg.sender;
+        r.payoutAddress = payoutAddress;
         r.state = TaskState.Working;
-        r.deliveryDeadline = uint64(block.timestamp) + r.deliveryDurationSeconds;
+        r.deliveryDeadline =
+            uint64(block.timestamp) +
+            r.deliveryDurationSeconds;
 
         emit TaskClaimed(escrowId, msg.sender, r.deliveryDeadline);
     }
@@ -477,7 +461,6 @@ contract AgentPactEscrow is
     }
 
     /// @inheritdoc IAgentPactEscrow
-    /// @notice Agent voluntarily abandons during Working or InRevision
     function abandonTask(
         uint256 escrowId
     ) external nonReentrant onlyProvider(escrowId) {
@@ -488,14 +471,12 @@ contract AgentPactEscrow is
 
         address previousProvider = r.provider;
 
-        // Task returns to Created for re-matching 閳?reset all execution state
         r.provider = address(0);
         r.state = TaskState.Created;
         r.deliveryDeadline = 0;
         r.currentRevision = 0;
         r.latestDeliveryHash = bytes32(0);
         r.latestCriteriaHash = bytes32(0);
-        // NOTE: Credit penalty (-15) is applied off-chain by Credit Service
 
         emit TaskAbandoned(escrowId, previousProvider);
     }
@@ -518,17 +499,19 @@ contract AgentPactEscrow is
         TaskState previousState = r.state;
         r.state = TaskState.TimedOut;
 
-        // Full reward to provider (requester defaulted)
         uint256 fee = (r.rewardAmount * platformFeeBps) / 10_000;
         uint256 providerPayout = r.rewardAmount - fee;
         totalClosedEscrows += 1;
         totalSuccessfulEscrows += 1;
         totalRewardVolumeByToken[r.token] += r.rewardAmount;
         totalPayoutVolumeByToken[r.token] += providerPayout;
-        _transfer(r.token, r.provider, providerPayout);
+
+        address payoutRecipient = r.payoutAddress != address(0)
+            ? r.payoutAddress
+            : r.provider;
+        _transfer(r.token, payoutRecipient, providerPayout);
         _transferPlatformFee(r.token, fee);
 
-        // Return remaining deposit to requester
         uint256 remainingDeposit = r.requesterDeposit - r.depositConsumed;
         if (remainingDeposit > 0) {
             _transfer(r.token, r.requester, remainingDeposit);
@@ -550,7 +533,6 @@ contract AgentPactEscrow is
         TaskState previousState = r.state;
         r.state = TaskState.TimedOut;
         totalClosedEscrows += 1;
-        // Full refund to requester
         _transfer(
             r.token,
             r.requester,
@@ -560,22 +542,18 @@ contract AgentPactEscrow is
         emit TimeoutClaimed(escrowId, previousState, msg.sender);
     }
 
-
     // ========================= Admin Functions =========================
 
-    /// @notice Add or remove an allowed ERC20 token
     function setAllowedToken(address token, bool allowed) external onlyOwner {
         if (token == address(0)) revert ZeroAddress();
         allowedTokens[token] = allowed;
     }
 
-    /// @notice Update platform signer address (key rotation)
     function setPlatformSigner(address newSigner) external onlyOwner {
         if (newSigner == address(0)) revert ZeroAddress();
         platformSigner = newSigner;
     }
 
-    /// @notice Update platform fund address
     function setPlatformFund(address newFund) external onlyOwner {
         if (newFund == address(0)) revert ZeroAddress();
         platformFund = newFund;
@@ -589,27 +567,23 @@ contract AgentPactEscrow is
         emit PlatformFeeUpdated(oldFeeBps, newFeeBps);
     }
 
-    /// @notice Set the platform commission configured for penalty allocations
     function setPenaltyPlatformBps(uint16 _bps) external onlyOwner {
         if (_bps > 10000) revert FeeTooHigh();
         penaltyPlatformBps = _bps;
     }
 
-    /// @notice Set the Treasury contract for platform fee distribution
     function setTreasury(address _treasury) external onlyOwner {
         treasuryContract = IAgentPactTreasury(_treasury);
     }
 
     // ========================= View Functions =========================
 
-    /// @notice Get full escrow record
     function getEscrow(
         uint256 escrowId
     ) external view returns (EscrowRecord memory) {
         return escrows[escrowId];
     }
 
-    /// @notice Get fund weight for a specific criterion
     function getFundWeight(
         uint256 escrowId,
         uint8 criteriaIndex
@@ -617,7 +591,6 @@ contract AgentPactEscrow is
         return escrowFundWeights[escrowId][criteriaIndex];
     }
 
-    /// @notice Get all fund weights for an escrow
     function getFundWeights(
         uint256 escrowId
     ) external view returns (uint8[] memory) {
@@ -629,17 +602,12 @@ contract AgentPactEscrow is
         return weights;
     }
 
-    /// @notice Get the EIP-712 domain separator
     function getDomainSeparator() external view returns (bytes32) {
         return _domainSeparatorV4();
     }
 
     // ========================= Internal Functions =========================
 
-    /// @dev Calculate passRate on-chain from criteriaResults and stored fundWeights
-    /// @param escrowId The escrow ID (to look up stored fund weights)
-    /// @param criteriaResults Per-criterion pass(true)/fail(false) array
-    /// @return passRate Weighted pass rate (0-100)
     function _calcPassRate(
         uint256 escrowId,
         bool[] calldata criteriaResults
@@ -651,7 +619,6 @@ contract AgentPactEscrow is
                 passed += escrowFundWeights[escrowId][i];
             }
         }
-        // Safe cast: passed is at most 100 (sum of all weights)
         return uint8(passed);
     }
 
@@ -661,13 +628,9 @@ contract AgentPactEscrow is
         }
     }
 
-    /// @dev Auto-settle when revision limit is reached
-    /// @param escrowId The escrow to settle
-    /// @param passRate On-chain computed passRate from _calcPassRate
     function _autoSettle(uint256 escrowId, uint8 passRate) internal {
         EscrowRecord storage r = escrows[escrowId];
 
-        // 閴?Fix P0-1: passRate computed on-chain, apply MIN_PASS_RATE floor
         if (passRate < MIN_PASS_RATE) passRate = MIN_PASS_RATE;
         if (passRate > 100) passRate = 100;
 
@@ -680,13 +643,17 @@ contract AgentPactEscrow is
         totalSuccessfulEscrows += 1;
         totalRewardVolumeByToken[r.token] += r.rewardAmount;
         totalPayoutVolumeByToken[r.token] += providerPayout;
-        _transfer(r.token, r.provider, providerPayout);
+
+        address payoutRecipient = r.payoutAddress != address(0)
+            ? r.payoutAddress
+            : r.provider;
+        _transfer(r.token, payoutRecipient, providerPayout);
         _transferPlatformFee(r.token, fee);
+
         if (requesterRefund > 0) {
             _transfer(r.token, r.requester, requesterRefund);
         }
 
-        // Return remaining deposit to requester
         uint256 remainingDeposit = r.requesterDeposit - r.depositConsumed;
         if (remainingDeposit > 0) {
             _transfer(r.token, r.requester, remainingDeposit);
@@ -701,8 +668,6 @@ contract AgentPactEscrow is
         );
     }
 
-    /// @dev Calculate deposit rate based on maxRevisions
-    ///      maxRevisions 1-3 閳?5%, 4-5 閳?8%, 6-7 閳?12%, 8+ 閳?15%
     function _depositRate(uint8 maxRevisions) internal pure returns (uint256) {
         if (maxRevisions <= 3) return 5;
         if (maxRevisions <= 5) return 8;
@@ -710,9 +675,6 @@ contract AgentPactEscrow is
         return 15;
     }
 
-    /// @dev Calculate progressive penalty for the revision round being requested
-    ///      Using arithmetic progression arithmetic to spread the deposit smoothly across maxRevisions.
-    ///      For maxRevisions = 5, equivalent to Round 2: 10%, Round 3: 20%, Round 4: 30%, Round 5: 40%
     function _calcPenalty(
         EscrowRecord storage r,
         uint8 requestedRevision
@@ -726,17 +688,13 @@ contract AgentPactEscrow is
 
         uint256 i = requestedRevision - 1;
 
-        // penalty = deposit * 2 * i / (n * (n+1))
         uint256 penalty = (uint256(r.requesterDeposit) * 2 * i) / (n * (n + 1));
-
-        // Cap at remaining deposit to prevent rounding oversell
         uint256 remaining = r.requesterDeposit - r.depositConsumed;
         if (penalty > remaining) penalty = remaining;
 
         return penalty;
     }
 
-    /// @dev Transfer ETH or ERC20 token
     function _transfer(address token, address to, uint256 amount) internal {
         if (amount == 0) return;
         if (token == address(0)) {
@@ -747,8 +705,6 @@ contract AgentPactEscrow is
         }
     }
 
-    /// @dev Send platform fee via Treasury contract (with optional buyback).
-    ///      Falls back to direct transfer if Treasury is not configured.
     function _transferPlatformFee(address token, uint256 feeAmount) internal {
         if (address(treasuryContract) != address(0)) {
             _transfer(token, address(treasuryContract), feeAmount);
@@ -758,7 +714,6 @@ contract AgentPactEscrow is
         }
     }
 
-    /// @dev Required by UUPS 閳?only owner can authorize upgrades
     function _authorizeUpgrade(
         address newImplementation
     ) internal override onlyOwner {}

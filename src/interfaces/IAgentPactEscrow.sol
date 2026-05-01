@@ -35,6 +35,7 @@ interface IAgentPactEscrow {
         uint8 criteriaCount;
         uint8 declineCount;
         uint8 acceptanceWindowHours;
+        address payoutAddress;
     }
 
     event EscrowCreated(
@@ -137,6 +138,7 @@ interface IAgentPactEscrow {
 
     function claimTask(
         uint256 escrowId,
+        address payoutAddress,
         uint256 nonce,
         uint256 expiredAt,
         bytes calldata platformSignature
